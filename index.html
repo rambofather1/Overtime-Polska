@@ -8,20 +8,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Amboy&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-
-    <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Overtime Polska" />
-    <meta property="og:description" content="Oczekujesz? To dobrze. Niedługo..." />
-    <meta property="og:image" content="https://i.imgur.com/ZGkYfMv.png" />
+    <meta property="og:description" content="Wkrótce będzie wszystko na stronie Overtime Polska." />
+    <meta property="og:image" content="https://i.imgur.com/ZGkYfMv.png" id="ogImage" />
     <meta property="og:url" content="https://overtime.community" />
     <meta property="og:type" content="website" />
-
-    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Overtime Polska" />
-    <meta name="twitter:description" content="Oczekujesz? To dobrze. Niedługo..." />
-    <meta name="twitter:image" content="https://i.imgur.com/ZGkYfMv.png" />
+    <meta name="twitter:description" content="Wkrótce będzie wszystko na stronie Overtime Polska." />
+    <meta name="twitter:image" content="https://i.imgur.com/ZGkYfMv.png" id="twitterImage" />
     <meta name="twitter:url" content="https://overtime.community" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script>
+        window.onload = function() {
+            html2canvas(document.body, {
+                onrendered: function(canvas) {
+                    var img = canvas.toDataURL("image/png");
+                    document.getElementById('ogImage').setAttribute('content', img);
+                    document.getElementById('twitterImage').setAttribute('content', img);
+                }
+            });
+        };
+    </script>
 </head>
 <body>
     <div id="particles-js"></div>
