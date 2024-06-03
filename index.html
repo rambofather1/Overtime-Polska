@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Overtime Polska</title>
+    <title>Discord Bot User Count</title>
+    <script>
+        async function getUserCount() {
+            try {
+                let response = await fetch('/api/usercount');
+                let data = await response.json();
+                document.getElementById('userCount').innerText = `Łączna liczba użytkowników: ${data.totalUsers}`;
+            } catch (error) {
+                console.error('Error fetching user count:', error);
+            }
+        }
+
+        window.onload = getUserCount;
+    </script>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Amboy&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -17,19 +30,6 @@
     <meta name="twitter:title" content="Overtime Polska" />
     <meta name="twitter:description" content="Czekasz? To jeszcze sobie poczekasz. Overtime. Nam się nigdzie nie spieszy..." />
     <meta name="twitter:image" content="https://i.imgur.com/ZGkYfMv.png" id="twitterImage" />
-    <meta name="twitter:url" content="https://overtime.community" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-    <script>
-        window.onload = function() {
-            html2canvas(document.body, {
-                onrendered: function(canvas) {
-                    var img = canvas.toDataURL("image/png");
-                    document.getElementById('ogImage').setAttribute('content', img);
-                    document.getElementById('twitterImage').setAttribute('content', img);
-                }
-            });
-        };
-    </script>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -41,6 +41,7 @@
             <a href="https://www.youtube.com/@Overtimepl" target="_blank"><i class="fab fa-youtube"></i></a>
             <a href="https://discord.gg/lolpolska" target="_blank"><i class="fab fa-discord"></i></a>
         </div>
+        <h1 id="userCount">Jest nas łącznie: Loading...</h1>
     </div>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="app.js"></script>
