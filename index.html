@@ -29,27 +29,47 @@
       <a href="https://www.youtube.com/@Overtimepl" target="_blank"><i class="fab fa-youtube"></i></a>
       <a href="https://discord.gg/lolpolska" target="_blank"><i class="fab fa-discord"></i></a>
     </div>
-    <h1 id="userCount">Jest nas: <span id="memberCount">Ładowanie...</span></h1>
+    <h1 id="userCount">Jest nas: <span id="memberCount">Ładowanie danych...</span></h1>
   </div>
   <script>
+    // Konfiguracja MongoDB Data API
+    const API_URL = 'https://data.mongodb-api.com/app/data-euxgp/endpoint/data/v1/action/findOne'; // Wstaw swój URL Data API
+    const API_KEY = 'JqzdEQsO4t6f7sT2T7OQpP42HvyIv5tiKIww913b9x2LX6kNQAlGnV7XHj23Jkji'; // Wstaw swój klucz API
+
     async function fetchMemberCount() {
       try {
-        const response = await fetch('http://192.168.0.200:5000/api/totalMembers'); // Wstaw swój publiczny URL
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Request-Headers': '*',
+            'api-key': API_KEY,
+          },
+          body: JSON.stringify({
+            dataSource: 'Cluster0', // Nazwa klastra
+            database: 'overtime', // Nazwa bazy danych
+            collection: 'user_counts', // Nazwa kolekcji
+            filter: { type: "total_members" } // Filtr dla dokumentu
+          }),
+        });
+
+        // Przetwarzanie odpowiedzi
         const data = await response.json();
-        if (data.totalMembers) {
-          document.getElementById('memberCount').textContent = data.totalMembers.toLocaleString('pl-PL');
+        if (data && data.document) {
+          document.getElementById("memberCount").textContent = data.document.count.toLocaleString('pl-PL');
         } else {
-          document.getElementById('memberCount').textContent = 'Błąd pobierania danych';
+          document.getElementById("memberCount").textContent = "Brak danych";
         }
       } catch (error) {
-        document.getElementById('memberCount').textContent = 'Błąd połączenia';
+        console.error("Błąd podczas pobierania danych:", error);
+        document.getElementById("memberCount").textContent = "Błąd połączenia";
       }
     }
-  
+
+    // Wywołanie funkcji pobierającej dane
     fetchMemberCount();
   </script>
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script src="app.js"></script>
-  <script src="https://unpkg.com/realm-web/dist/bundle.iife.js"></script>
 </body>
 </html>
