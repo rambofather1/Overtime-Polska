@@ -34,7 +34,7 @@
   <script>
     async function fetchMemberCount() {
       try {
-        const response = await fetch('http://localhost:5000/api/totalMembers'); // Adres Twojego API
+        const response = await fetch('https://licznik.onrender.com/api/totalMembers'); // Wstaw swój publiczny URL
         const data = await response.json();
         if (data.totalMembers) {
           document.getElementById('memberCount').textContent = data.totalMembers.toLocaleString('pl-PL');
