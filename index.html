@@ -8,7 +8,7 @@
   <meta property="og:title" content="Overtime Polska - Największa Społeczność w Polsce!" />
   <meta property="og:description" content="Dołącz do naszej społeczności i bądź częścią największej sieci w Polsce. Liczba użytkowników rośnie każdego dnia!" />
   <meta property="og:image" content="https://i.imgur.com/ZGkYfMv.png" id="ogImage" />
-  <meta property="og:url" content="https://yourwebsite.com" />
+  <meta property="og:url" content="https://overtime.community" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Overtime Polska - Dołącz do największej społeczności!" />
@@ -33,8 +33,8 @@
   </div>
   <script>
     // Konfiguracja MongoDB Data API
-    const API_URL = 'https://data.mongodb-api.com/app/data-euxgp/endpoint/data/v1/action/findOne'; // Wstaw swój URL Data API
-    const API_KEY = 'JqzdEQsO4t6f7sT2T7OQpP42HvyIv5tiKIww913b9x2LX6kNQAlGnV7XHj23Jkji'; // Wstaw swój klucz API
+    const API_URL = 'https://data.mongodb-api.com/app/data-euxgp/endpoint/data/v1/action/findOne'; // Twój URL Data API
+    const API_KEY = 'JqzdEQsO4t6f7sT2T7OQpP42HvyIv5tiKIww913b9x2LX6kNQAlGnV7XHj23Jkji'; // Twój klucz API
 
     async function fetchMemberCount() {
       try {
@@ -53,12 +53,17 @@
           }),
         });
 
-        // Przetwarzanie odpowiedzi
-        const data = await response.json();
-        if (data && data.document) {
-          document.getElementById("memberCount").textContent = data.document.count.toLocaleString('pl-PL');
+        // Sprawdzenie odpowiedzi
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.document) {
+            document.getElementById("memberCount").textContent = data.document.count.toLocaleString('pl-PL');
+          } else {
+            document.getElementById("memberCount").textContent = "Brak danych";
+          }
         } else {
-          document.getElementById("memberCount").textContent = "Brak danych";
+          console.error("Błąd HTTP:", response.status);
+          document.getElementById("memberCount").textContent = "Błąd pobierania danych";
         }
       } catch (error) {
         console.error("Błąd podczas pobierania danych:", error);
@@ -66,8 +71,9 @@
       }
     }
 
-    // Wywołanie funkcji pobierającej dane
+    // Wywołanie funkcji i odświeżanie co 30 sekund
     fetchMemberCount();
+    setInterval(fetchMemberCount, 30000); // Aktualizacja co 30 sekund
   </script>
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script src="app.js"></script>
