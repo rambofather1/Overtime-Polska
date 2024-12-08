@@ -29,19 +29,23 @@
       <a href="https://www.youtube.com/@Overtimepl" target="_blank"><i class="fab fa-youtube"></i></a>
       <a href="https://discord.gg/lolpolska" target="_blank"><i class="fab fa-discord"></i></a>
     </div>
-    <h1 id="userCount">Jest nas łącznie: <span id="memberCount">Ładowanie...</span></h1>
+    <h1 id="userCount">Jest nas: <span id="memberCount">Ładowanie...</span></h1>
   </div>
   <script>
     async function fetchMemberCount() {
       try {
-        const response = await fetch('https://yourwebsite.com/api/totalMembers'); // Ustaw prawidłowy URL API
+        const response = await fetch('http://localhost:5000/api/totalMembers'); // Adres Twojego API
         const data = await response.json();
-        document.getElementById('memberCount').textContent = data.totalMembers.toLocaleString('pl-PL');
+        if (data.totalMembers) {
+          document.getElementById('memberCount').textContent = data.totalMembers.toLocaleString('pl-PL');
+        } else {
+          document.getElementById('memberCount').textContent = 'Błąd pobierania danych';
+        }
       } catch (error) {
-        document.getElementById('memberCount').textContent = 'Błąd pobierania danych';
+        document.getElementById('memberCount').textContent = 'Błąd połączenia';
       }
     }
-
+  
     fetchMemberCount();
   </script>
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
