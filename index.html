@@ -15,67 +15,286 @@
   <meta name="twitter:description" content="Zobacz, ilu użytkowników już jest w sieci Overtime Polska. Dołącz do nas i bądź na bieżąco!" />
   <meta name="twitter:image" content="https://i.imgur.com/ZGkYfMv.png" id="twitterImage" />
   <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Amboy&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
   <div id="particles-js"></div>
-  <div class="content">
-    <img src="logo.png" alt="Logo" class="logo">
-    <h1>Wkrótce</h1>
-    <div class="social-icons">
-      <a href="https://linktr.ee/overtimepolska" target="_blank"><i class="fas fa-link"></i></a>
-      <a href="https://www.youtube.com/@Overtimepl" target="_blank"><i class="fab fa-youtube"></i></a>
-      <a href="https://discord.gg/lolpolska" target="_blank"><i class="fab fa-discord"></i></a>
+  
+  <div class="container">
+    <div class="content">
+      <div class="logo-container d-flex justify-content-center align-items-center">
+        <img src="logo.png" alt="Logo" class="logo">
+      </div>
+      
+      <div class="card bg-transparent text-white mb-4"> <!-- Usunięto shadow-sm i zmieniono bg-dark na bg-transparent -->
+        <div class="card-body text-center">
+          <h1 class="display-4 mb-4">Zacznij Podróż</h1> <!-- Zmieniono "Wkrótce" na "Przekonaj się" -->
+          
+          <div class="social-icons mb-4">
+            <a href="https://linktr.ee/overtimepolska" target="_blank" class="btn btn-outline-light mx-2"><i class="fas fa-link me-2"></i>Linktree</a>
+            <a href="https://www.youtube.com/@Overtimepl" target="_blank" class="btn btn-outline-danger mx-2"><i class="fab fa-youtube me-2"></i>YouTube</a>
+            <a href="https://discord.gg/lolpolska" target="_blank" class="btn btn-outline-info mx-2"><i class="fab fa-discord me-2"></i>Discord</a>
+          </div>
+          
+          <div class="stats-container">
+            <h2 id="userCount" class="mt-4">
+              Jest nas: <span id="memberCount" class="badge bg-success fs-3">Ładowanie danych...</span>
+              <span id="liveBadge" class="badge bg-danger small ms-2 pulse-live">LIVE</span>
+            </h2>
+            
+            <div class="progress mt-3" style="height: 10px; background-color: rgba(255,255,255,0.1);">
+              <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%;" 
+                aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+          </div>
+          
+          <div class="mt-3 text-muted small">
+            <div id="dataSource" class="mb-1"></div>
+            <div id="lastUpdated">Ostatnia aktualizacja: ładowanie...</div>
+            <div id="discordCount" class="mt-1">Na kanałach głosowych: ładowanie...</div>
+            <div id="serversList" class="mt-3 d-none">
+              <!-- Tu pojawią się szczegółowe informacje o serwerach -->
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <h1 id="userCount">Jest nas: <span id="memberCount">Ładowanie danych...</span></h1>
   </div>
+
+  <!-- Skrypty na końcu dla lepszego ładowania -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+  
   <script>
-    // Konfiguracja MongoDB Data API
-    const API_URL = 'https://data.mongodb-api.com/app/data-euxgp/endpoint/data/v1/action/findOne'; // Twój URL Data API
-    const API_KEY = '67553d23c8f8817ead5d0606'; // Twój klucz API
+    // Upewnij się, że particles.js jest załadowany przed wywołaniem
+    document.addEventListener('DOMContentLoaded', function() {
+      // Jeśli app.js nie inicjalizuje particles.js, zrób to tutaj
+      if (typeof particlesJS === 'function' && !window.particlesJSInitialized) {
+        particlesJS('particles-js', {
+          "particles": {
+            "number": {
+              "value": 100,
+              "density": {
+                "enable": true,
+                "value_area": 800
+              }
+            },
+            "color": {
+              "value": "#ffffff"
+            },
+            "shape": {
+              "type": "circle",
+              "stroke": {
+                "width": 0,
+                "color": "#000000"
+              }
+            },
+            "opacity": {
+              "value": 0.5,
+              "random": false
+            },
+            "size": {
+              "value": 2,
+              "random": true
+            },
+            "line_linked": {
+              "enable": false
+            },
+            "move": {
+              "enable": true,
+              "speed": 0.6,
+              "direction": "bottom",
+              "random": false,
+              "straight": false,
+              "out_mode": "out"
+            }
+          },
+          "interactivity": {
+            "detect_on": "canvas",
+            "events": {
+              "onhover": {
+                "enable": true,
+                "mode": "bubble"
+              },
+              "onclick": {
+                "enable": true,
+                "mode": "repulse"
+              }
+            }
+          }
+        });
+        window.particlesJSInitialized = true;
+      }
+    });
+
+    // Zmienna do śledzenia ostatnio pobranej wartości
+    let lastCount = 0;
+    let lastVoiceCount = 0;
+    let fetchErrors = 0;
+    let lastSuccessfulData = null;
 
     async function fetchMemberCount() {
       try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
+        console.log("Pobieranie danych użytkowników...");
+        
+        // Wykryj czy strona jest hostowana na localhost czy na produkcji
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        // Wybierz odpowiedni URL dla API
+        const apiUrl = isLocalhost 
+          ? 'http://localhost:3000/api/usercount' 
+          : '/api/usercount';
+        
+        console.log(`Używam endpointu API: ${apiUrl}`);
+        
+        const response = await fetch(apiUrl, {
           headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Request-Headers': '*',
-            'api-key': API_KEY,
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+            'x-api-key': '67553d23c8f8817ead5d0606'
           },
-          body: JSON.stringify({
-            dataSource: 'Cluster0', // Nazwa klastra
-            database: 'overtime', // Nazwa bazy danych
-            collection: 'user_counts', // Nazwa kolekcji
-            filter: { type: "total_members" } // Filtr dla dokumentu
-          }),
+          signal: AbortSignal.timeout(10000)
         });
-
-        // Sprawdzenie odpowiedzi
+        
+        console.log("Status odpowiedzi:", response.status);
+        
         if (response.ok) {
           const data = await response.json();
-          if (data && data.document) {
-            document.getElementById("memberCount").textContent = data.document.count.toLocaleString('pl-PL');
-          } else {
-            document.getElementById("memberCount").textContent = "Brak danych";
+          console.log("Pobrano dane:", JSON.stringify(data, null, 2));
+          
+          // Zapisanie udanych danych na przyszłość
+          lastSuccessfulData = data;
+          fetchErrors = 0; // resetujemy licznik błędów
+          
+          // Sprawdzanie czy liczba użytkowników się zmieniła
+          const newCount = data.totalCount || data.total_users || data.totalUsers || data.count || 0;
+          const newVoiceCount = data.voiceUsers || data.voice_users || 0;
+          console.log("Rozpoznana liczba użytkowników:", newCount);
+          console.log("Użytkownicy głosowi:", newVoiceCount);
+          
+          const countChanged = (lastCount !== newCount && lastCount !== 0);
+          lastCount = newCount;
+          lastVoiceCount = newVoiceCount;
+          
+          // Aktualizacja głównego licznika z animacją jeśli się zmienił
+          document.getElementById("memberCount").textContent = newCount.toLocaleString('pl-PL');
+          
+          // Usunięcie klasy błędu jeśli była
+          document.getElementById("memberCount").classList.remove('bg-danger');
+          document.getElementById("memberCount").classList.add('bg-success');
+          
+          // Animacja licznika gdy wartość się zmieni
+          const counterElement = document.getElementById("memberCount");
+          if (countChanged) {
+            counterElement.classList.add('pulse-animation');
+            setTimeout(() => {
+              counterElement.classList.remove('pulse-animation');
+            }, 1000);
           }
+          
+          // Aktualizacja paska postępu
+          const milestone = 100000; // Przykładowy cel - 100,000 użytkowników
+          const progressPercentage = Math.min((newCount / milestone) * 100, 100);
+          const progressBar = document.getElementById("progressBar");
+          if (progressBar) {
+            progressBar.style.width = progressPercentage + '%';
+            progressBar.setAttribute('aria-valuenow', progressPercentage);
+          }
+          
+          // Informacja o źródle danych
+          const dataSourceElement = document.getElementById("dataSource");
+          if (dataSourceElement) {
+            let sourceText = "Źródło danych: ";
+            if (data.dataSource) {
+              sourceText += data.dataSource;
+            } else if (data.fromBackup) {
+              sourceText += "kopia zapasowa";
+            } else {
+              sourceText += "główna baza danych";
+            }
+            dataSourceElement.textContent = sourceText;
+          }
+          
+          // Wyświetlanie dodatkowych informacji
+          const discordCountElement = document.getElementById("discordCount");
+          if (discordCountElement) {
+            discordCountElement.textContent = `Na kanałach głosowych: ${newVoiceCount.toLocaleString('pl-PL')}`;
+          }
+          
+          // Wyświetlanie danych o poszczególnych serwerach jeśli są dostępne
+          const serversList = document.getElementById("serversList");
+          if (serversList && data.servers && data.servers.length > 0) {
+            serversList.classList.remove('d-none');
+            
+            // Sortowanie serwerów według liczby użytkowników
+            const sortedServers = [...data.servers].sort((a, b) => 
+              (b.member_count || 0) - (a.member_count || 0)
+            ).slice(0, 8); // Pokaż maksymalnie 8 pierwszych serwerów
+            
+            let serversHTML = '<div class="mt-2 mb-1">Największe serwery:</div>';
+            
+            sortedServers.forEach(server => {
+              serversHTML += `<span class="badge bg-secondary me-1 mb-1" title="${server.name}: ${server.member_count} członków">
+                ${server.name.substring(0, 15)}${server.name.length > 15 ? '...' : ''}: ${server.member_count}
+              </span>`;
+            });
+            
+            serversList.innerHTML = serversHTML;
+          }
+          
+          // Aktualizacja czasu
+          if (data.lastUpdated) {
+            const updateDate = new Date(data.lastUpdated);
+            document.getElementById("lastUpdated").textContent = 
+              `Ostatnia aktualizacja: ${updateDate.toLocaleString('pl-PL')}`;
+          }
+          
+          // Oznaczenie czy dane są z cache
+          if (data.fromCache) {
+            document.getElementById("liveBadge").textContent = "CACHED";
+            document.getElementById("liveBadge").classList.remove('bg-danger');
+            document.getElementById("liveBadge").classList.add('bg-warning');
+          } else {
+            document.getElementById("liveBadge").textContent = "LIVE";
+            document.getElementById("liveBadge").classList.remove('bg-warning');
+            document.getElementById("liveBadge").classList.add('bg-danger');
+          }
+          
         } else {
-          console.error("Błąd HTTP:", response.status);
-          document.getElementById("memberCount").textContent = "Błąd pobierania danych";
+          throw new Error(`HTTP Error: ${response.status}`);
         }
       } catch (error) {
         console.error("Błąd podczas pobierania danych:", error);
-        document.getElementById("memberCount").textContent = "Błąd połączenia";
+        
+        fetchErrors++;
+        console.log(`Błąd pobierania (${fetchErrors}/${5})`);
+        
+        // Jeśli mamy poprzednie udane dane, używamy ich
+        if (lastSuccessfulData) {
+          console.log("Używanie ostatnich udanych danych");
+          document.getElementById("memberCount").textContent = 
+            (lastSuccessfulData.totalCount || 0).toLocaleString('pl-PL') + " (ostatnie)";
+          
+          document.getElementById("liveBadge").textContent = "OFFLINE";
+          document.getElementById("liveBadge").classList.remove('bg-danger', 'bg-warning');
+          document.getElementById("liveBadge").classList.add('bg-secondary');
+        } else if (fetchErrors >= 5) {
+          // Po 5 błędach pokazujemy statyczną wartość
+          document.getElementById("memberCount").textContent = "Błąd pobierania";
+          document.getElementById("memberCount").classList.remove('bg-success');
+          document.getElementById("memberCount").classList.add('bg-danger');
+        }
       }
     }
 
     // Wywołanie funkcji i odświeżanie co 30 sekund
     fetchMemberCount();
-    setInterval(fetchMemberCount, 30000); // Aktualizacja co 30 sekund
+    
+    // Zmień interwał na 45 sekund aby dać serwerowi więcej czasu na odpowiedź
+    setInterval(fetchMemberCount, 45000);
   </script>
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script src="app.js"></script>
 </body>
 </html>

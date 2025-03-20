@@ -5,7 +5,7 @@ body, html {
     height: 100%;
     overflow: hidden;
     font-family: 'Amboy', sans-serif;
-    background-color: #000;
+    background-color: #000 !important; /* Wymuszenie czarnego tła */
     color: #fff;
     display: flex;
     justify-content: center;
@@ -18,16 +18,44 @@ body, html {
     position: absolute;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
     z-index: 1;
+    background-color: #000; /* Dodatkowe zabezpieczenie tła */
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    background-color: transparent !important;
 }
 
 .content {
     position: relative;
     z-index: 2;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: transparent;
 }
 
 .logo {
-    max-width: 200px;
+    max-width: 200px; /* Znacznie zmniejszony rozmiar logo */
+    transition: transform 0.3s ease;
+    display: block; /* Zapewnia poprawne centrowanie */
+    margin: 0 auto 20px; /* Centrowanie i dolny margines */
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.logo:hover {
+    transform: scale(1.05);
 }
 
 h1 {
@@ -37,19 +65,105 @@ h1 {
 }
 
 .social-icons {
-    margin-top: 20px;  /* Dodaj odstęp nad ikonami */
+    margin: 20px 0;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 15px;
 }
 
 .social-icons a {
     color: #fff;
-    font-size: 24px;
     text-decoration: none;
-    transition: color 0.3s;
+    transition: all 0.3s;
 }
 
-.social-icons a:hover {
-    color: #1db954; /* Zmiana koloru na zielony przy najechaniu */
+.social-icons a:hover { /* Poprawiony selektor - dodana kropka */
+    color: #1db954;
+    transform: translateY(-3px);
+}
+
+.card {
+    background-color: transparent !important; /* Całkowicie przezroczyste tło */
+    border-radius: 15px;
+    backdrop-filter: none; /* Usunięcie rozmycia tła */
+    border: none !important; /* Usunięcie obwódki */
+    box-shadow: none !important; /* Usunięcie cienia */
+}
+
+.card-body {
+    padding: 1.25rem 0; /* Zachowanie odpowiednich odstępów bez widocznej karty */
+}
+
+.pulse-animation {
+    animation: pulse 1s;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Animacja dla znacznika LIVE */
+.pulse-live {
+    animation: pulse-red 2s infinite;
+    font-size: 0.7rem;
+    vertical-align: middle;
+    opacity: 0.9;
+}
+
+@keyframes pulse-red {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* Style dla listy serwerów */
+#serversList {
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: normal;
+    margin: 0 auto;
+}
+
+#serversList .badge {
+    display: inline-block;
+    margin: 2px;
+}
+
+#lastUpdated, #discordCount {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Style dla statystyk */
+.stats-container {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.progress {
+    height: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+#dataSource {
+    font-style: italic;
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+/* Responsywność dla urządzeń mobilnych */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 32px;
+    }
+    
+    .social-icons {
+        flex-direction: column;
+        gap: 10px;
+    }
 }

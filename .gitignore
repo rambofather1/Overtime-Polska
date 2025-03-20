@@ -1,0 +1,26 @@
+# Environment variables
+.env
+
+# Node.js
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Dependencies
+.pnp/
+.pnp.js
+
+# Local development
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build files
+.next/
+out/
+build/
