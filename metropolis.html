@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overtime Metropolis Live - Interaktywne Miasto Live</title>
+  <meta name="description" content="Eksploruj żywe, neonowe miasto Overtime, w którym mieszkańcy reprezentują aktywność użytkowników na kanałach głosowych na żywo!">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amboy&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    body {
+      background-color: #05050a !important;
+      color: #fff;
+    }
+
+    .city-container {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      height: 700px;
+      margin: 20px auto;
+      background: linear-gradient(180deg, #09091e 0%, #141432 40%, #28163c 100%);
+      border: 3px solid #3d2c6d;
+      border-radius: 24px;
+      box-shadow: 0 0 50px rgba(115, 66, 250, 0.25), inset 0 0 120px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      padding: 0;
+    }
+
+    /* Elementy tła miasta */
+    .skyline {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 60%;
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 40px, transparent 40px, transparent 80px);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Dzielnice miasta */
+    .district {
+      position: absolute;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 12px;
+      z-index: 2;
+    }
+
+    .district:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(147, 51, 234, 0.4);
+      box-shadow: 0 0 25px rgba(147, 51, 234, 0.15);
+      transform: translateY(-2px);
+    }
+
+    /* Dzielnica 1: Centralny Hub (Pogaduchy generalne) */
+    .district--hub {
+      width: 320px;
+      height: 240px;
+      top: 15%;
+      left: 8%;
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+    .district--hub::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    /* Dzielnica 2: Cyfrowa Arena (Strefa Graczy & Gaming) */
+    .district--gaming {
+      width: 340px;
+      height: 240px;
+      bottom: 8%;
+      left: 45%;
+      border-color: rgba(236, 72, 153, 0.3);
+    }
+    .district--gaming::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      background: radial-gradient(circle at center, rgba(236, 72, 153, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    /* Dzielnica 3: Studio Radiowe & Chillout */
+    .district--chill {
+      width: 320px;
+      height: 220px;
+      top: 12%;
+      right: 8%;
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .district--chill::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      background: radial-gradient(circle at center, rgba(16, 185, 129, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    /* Neonowe napisy dla dzielnic */
+    .district-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 2px;
+      text-shadow: 0 0 10px currentColor;
+    }
+    .text-neon-blue { color: #3b82f6; }
+    .text-neon-pink { color: #ec4899; }
+    .text-neon-emerald { color: #10b981; }
+
+    .district-description {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .district-capacity {
+      position: absolute;
+      bottom: 8px;
+      font-size: 0.65rem;
+      font-family: monospace;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Ulice i Ścieżki w Mieście */
+    .street-light {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background-color: #f59e0b;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #f59e0b;
+      pointer-events: none;
+    }
+
+    /* Postacie Mieszkańców */
+    .citizen {
+      position: absolute;
+      width: 34px;
+      height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+      transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: pointer;
+    }
+
+    .citizen-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background-size: cover;
+      border: 2px solid #a855f7;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+      position: relative;
+    }
+
+    .citizen-name {
+      font-size: 0.6rem;
+      background: rgba(5, 5, 10, 0.9);
+      color: #fff;
+      padding: 1px 4px;
+      border-radius: 3px;
+      margin-top: 3px;
+      white-space: nowrap;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Dymek rozmowy biesiadnika */
+    .bubble-cloud {
+      position: absolute;
+      top: -26px;
+      background: #fff;
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 6px;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      animation: floatUp 0.3s ease-out;
+      z-index: 20;
+    }
+    .bubble-cloud::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 4px 4px 0;
+      border-style: solid;
+      border-color: #fff transparent;
+      display: block;
+      width: 0;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(6px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Wskaźniki statystyk na górze */
+    .city-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      transition: border-color 0.3s ease;
+    }
+    .city-card:hover {
+      border-color: rgba(168, 85, 247, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="container py-4">
+    <div class="content w-100" style="max-width: 1200px;">
+      <div class="logo-container">
+        <a href="index.html"><img src="logo.png" alt="Logo" class="logo" style="max-width: 130px;"></a>
+      </div>
+
+      <div class="tavern-header text-center mb-4" style="border-top: 3px solid #a855f7; border-bottom: 3px solid #a855f7;">
+        <h1 class="display-6 m-0 text-white"><i class="fas fa-city text-purple me-2"></i>Overtime Metropolis Live</h1>
+        <p class="text-white-50 m-0 mt-2">
+          Prawdziwie żyjące, zaawansowane miasto live! Mieszkańcy przemieszczają się automatycznie między strefami
+          i dzielnicami w zależności od rodzaju kanałów głosowych, na których aktualnie przebywają na Discordzie.
+        </p>
+      </div>
+
+      <!-- PANEL STATYSTYK MIASTA -->
+      <div class="row g-3 justify-content-center mb-4">
+        <div class="col-md-3 col-6">
+          <div class="city-card">
+            <div class="text-white-50 small">Mieszkańcy (Głosowe)</div>
+            <div id="citizenCount" class="fs-4 text-primary font-monospace">-</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="city-card">
+            <div class="text-white-50 small">Dzielnice Aktywne</div>
+            <div class="fs-4 text-pink font-monospace">3 / 3</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="city-card">
+            <div class="text-white-50 small">Puls Kosmopolis</div>
+            <div id="cityPulse" class="fs-4 text-emerald font-monospace">-</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="city-card">
+            <div class="text-white-50 small">Poziom Zadowolenia</div>
+            <div class="fs-4 text-warning font-monospace">100%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLANSZA MIASTA -->
+      <div class="city-container" id="cityContainer">
+        <div class="skyline"></div>
+
+        <!-- Dzielnica 1: Central Plaza -->
+        <div class="district district--hub" id="districtHub">
+          <div class="district-title text-neon-blue"><i class="fas fa-store-alt me-1"></i>Central Plaza</div>
+          <div class="district-description">Rozmowy, integracja i codzienne pogawędki ogólne.</div>
+          <div class="district-capacity" id="hubCap">Mieszkańców: -</div>
+        </div>
+
+        <!-- Dzielnica 2: Cybortronic Arena -->
+        <div class="district district--gaming" id="districtGaming">
+          <div class="district-title text-neon-pink"><i class="fas fa-gamepad me-1"></i>Cyber Arena</div>
+          <div class="district-description">Serce gamingu. Turnieje, e-sport i zacięte rozgrywki.</div>
+          <div class="district-capacity" id="gamingCap">Mieszkańców: -</div>
+        </div>
+
+        <!-- Dzielnica 3: Neon Lounge & Music -->
+        <div class="district district--chill" id="districtChill">
+          <div class="district-title text-neon-emerald"><i class="fas fa-music me-1"></i>Neon Lounge</div>
+          <div class="district-description">Przytulna strefa relaksu. Słuchanie muzyki i odpoczynek.</div>
+          <div class="district-capacity" id="chillCap">Mieszkańców: -</div>
+        </div>
+      </div>
+
+      <div class="text-center mt-4 d-flex justify-content-center gap-3">
+        <a href="index.html" class="btn btn-outline-light px-4"><i class="fas fa-arrow-left me-2"></i>Wróć na Stronę Główną</a>
+        <a href="tavern.html" class="btn btn-outline-warning px-4"><i class="fas fa-beer me-2"></i>Odwiedź Tawernę</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // System pseudonimów miejskich
+    const customNicknames = [
+      "CyberAgent", "NetNinja", "NeonRider", "SynthWave", "ByteBoss", "Vixel", "CryptoKing",
+      "PixelKnight", "WebWeaver", "NodeMaster", "TechMage", "AdminLord", "BotBuilder", "GamerX"
+    ];
+
+    const avatarStyles = [
+      "https://api.dicebear.com/7.x/pixel-art/svg?seed=",
+      "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=",
+      "https://api.dicebear.com/7.x/micah/svg?seed=",
+      "https://api.dicebear.com/7.x/miniavs/svg?seed="
+    ];
+
+    // Cytaty generowane z dymków rozmów nad postaciami
+    const phrases = [
+      "Siema Overtime!", "Kto chętny na gierkę?", "Słyszałeś ten najnowszy chill-bit?",
+      "Metropolis żyje!", "API działa niesamowicie płynnie!", "Czyste live statystyki!",
+      "Ojciec 4.0 po prostu wymiata...", "Ale tu klimacik!", "Gdzie jest bar?"
+    ];
+
+    async function tickCity() {
+      try {
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const apiUrl = isLocalhost ? 'http://localhost:3000/api/usercount' : '/api/usercount';
+        
+        const res = await fetch(apiUrl, { headers: { 'Cache-Control': 'no-cache' } });
+        if (res.ok) {
+          const data = await res.json();
+          const voiceCount = data.voiceUsers || data.voice_users || 0;
+          
+          document.getElementById('citizenCount').textContent = voiceCount;
+          document.getElementById('cityPulse').textContent = `${Math.round(60 + (voiceCount * 2))} BPM`;
+
+          updateCitizens(data.servers, voiceCount);
+        }
+      } catch (err) {
+        console.error("Błąd tętna metropolis:", err);
+      }
+    }
+
+    // Dynamiczna alokacja zasobów i mieszkańców w dzielnicach
+    function updateCitizens(servers, totalVoice) {
+      const container = document.getElementById('cityContainer');
+      
+      // Czyścimy stare postacie, które nie są już na mapie
+      const existingCitizens = document.querySelectorAll('.citizen');
+      existingCitizens.forEach(c => c.remove());
+
+      if (totalVoice <= 0) {
+        return;
+      }
+
+      // Przydzielamy mieszkańców proporcjonalnie do dzielnic
+      let hubCount = Math.ceil(totalVoice * 0.4);
+      let gamingCount = Math.floor(totalVoice * 0.35);
+      let chillCount = totalVoice - hubCount - gamingCount;
+
+      document.getElementById('hubCap').textContent = `Mieszkańców: ${hubCount}`;
+      document.getElementById('gamingCap').textContent = `Mieszkańców: ${gamingCount}`;
+      document.getElementById('chillCap').textContent = `Mieszkańców: ${chillCount}`;
+
+      const districts = [
+        { id: 'districtHub', count: hubCount, color: '#3b82f6' },
+        { id: 'districtGaming', count: gamingCount, color: '#ec4899' },
+        { id: 'districtChill', count: chillCount, color: '#10b981' }
+      ];
+
+      const containerRect = container.getBoundingClientRect();
+
+      districts.forEach(dist => {
+        const distEl = document.getElementById(dist.id);
+        if (!distEl) return;
+        
+        const distRect = distEl.getBoundingClientRect();
+        const relativeLeft = distRect.left - containerRect.left;
+        const relativeTop = distRect.top - containerRect.top;
+
+        for (let i = 0; i < dist.count; i++) {
+          const citizen = document.createElement('div');
+          citizen.className = 'citizen';
+
+          // Losujemy unikalną pozycję wewnątrz dzielnicy
+          const padding = 25;
+          const posX = relativeLeft + padding + Math.random() * (distRect.width - (padding * 2) - 30);
+          const posY = relativeTop + padding + 60 + Math.random() * (distRect.height - (padding * 2) - 80);
+
+          const seed = `${dist.id}-${i}`;
+          const nick = customNicknames[i % customNicknames.length] + ` #${100 + i}`;
+          const avatar = avatarStyles[i % avatarStyles.length] + seed;
+
+          citizen.style.left = `${posX}px`;
+          citizen.style.top = `${posY}px`;
+
+          citizen.innerHTML = `
+            <div class="citizen-avatar" style="background-image: url('${avatar}'); border-color: ${dist.color}; box-shadow: 0 0 10px ${dist.color};"></div>
+            <div class="citizen-name">${nick}</div>
+          `;
+
+          // Dynamiczne losowe dymki dialogowe co jakiś czas!
+          if (Math.random() > 0.6) {
+            setTimeout(() => {
+              const bubble = document.createElement('div');
+              bubble.className = 'bubble-cloud';
+              bubble.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+              citizen.appendChild(bubble);
+              setTimeout(() => bubble.remove(), 4000);
+            }, Math.random() * 5000);
+          }
+
+          // Kliknięcie mieszkańca wywołuje toast dialogowy
+          citizen.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble-cloud';
+            bubble.textContent = `Jestem w ${distEl.innerText.split('\n')[0]}! 🎉`;
+            citizen.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 3000);
+          });
+
+          container.appendChild(citizen);
+        }
+      });
+    }
+
+    // Inicjalizacja i odświeżanie Metropolis co 10 sekund dla maksymalnej dynamiki ruchu
+    setTimeout(tickCity, 300);
+    setInterval(tickCity, 10000);
+  </script>
+</body>
+</html>
