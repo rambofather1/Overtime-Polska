@@ -131,8 +131,88 @@
       position: relative;
       height: 620px;
       width: 100%;
-      background: radial-gradient(circle, #131326 0%, #080811 100%);
+      background: radial-gradient(circle, #0e0e1a 0%, #030308 100%);
       overflow: hidden;
+    }
+
+    /* --- MAP CANVAS GRID (CYBER SIATKA) --- */
+    #mapCanvas {
+      background-image: 
+        linear-gradient(rgba(168, 85, 247, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      background-color: #06060c;
+      border: 3px solid #1f1f35;
+      box-shadow: inset 0 0 100px rgba(0,0,0,0.95), 0 0 40px rgba(168, 85, 247, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Holograficzne billboardy reklamowe (Holograms) */
+    .hologram-projection {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px dashed rgba(6, 182, 212, 0.5);
+      animation: holoRotate 8s linear infinite;
+      pointer-events: none;
+    }
+    .hologram-projection::after {
+      content: '';
+      position: absolute;
+      top: 25%; left: 25%; width: 50%; height: 50%;
+      background: rgba(6, 182, 212, 0.25);
+      border-radius: 50%;
+      box-shadow: 0 0 15px #06b6d4;
+      animation: holoGlow 2.5s infinite alternate ease-in-out;
+    }
+    @keyframes holoRotate {
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes holoGlow {
+      0% { transform: scale(0.7); opacity: 0.4; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    /* Cyber Drony Patrolowe */
+    .cyber-drone {
+      position: absolute;
+      width: 24px;
+      height: 20px;
+      background: radial-gradient(circle, #ec4899 20%, #a855f7 65%, transparent 100%);
+      clip-path: polygon(50% 0%, 100% 35%, 80% 100%, 20% 100%, 0% 35%);
+      border: 1.5px solid #ff7b00;
+      filter: drop-shadow(0 0 8px #a855f7);
+      z-index: 999;
+      transition: all 4s cubic-bezier(0.25, 1, 0.5, 1);
+      pointer-events: none;
+    }
+    .cyber-drone::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 45%;
+      width: 2px;
+      height: 60px;
+      background: linear-gradient(to bottom, rgba(6, 182, 212, 0.7), transparent);
+      transform-origin: top center;
+      animation: scannerSweep 2s infinite alternate ease-in-out;
+    }
+    @keyframes scannerSweep {
+      0% { transform: rotate(-15deg); opacity: 0.3; }
+      100% { transform: rotate(15deg); opacity: 0.8; }
+    }
+
+    /* Animacja kołysania (chód boba) dla poruszających się aktorów */
+    .actor--walking {
+      animation: pixelBob 0.6s infinite alternate ease-in-out;
+    }
+    @keyframes pixelBob {
+      0% { transform: translateY(0) rotate(-3deg); }
+      100% { transform: translateY(-6px) rotate(3deg); }
     }
 
     /* --- LOKACJA: METROPOLIS --- */
@@ -163,28 +243,28 @@
       width: 28%;
       height: 80%;
       top: 10%;
-      background: rgba(10, 10, 20, 0.7);
-      backdrop-filter: blur(4px);
-      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
+      background: rgba(10, 10, 20, 0.8);
+      backdrop-filter: blur(6px);
+      box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.03);
       transition: all 0.4s ease;
     }
 
     .district--hub {
       left: 4%;
       border-color: var(--neon-blue);
-      box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.15), inset 0 0 10px rgba(6, 182, 212, 0.05);
     }
 
     .district--gaming {
       left: 36%;
       border-color: #ec4899;
-      box-shadow: 0 0 15px rgba(236, 72, 153, 0.15);
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.15), inset 0 0 10px rgba(236, 72, 153, 0.05);
     }
 
     .district--chill {
       left: 68%;
       border-color: var(--terminal-green);
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.15), inset 0 0 10px rgba(16, 185, 129, 0.05);
     }
 
     .district-title {
@@ -208,7 +288,7 @@
     .district-capacity {
       font-size: 0.7rem;
       font-family: monospace;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.5);
       padding: 2px 8px;
       border-radius: 4px;
       display: inline-block;
@@ -233,7 +313,7 @@
       background: #1c110d;
       border: 3px solid #854d0e;
       border-radius: 12px 12px 0 0;
-      box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.5), inset 0 0 15px rgba(239,68,68,0.2);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -736,6 +816,7 @@
             <div class="skyline"></div>
             
             <div class="district district--hub" id="distPlaza">
+              <div class="hologram-projection"></div>
               <div class="district-title text-neon-blue"><i class="fas fa-store-alt"></i> Central Plaza</div>
               <div class="district-description">Spotkania i rozmowy ogólne. Tu bije serce społeczności.</div>
               <div class="district-capacity" id="capPlaza">Użytkowników: -</div>
@@ -743,6 +824,7 @@
             </div>
 
             <div class="district district--gaming" id="distArena">
+              <div class="hologram-projection"></div>
               <div class="district-title text-neon-pink"><i class="fas fa-gamepad"></i> Cyber Arena</div>
               <div class="district-description">Rozgrywki sieciowe, potyczki i zapaleni gracze.</div>
               <div class="district-capacity" id="capArena">Użytkowników: -</div>
@@ -750,6 +832,7 @@
             </div>
 
             <div class="district district--chill" id="distLounge">
+              <div class="hologram-projection"></div>
               <div class="district-title text-neon-emerald"><i class="fas fa-music"></i> Neon Lounge</div>
               <div class="district-description">Strefa muzyczna i relaks. Spokój, radio i luźne szepty.</div>
               <div class="district-capacity" id="capLounge">Użytkowników: -</div>
@@ -1214,35 +1297,52 @@
       subTextEl.textContent = `KONTROLA: ${owner.name.toUpperCase()}`;
     }
 
-    function renderAll(detailedUsers) {
-      // Czyścimy stare elementy z obu kontenerów lokacji
-      document.querySelectorAll('.citizen, .character').forEach(el => el.remove());
+    // Rejestr żyjących aktorów zapobiegający niszczeniu DOM-u przy każdym odświeżeniu
+    let actorsRegistry = {};
 
-      if (!detailedUsers || detailedUsers.length === 0) {
+    function renderAll(detailedUsers) {
+      if (!detailedUsers) detailedUsers = [];
+      const currentIds = detailedUsers.map(u => String(u.user_id));
+
+      // 1. Usunięcie użytkowników, którzy opuścili kanały głosowe
+      for (const userId in actorsRegistry) {
+        if (!currentIds.includes(userId)) {
+          if (actorsRegistry[userId].element) {
+            actorsRegistry[userId].element.remove();
+          }
+          delete actorsRegistry[userId];
+        }
+      }
+
+      // Jeśli nie ma nikogo, kończymy
+      if (detailedUsers.length === 0) {
         return;
       }
 
       if (activeLocation === 'metropolis') {
-        renderMetropolis(detailedUsers);
+        renderMetropolisLive(detailedUsers);
       } else {
-        renderTavern(detailedUsers);
+        renderTavernLive(detailedUsers);
       }
+
+      // Ukrycie kontenera nieaktywnej lokacji
+      const metropolisCont = document.getElementById('locMetropolis');
+      const tavernCont = document.getElementById('locTavern');
+      
+      // Ukrywamy i pokazujemy całe pakiety, ale zachowujemy elementy wewnątrz podbazy
+      if (activeLocation === 'metropolis') {
+        metropolisCont.style.display = 'block';
+        tavernCont.style.display = 'none';
+      } else {
+        metropolisCont.style.display = 'none';
+        tavernCont.style.display = 'block';
+      }
+
+      // Inicjalizacja dronów przy pierwszym załadowaniu ludzi
+      initializeDronesOnce();
     }
 
-    // Algorytm rozwarstwiania / orbitowania celem eliminacji nakładania się postaci ("Kanapki")
-    function calculateOrbit(index, total, centerX, centerY, radiusMultiplier) {
-      const theta = (2 * Math.PI / total) * index;
-      const radius = radiusMultiplier * (0.4 + (index % 2) * 0.3); // ułożenie w dwóch pod-kręgach
-      const jitterX = (Math.sin(index * 9) * 12);
-      const jitterY = (Math.cos(index * 13) * 12);
-
-      return {
-        x: centerX + radius * Math.cos(theta) + jitterX,
-        y: centerY + radius * Math.sin(theta) + jitterY
-      };
-    }
-
-    function renderMetropolis(users) {
+    function renderMetropolisLive(users) {
       const container = document.getElementById('locMetropolis');
       const containerRect = container.getBoundingClientRect();
 
@@ -1278,22 +1378,17 @@
           const orbitRadius = Math.min(distRect.width, distRect.height) * 0.38;
           const pos = calculateOrbit(idx, distInfo.users.length, centerRegionX, centerRegionY, orbitRadius);
 
-          const citizen = document.createElement('div');
-          citizen.className = 'citizen';
-
-          // Symulacja surowych statusów sieciowych opartych o id użytkownika / dane dynamiczne
+          // Identyfikatory i parametry systemowe
+          const userId = String(user.user_id);
           const idNum = parseInt(user.user_id || '0');
           const isMute = user.self_mute || (idNum % 5 === 0);
           const isDeaf = user.self_deaf || (idNum % 8 === 0);
           const isStreaming = user.is_streaming || (idNum % 11 === 0);
-          
-          let longestRecord = longestSessionsList.find(g => String(g.user_id) === String(user.user_id));
+          let longestRecord = longestSessionsList.find(g => String(g.user_id) === userId);
           const isOverloaded = (longestRecord && longestRecord.minutes > 180) || (idNum % 14 === 0);
 
-          if (isMute) citizen.classList.add('citizen--mute');
-          if (isDeaf) citizen.classList.add('citizen--deaf');
-          if (isStreaming) citizen.classList.add('citizen--streaming');
-          if (isOverloaded) citizen.classList.add('citizen--overloaded');
+          let pulseFilterColor = distInfo.color;
+          if (isStreaming) pulseFilterColor = '#ef4444';
 
           const displayName = escapeHtml(user.display_name || user.username || 'Mieszkaniec');
           const avatar = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
@@ -1301,43 +1396,84 @@
           const gameName = user.activities && user.activities.length > 0 ? user.activities[0] : null;
           const activityText = getCyberpunkPhrase(gameName);
 
-          citizen.style.left = `${pos.x}px`;
-          citizen.style.top = `${pos.y}px`;
+          let actor = actorsRegistry[userId];
 
-          // Dynamiczna ikonka statusu przy profilu
-          let pulseFilterColor = distInfo.color;
-          if (isStreaming) pulseFilterColor = '#ef4444';
+          if (!actor || actor.location !== 'metropolis') {
+            // Jeśli postać była na tawernie, usuwamy jej stary element tawerniany
+            if (actor && actor.element) actor.element.remove();
+
+            // Tworzymy nowego obywatela
+            const citizen = document.createElement('div');
+            citizen.className = 'citizen';
+            citizen.style.left = `${pos.x}px`;
+            citizen.style.top = `${pos.y}px`;
+
+            citizen.addEventListener('click', (e) => {
+              e.stopPropagation();
+              showCharacterSpeech(citizen, pulseFilterColor, `Sygnalizacja sensoryczna gotowa! [NET: ${channelName}]`);
+              openCharacterModal(user, pulseFilterColor);
+            });
+
+            container.appendChild(citizen);
+
+            // Rejestrujemy
+            actorsRegistry[userId] = {
+              userId: userId,
+              location: 'metropolis',
+              element: citizen,
+              baseX: pos.x,
+              baseY: pos.y,
+              currentX: pos.x,
+              currentY: pos.y,
+              color: pulseFilterColor
+            };
+            actor = actorsRegistry[userId];
+          } else {
+            // Aktualizujemy bazową orbitę
+            actor.baseX = pos.x;
+            actor.baseY = pos.y;
+            actor.color = pulseFilterColor;
+            
+            // Jeśli postać akurat nie spaceruje, płynnie przesuwamy do nowej orbity
+            if (!actor.element.classList.contains('actor--walking')) {
+              actor.element.style.left = `${pos.x}px`;
+              actor.element.style.top = `${pos.y}px`;
+              actor.currentX = pos.x;
+              actor.currentY = pos.y;
+            }
+          }
+
+          // Aktualizujemy zawartość i klasy statusów na istniejącym DOM-ie
+          const citizen = actor.element;
+          citizen.className = 'citizen';
+          if (isMute) citizen.classList.add('citizen--mute');
+          if (isDeaf) citizen.classList.add('citizen--deaf');
+          if (isStreaming) citizen.classList.add('citizen--streaming');
+          if (isOverloaded) citizen.classList.add('citizen--overloaded');
 
           citizen.innerHTML = `
             <div class="citizen-avatar" style="background-image: url('${avatar}'); border-color: ${pulseFilterColor}; box-shadow: 0 0 10px ${pulseFilterColor};" title="${displayName} - ${activityText}"></div>
             <div class="citizen-name">${displayName}</div>
           `;
 
-          // Generowanie impulsów chmurek dialogowych z matrixa klimatycznego
-          if (Math.random() > 0.72) {
+          // Generowanie losowych chmurek dialogowych
+          if (Math.random() > 0.88) {
             setTimeout(() => {
-              const bubble = document.createElement('div');
-              bubble.className = 'bubble-cloud';
-              bubble.style.border = `1.5px solid ${pulseFilterColor}`;
-              bubble.textContent = gameName ? `[Matrix] ${gameName}: Infiltracja!` : activityText.substring(0, 30) + '...';
-              citizen.appendChild(bubble);
-              setTimeout(() => bubble.remove(), 4000);
-            }, Math.random() * 8000 + 1000);
+              if (actorsRegistry[userId]) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble-cloud';
+                bubble.style.border = `1.5px solid ${pulseFilterColor}`;
+                bubble.textContent = gameName ? `[Booster] ${gameName}: Akceleracja!` : activityText.substring(0, 30) + '...';
+                citizen.appendChild(bubble);
+                setTimeout(() => bubble.remove(), 4000);
+              }
+            }, Math.random() * 5000);
           }
-
-          // Otoczenie modalu interaktywnego po kliknięciu
-          citizen.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showCharacterSpeech(citizen, pulseFilterColor, `Sygnalizacja sensoryczna gotowa! [NET: ${channelName}]`);
-            openCharacterModal(user, pulseFilterColor);
-          });
-
-          container.appendChild(citizen);
         });
       });
     }
 
-    function renderTavern(users) {
+    function renderTavernLive(users) {
       const container = document.getElementById('locTavern');
       const containerRect = container.getBoundingClientRect();
 
@@ -1362,7 +1498,6 @@
       addZone(table2El, 'general');
       addZone(table3El, 'chill');
 
-      // Sortowanie użytkowników do stolików
       let groupedTavern = { gaming: [], general: [], chill: [] };
       users.forEach(u => {
         let t = u.channel_type || 'general';
@@ -1370,44 +1505,174 @@
         else groupedTavern.general.push(u);
       });
 
-      // Rysujemy orbitowo wokół stolików
       zones.forEach(zone => {
         const zoneUsers = groupedTavern[zone.name] || [];
         zoneUsers.forEach((user, idx) => {
           const pos = calculateOrbit(idx, zoneUsers.length, zone.left - 18, zone.top - 26, zone.radius * 0.72);
 
-          const charObj = document.createElement('div');
-          charObj.className = 'character';
-          if (idx % 2 === 0) {
-            charObj.classList.add('character--drinking');
-          }
-
-          // Dodanie systemowych statusów dla Tawerny
+          const userId = String(user.user_id);
           const idNum = parseInt(user.user_id || '0');
           const isMute = user.self_mute || (idNum % 4 === 0);
           const isDeaf = user.self_deaf || (idNum % 7 === 0);
           const isStreaming = user.is_streaming || (idNum % 10 === 0);
-          
-          let longestRecord = longestSessionsList.find(g => String(g.user_id) === String(user.user_id));
+          let longestRecord = longestSessionsList.find(g => String(g.user_id) === userId);
           const isOverloaded = (longestRecord && longestRecord.minutes > 180) || (idNum % 14 === 0);
-
-          if (isMute) charObj.classList.add('character--mute');
-          if (isDeaf) charObj.classList.add('character--deaf');
-          if (isStreaming) charObj.classList.add('character--streaming');
-          if (isOverloaded) charObj.classList.add('character--overloaded');
 
           const displayName = escapeHtml(user.display_name || user.username || 'Biesiadnik');
           const avatar = user.avatar_url || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.user_id}`;
           const gameName = user.activities && user.activities.length > 0 ? user.activities[0] : null;
           const activityText = getCyberpunkPhrase(gameName);
 
-          charObj.style.left = `${pos.x}px`;
-          charObj.style.top = `${pos.y}px`;
+          let actor = actorsRegistry[userId];
+
+          if (!actor || actor.location !== 'tavern') {
+            if (actor && actor.element) actor.element.remove();
+
+            const charObj = document.createElement('div');
+            charObj.className = 'character';
+            if (idx % 2 === 0) {
+              charObj.classList.add('character--drinking');
+            }
+            charObj.style.left = `${pos.x}px`;
+            charObj.style.top = `${pos.y}px`;
+
+            charObj.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const quotes = [
+                "Synapsy zregenerowane. Nalewaj z tego barla!",
+                "Blackwall znowu szczypie mnie w chipie... Mam halucynacje?",
+                "Overtime Polska ma teraz 100% cyfrowej dominacji!",
+                "Mamy military-grade szyfrowanie, nikt mnie tu nie złamie!",
+                "Tawerna spięta bezpośrednio z bazą Mongo"
+              ];
+              const text = quotes[idNum % quotes.length];
+              showCharacterSpeech(charObj, '#ffaa00', text);
+              openCharacterModal(user, '#ffaa00');
+            });
+
+            container.appendChild(charObj);
+
+            actorsRegistry[userId] = {
+              userId: userId,
+              location: 'tavern',
+              element: charObj,
+              baseX: pos.x,
+              baseY: pos.y,
+              currentX: pos.x,
+              currentY: pos.y,
+              color: '#ffaa00'
+            };
+            actor = actorsRegistry[userId];
+          } else {
+            actor.baseX = pos.x;
+            actor.baseY = pos.y;
+            actor.color = '#ffaa00';
+
+            if (!actor.element.classList.contains('actor--walking')) {
+              actor.element.style.left = `${pos.x}px`;
+              actor.element.style.top = `${pos.y}px`;
+              actor.currentX = pos.x;
+              actor.currentY = pos.y;
+            }
+          }
+
+          const charObj = actor.element;
+          charObj.className = 'character';
+          if (idx % 2 === 0) charObj.classList.add('character--drinking');
+          if (isMute) charObj.classList.add('character--mute');
+          if (isDeaf) charObj.classList.add('character--deaf');
+          if (isStreaming) charObj.classList.add('character--streaming');
+          if (isOverloaded) charObj.classList.add('character--overloaded');
 
           charObj.innerHTML = `
             <div class="character-body" style="background-image: url('${avatar}');" title="${displayName} - ${activityText}"></div>
             <div class="character-tag">${displayName}</div>
           `;
+        });
+      });
+    }
+
+    // --- SYSTEM DYNAMICZNYCH INTERAKCJI PATROLOWYCH (PATROLLING & WANDERING ENGINE) ---
+    setInterval(() => {
+      const keys = Object.keys(actorsRegistry);
+      if (keys.length === 0) return;
+
+      // Wybieramy losowo ok. 35% postaci do przejścia małego dystansu spacerowego
+      keys.forEach(key => {
+        if (Math.random() > 0.65) {
+          const actor = actorsRegistry[key];
+          if (!actor || !actor.element) return;
+
+          // Droga spaceru: mały losowy wektor wokół wyznaczonej orbity strefowej
+          const maxWalk = 35;
+          const walkX = (Math.random() * maxWalk * 2) - maxWalk;
+          const walkY = (Math.random() * maxWalk * 2) - maxWalk;
+
+          const targetX = Math.max(15, Math.min(actor.baseX + walkX, 1350));
+          const targetY = Math.max(15, Math.min(actor.baseY + walkY, 700));
+
+          // Dodajemy klasę animacji chodu booble/bounces
+          actor.element.classList.add('actor--walking');
+          
+          // Obrót awatara w lewo/prawo na bazie kierunku chodu
+          const avatarEl = actor.element.querySelector('.citizen-avatar, .character-body');
+          if (avatarEl) {
+            avatarEl.style.transform = walkX < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+          }
+
+          actor.element.style.left = `${targetX}px`;
+          actor.element.style.top = `${targetY}px`;
+          actor.currentX = targetX;
+          actor.currentY = targetY;
+
+          // Po zakończeniu spaceru postać stabilizuje swój kołys i odpoczywa
+          setTimeout(() => {
+            if (actor.element) {
+              actor.element.classList.remove('actor--walking');
+              if (avatarEl) avatarEl.style.transform = 'scaleX(1)';
+            }
+          }, 1500);
+        }
+      });
+    }, 4500);
+
+    // --- CYBER-DRONY PATROLOWE UNOSZĄCE SIĘ W POWIETRZU ---
+    let dronesInitialized = false;
+    function initializeDronesOnce() {
+      if (dronesInitialized) return;
+      
+      const container1 = document.getElementById('locMetropolis');
+      const container2 = document.getElementById('locTavern');
+
+      if (!container1 || !container2) return;
+      dronesInitialized = true;
+
+      createDrone(container1, 'Metropolis Drone 01-A');
+      createDrone(container1, 'Metropolis Drone 02-B');
+      createDrone(container2, 'Tavern Vault Drone');
+    }
+
+    function createDrone(parentContainer, name) {
+      const drone = document.createElement('div');
+      drone.className = 'cyber-drone';
+      drone.title = `${name}: Skan podsieci w toku`;
+
+      // Losowa pozycja startowa
+      const initialX = Math.random() * 1000 + 100;
+      const initialY = Math.random() * 400 + 100;
+      drone.style.left = `${initialX}px`;
+      drone.style.top = `${initialY}px`;
+
+      parentContainer.appendChild(drone);
+
+      // Pętla przemieszczania bezzałogowca co 5.5 sekundy
+      setInterval(() => {
+        const nextX = Math.random() * 1100 + 100;
+        const nextY = Math.random() * 480 + 100;
+        drone.style.left = `${nextX}px`;
+        drone.style.top = `${nextY}px`;
+      }, 5500);
+    }
 
           charObj.addEventListener('click', (e) => {
             e.stopPropagation();
