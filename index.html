@@ -132,6 +132,15 @@
       }
     });
 
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
     // Zmienna do śledzenia ostatnio pobranej wartości
     let lastCount = 0;
     let lastVoiceCount = 0;
@@ -234,16 +243,46 @@
             const sortedServers = [...data.servers].sort((a, b) => 
               (b.member_count || 0) - (a.member_count || 0)
             ).slice(0, 8); // Pokaż maksymalnie 8 pierwszych serwerów
+            const highestMemberCount = sortedServers[0]?.member_count || 1;
             
-            let serversHTML = '<div class="mt-2 mb-1">Największe serwery:</div>';
+            let serversHTML = `
+              <div class="servers-panel mt-3">
+                <div class="servers-panel__header">
+                  <div>
+                    <div class="servers-panel__eyebrow">Ranking społeczności</div>
+                    <div class="servers-panel__title">Największe serwery Overtime</div>
+                  </div>
+                  <span class="servers-panel__count">Top ${sortedServers.length}</span>
+                </div>
+                <div class="servers-leaderboard">
+            `;
             
-            sortedServers.forEach(server => {
-              serversHTML += `<span class="badge bg-secondary me-1 mb-1" title="${server.name}: ${server.member_count} członków">
-                ${server.name.substring(0, 15)}${server.name.length > 15 ? '...' : ''}: ${server.member_count}
-              </span>`;
+            sortedServers.forEach((server, index) => {
+              const serverName = escapeHtml(server.name || 'Nieznany serwer');
+              const memberCount = Number(server.member_count || 0);
+              const width = Math.max((memberCount / highestMemberCount) * 100, 8);
+              const rankClass = index < 3 ? ` server-rank--top-${index + 1}` : '';
+
+              serversHTML += `
+                <div class="server-card" title="${serverName}: ${memberCount.toLocaleString('pl-PL')} członków">
+                  <div class="server-card__topline">
+                    <span class="server-rank${rankClass}">#${index + 1}</span>
+                    <span class="server-count">${memberCount.toLocaleString('pl-PL')} osób</span>
+                  </div>
+                  <div class="server-name">${serverName}</div>
+                  <div class="server-bar" aria-hidden="true">
+                    <span style="width: ${Math.min(width, 100)}%"></span>
+                  </div>
+                </div>
+              `;
             });
+
+            serversHTML += '</div></div>';
             
             serversList.innerHTML = serversHTML;
+          } else if (serversList) {
+            serversList.classList.add('d-none');
+            serversList.innerHTML = '';
           }
           
           // Aktualizacja czasu

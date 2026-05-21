@@ -121,14 +121,135 @@ h1 {
 /* Style dla listy serwerów */
 #serversList {
     max-width: 100%;
-    overflow-x: auto;
-    white-space: normal;
     margin: 0 auto;
+    text-align: left;
 }
 
-#serversList .badge {
-    display: inline-block;
-    margin: 2px;
+.servers-panel {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(10px);
+}
+
+.servers-panel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.servers-panel__eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 4px;
+}
+
+.servers-panel__title {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.servers-panel__count {
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(29, 185, 84, 0.18);
+    border: 1px solid rgba(29, 185, 84, 0.35);
+    color: #d7ffe3;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.servers-leaderboard {
+    display: grid;
+    gap: 10px;
+}
+
+.server-card {
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.server-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(29, 185, 84, 0.28);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.server-card__topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.server-rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.server-rank--top-1 {
+    background: rgba(250, 204, 21, 0.22);
+    color: #fde68a;
+}
+
+.server-rank--top-2 {
+    background: rgba(148, 163, 184, 0.22);
+    color: #e2e8f0;
+}
+
+.server-rank--top-3 {
+    background: rgba(251, 146, 60, 0.22);
+    color: #fdba74;
+}
+
+.server-count {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.82rem;
+    white-space: nowrap;
+}
+
+.server-name {
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    margin-bottom: 10px;
+    word-break: break-word;
+}
+
+.server-bar {
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.server-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #1db954, #73f0a0);
+    box-shadow: 0 0 12px rgba(29, 185, 84, 0.35);
 }
 
 #lastUpdated, #discordCount {
@@ -165,5 +286,19 @@ h1 {
     .social-icons {
         flex-direction: column;
         gap: 10px;
+    }
+
+    .servers-panel {
+        padding: 14px;
+    }
+
+    .servers-panel__header,
+    .server-card__topline {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .server-count {
+        white-space: normal;
     }
 }

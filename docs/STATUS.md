@@ -3,12 +3,12 @@
 Bieżący podgląd stanu prac i integracji systemu portalu.
 
 ## Podsumowanie stanu
-- **Postęp prac:** 95%
-- **Szacowane pozostałe roboczogodziny:** 2h (zoptymalizowane pod finalne wdrożenie na produkcji w chmurze i integrację z nowym kodem bota)
+- **Postęp prac:** 96%
+- **Szacowane pozostałe roboczogodziny:** 1.5h (zoptymalizowane pod finalne wdrożenie na produkcji w chmurze i integrację z nowym kodem bota)
 
 ## Aktualne Funkcje
 1. **Licznik LIVE (100%):** API odpytuje bazę danych bezpośrednio przy każdym ruchu i wymusza brak cachowania, eliminując podawanie przestarzałych informacji.
-2. **Design i Frontend (100%):** Dostosowany landing-page z animacją tła particles.js, wsparciem dla urządzeń mobilnych oraz czytelnym UI.
+2. **Design i Frontend (100%):** Dostosowany landing-page z animacją tła particles.js, wsparciem dla urządzeń mobilnych, czytelnym UI i rankingową prezentacją największych serwerów.
 3. **Podstrona Changelog (100%):** Nowoczesna sekcja dziennika zmian bota Ojciec napisana zgodnie z nowym szablonem wizualnym.
 
 ## Pozostało do wykonania:
