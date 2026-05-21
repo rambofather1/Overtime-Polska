@@ -314,7 +314,7 @@
       flex-direction: column;
       align-items: center;
       z-index: 10;
-      transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s ease;
+      transition: left 1.2s cubic-bezier(0.25, 0.8, 0.25, 1), top 1.2s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.2s ease;
       cursor: pointer;
     }
 
@@ -332,6 +332,100 @@
       border: 3.5px solid #a855f7;
       box-shadow: 0 0 15px rgba(168, 85, 247, 0.7);
       position: relative;
+    }
+
+    /* --- CYBER-STATUSY GŁOSOWE (TELEMETRIA SENSORYCZNA) --- */
+    .citizen--mute .citizen-avatar, .character--mute .character-body {
+      filter: hue-rotate(85deg) contrast(1.4) brightness(1.1);
+      animation: neuralGlitch 1.5s infinite alternate;
+    }
+    .citizen--deaf .citizen-avatar, .character--deaf .character-body {
+      opacity: 0.5;
+      filter: grayscale(0.9) contrast(0.8);
+    }
+    .citizen--streaming .citizen-avatar, .character--streaming .character-body {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 25px #ef4444, inset 0 0 8px #ef4444 !important;
+      animation: neonPulseRed 1s infinite alternate;
+    }
+    .citizen--overloaded::before, .character--overloaded::before {
+      content: '⚡';
+      position: absolute;
+      top: -12px;
+      left: -8px;
+      font-size: 11px;
+      color: #fbbf24;
+      text-shadow: 0 0 5px #f59e0b;
+      animation: sparkPulse 0.4s infinite alternate;
+      z-index: 20;
+    }
+
+    @keyframes neuralGlitch {
+      0% { opacity: 0.95; transform: skewX(0deg); }
+      20% { opacity: 1; transform: skewX(-2deg); }
+      40% { opacity: 0.85; transform: skewX(1deg); }
+      60% { opacity: 1; transform: skewX(-1deg); }
+      80% { opacity: 0.9; transform: skewX(2deg); }
+      100% { opacity: 1; transform: skewX(0deg); }
+    }
+    @keyframes neonPulseRed {
+      0% { box-shadow: 0 0 10px #ef4444, inset 0 0 4px #ef4444; }
+      100% { box-shadow: 0 0 25px #ff0000, inset 0 0 10px #ff0000; }
+    }
+    @keyframes sparkPulse {
+      0% { transform: scale(0.8) rotate(-10deg); opacity: 0.7; }
+      100% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+    }
+
+    /* --- ESTETYKA MEGAKORPORACJI (DOMINACJA DZIELNIC) --- */
+    .district--arasaka {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.45), inset 0 0 15px rgba(239, 68, 68, 0.2) !important;
+      background: rgba(18, 5, 5, 0.85) !important;
+    }
+    .district--arasaka .district-title {
+      color: #ef4444 !important;
+      text-shadow: 0 0 8px rgba(239, 68, 68, 0.7);
+    }
+    .district--militech {
+      border-color: #f97316 !important;
+      box-shadow: 0 0 25px rgba(249, 115, 22, 0.45), inset 0 0 15px rgba(249, 115, 22, 0.2) !important;
+      background: rgba(18, 10, 5, 0.85) !important;
+    }
+    .district--militech .district-title {
+      color: #f97316 !important;
+      text-shadow: 0 0 8px rgba(249, 115, 22, 0.7);
+    }
+    .district--biotech {
+      border-color: #10b981 !important;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.45), inset 0 0 15px rgba(16, 185, 129, 0.2) !important;
+      background: rgba(5, 18, 10, 0.85) !important;
+    }
+    .district--biotech .district-title {
+      color: #10b981 !important;
+      text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+    }
+    .district--network {
+      border-color: #06b6d4 !important;
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.45), inset 0 0 15px rgba(6, 182, 212, 0.2) !important;
+      background: rgba(5, 12, 18, 0.85) !important;
+    }
+    .district--network .district-title {
+      color: #06b6d4 !important;
+      text-shadow: 0 0 8px rgba(6, 182, 212, 0.7);
+    }
+
+    /* --- GLOBALNE ANOMALIE SYSTEMOWE (WIZUALNY TRYB AWARYJNY) --- */
+    .emergency-network-grid {
+      animation: alertBackground 2s infinite alternate !important;
+    }
+    @keyframes alertBackground {
+      0% { background: radial-gradient(circle, #3b0712 0%, #0c0205 100%); }
+      100% { background: radial-gradient(circle, #1a0208 0%, #030001 100%); }
+    }
+    .emergency-neon-line {
+      box-shadow: 0 0 30px #ef4444 !important;
+      border-color: #ef4444 !important;
     }
 
     /* Modal Mini-Gry / Detali */
@@ -601,56 +695,94 @@
         </div>
       </div>
 
+      <!-- CYBER-EKONOMIA I ALERTY SENSORYCZNE -->
+      <div class="hud-sub-bar" style="background: #09090f; border-bottom: 2px solid #2d2d40; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 0.78rem; position: relative; z-index: 55;">
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+          <span><i class="fas fa-wallet text-warning"></i> CREDYTY: <strong class="text-warning" id="hudCredits">50 cr</strong></span>
+          <span><i class="fas fa-microchip text-info"></i> DECK: <strong class="text-info" id="hudDeck">Vektor Deck v1.0 [ICE Pen: 0%]</strong></span>
+          <span><i class="fas fa-user-shield text-pink" style="color: #ec4899;"></i> SZYFROWANIE: <strong class="text-pink" style="color: #ec4899;" id="hudSecurity">Standardowe ICE [Sec: 0%]</strong></span>
+        </div>
+        <div>
+          <span class="text-danger" id="blackwallBanner" style="display: none; font-weight: bold; animation: alertTextPulse 1s infinite alternate;">
+            <i class="fas fa-radiation-alt me-1"></i> [ALARM] BLACKWALL BREACH! WPISZ DEKODERY [ZAGROŻENIE: <span id="blackwallPct">100</span>%]
+          </span>
+          <span style="color: #06b6d4; display: none; font-weight: bold;" id="netwatchBanner">
+            <i class="fas fa-shield-alt me-1"></i> [NETWATCH RAID] ICE OBNIŻONE O 50% / ZYSKI x3!
+          </span>
+        </div>
+      </div>
+
       <!-- VIEWPORT RENDERA GRY -->
-      <div class="game-viewport" id="gameViewport">
+      <div class="game-viewport" id="gameViewport" style="position: relative; overflow: hidden; cursor: grab;">
         
-        <!-- LOKACJA MIASTA (METROPOLIS) -->
-        <div class="city-container" id="locMetropolis" style="display: block;">
-          <div class="skyline"></div>
-          
-          <div class="district district--hub" id="distPlaza">
-            <div class="district-title text-neon-blue"><i class="fas fa-store-alt"></i> Central Plaza</div>
-            <div class="district-description">Spotkania i rozmowy ogólne. Tu bije serce społeczności.</div>
-            <div class="district-capacity" id="capPlaza">Użytkowników: -</div>
-          </div>
-
-          <div class="district district--gaming" id="distArena">
-            <div class="district-title text-neon-pink"><i class="fas fa-gamepad"></i> Cyber Arena</div>
-            <div class="district-description">Rozgrywki sieciowe, potyczki i zapaleni gracze.</div>
-            <div class="district-capacity" id="capArena">Użytkowników: -</div>
-          </div>
-
-          <div class="district district--chill" id="distLounge">
-            <div class="district-title text-neon-emerald"><i class="fas fa-music"></i> Neon Lounge</div>
-            <div class="district-description">Strefa muzyczna i relaks. Spokój, radio i luźne szepty.</div>
-            <div class="district-capacity" id="capLounge">Użytkowników: -</div>
-          </div>
+        <!-- KONTROLKI ZOOMU I MAPY -->
+        <div class="zoom-controls" style="position: absolute; bottom: 15px; left: 15px; z-index: 99; display: flex; gap: 6px;">
+          <button class="btn btn-sm btn-dark border-secondary opacity-75 text-white" onclick="adjustZoom(0.1)" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+          <button class="btn btn-sm btn-dark border-secondary opacity-75 text-white" onclick="adjustZoom(-0.1)" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+          <button class="btn btn-sm btn-dark border-secondary opacity-75 text-white" onclick="resetZoom()" title="Reset Mapy"><i class="fas fa-sync-alt"></i></button>
+          <span class="badge bg-dark border border-secondary text-muted pt-2 px-2" id="canvasScaleBadge">Zoom: 100%</span>
         </div>
 
-        <!-- LOKACJA TAWERNY (GOSPODA) -->
-        <div class="tavern-container" id="locTavern">
-          <div class="fireplace" title="Kominek rzucający ciepło na całą salę">
-            <div class="fire"></div>
-            <div style="font-size: 0.6rem; margin-top: 5px; color: #a16207;">PIECZARA</div>
+        <!-- INSTRUKCJA DRAGOWANIA -->
+        <div style="position: absolute; top: 10px; right: 15px; z-index: 99; font-size: 0.62rem; color: rgba(255,255,255,0.4); padding: 4px 8px; background: rgba(0,0,0,0.6); border-radius: 4px; pointer-events: none; font-family: monospace;">
+          <i class="fas fa-arrows-alt me-1"></i> Swobodne przeciąganie mapy myszką/palcem
+        </div>
+
+        <!-- PRZEWIJALNA MAP-CANVAS -->
+        <div class="map-canvas" id="mapCanvas" style="width: 1400px; height: 750px; position: absolute; transform-origin: 0 0; transition: transform 0.1s ease; transform: scale(1) translate3d(0px, 0px, 0px);">
+          
+          <!-- LOKACJA MIASTA (METROPOLIS) -->
+          <div class="city-container" id="locMetropolis" style="display: block; width: 100%; height: 100%;">
+            <div class="skyline"></div>
+            
+            <div class="district district--hub" id="distPlaza">
+              <div class="district-title text-neon-blue"><i class="fas fa-store-alt"></i> Central Plaza</div>
+              <div class="district-description">Spotkania i rozmowy ogólne. Tu bije serce społeczności.</div>
+              <div class="district-capacity" id="capPlaza">Użytkowników: -</div>
+              <div style="font-size: 0.55rem; color: rgba(255,255,255,0.45); font-family: monospace; margin-top: 4px;" id="corpPlaza">KORPORACJA: NETWORK SYNDICATE</div>
+            </div>
+
+            <div class="district district--gaming" id="distArena">
+              <div class="district-title text-neon-pink"><i class="fas fa-gamepad"></i> Cyber Arena</div>
+              <div class="district-description">Rozgrywki sieciowe, potyczki i zapaleni gracze.</div>
+              <div class="district-capacity" id="capArena">Użytkowników: -</div>
+              <div style="font-size: 0.55rem; color: rgba(255,255,255,0.45); font-family: monospace; margin-top: 4px;" id="corpArena">KORPORACJA: INDUSTRIAL MILITECH</div>
+            </div>
+
+            <div class="district district--chill" id="distLounge">
+              <div class="district-title text-neon-emerald"><i class="fas fa-music"></i> Neon Lounge</div>
+              <div class="district-description">Strefa muzyczna i relaks. Spokój, radio i luźne szepty.</div>
+              <div class="district-capacity" id="capLounge">Użytkowników: -</div>
+              <div style="font-size: 0.55rem; color: rgba(255,255,255,0.45); font-family: monospace; margin-top: 4px;" id="corpLounge">KORPORACJA: BIOTECH PHARMA</div>
+            </div>
           </div>
 
-          <div class="bar-counter" title="Główna lada z zimnymi trunkami">
-            <div class="beer-mug">🍺</div>
-            <div style="font-size: 0.65rem; color: #f59e0b;">ZŁOTY BAR TAWERNY</div>
-            <div class="beer-mug">🍺</div>
+          <!-- LOKACJA TAWERNY (GOSPODA) -->
+          <div class="tavern-container" id="locTavern" style="width: 100%; height: 100%;">
+            <div class="fireplace" title="Kominek rzucający ciepło na całą salę">
+              <div class="fire"></div>
+              <div style="font-size: 0.6rem; margin-top: 5px; color: #a16207;">PIECZARA</div>
+            </div>
+
+            <div class="bar-counter" title="Główna lada z zimnymi trunkami">
+              <div class="beer-mug">🍺</div>
+              <div style="font-size: 0.65rem; color: #f59e0b;">ZŁOTY BAR TAWERNY</div>
+              <div class="beer-mug">🍺</div>
+            </div>
+
+            <div class="tables-container">
+              <div class="tavern-table" id="tableGaming">
+                <span class="table-label">Stół Wojowników (Gaming)</span>
+              </div>
+              <div class="tavern-table" id="tableGeneral">
+                <span class="table-label font-monospace">Stół Mędrców</span>
+              </div>
+              <div class="tavern-table" id="tableChill">
+                <span class="table-label">Zaułek Muzyki (Chill)</span>
+              </div>
+            </div>
           </div>
 
-          <div class="tables-container">
-            <div class="tavern-table" id="tableGaming">
-              <span class="table-label">Stół Wojowników (Gaming)</span>
-            </div>
-            <div class="tavern-table" id="tableGeneral">
-              <span class="table-label font-monospace">Stół Mędrców</span>
-            </div>
-            <div class="tavern-table" id="tableChill">
-              <span class="table-label">Zaułek Muzyki (Chill)</span>
-            </div>
-          </div>
         </div>
 
       </div>
@@ -741,8 +873,10 @@
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script src="app.js"></script>
   <script>
+    // --- SILNIK INTERAKTYWNEJ GRY CYBERPUNKOWEJ OVERTIME MULTIVERSE ---
     let activeLocation = 'metropolis';
     let currentVoiceUsers = [];
+    let longestSessionsList = [];
 
     function switchLocation(loc) {
       activeLocation = loc;
@@ -750,7 +884,7 @@
       // Aktualizacja przycisków lokacji
       document.querySelectorAll('.location-btn').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.getAttribute('onclick').includes(loc)) {
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(loc)) {
           btn.classList.add('active');
         }
       });
@@ -763,6 +897,229 @@
       renderAll(currentVoiceUsers);
     }
 
+    // --- PASEK KONTROLNY MAPY (DRAG & ZOOM) ---
+    const viewport = document.getElementById('gameViewport');
+    const canvas = document.getElementById('mapCanvas');
+
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let translateX = 0, translateY = 0;
+    let mapScale = 1.0;
+
+    // Obsługa dragowania myszką
+    viewport.addEventListener('mousedown', (e) => {
+      if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.citizen') || e.target.closest('.character')) return;
+      isDragging = true;
+      viewport.style.cursor = 'grabbing';
+      startX = e.clientX - translateX;
+      startY = e.clientY - translateY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      
+      // Ograniczenia przeciągania mapy
+      const maxBoundX = 400;
+      const maxBoundY = 300;
+      translateX = Math.max(-1000, Math.min(maxBoundX, translateX));
+      translateY = Math.max(-500, Math.min(maxBoundY, translateY));
+
+      applyTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      viewport.style.cursor = 'grab';
+    });
+
+    // Obsługa touch dla telefonów (Swipe)
+    viewport.addEventListener('touchstart', (e) => {
+      if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.citizen') || e.target.closest('.character')) return;
+      if (e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - translateX;
+        startY = e.touches[0].clientY - translateY;
+      }
+    });
+
+    viewport.addEventListener('touchmove', (e) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      translateX = e.touches[0].clientX - startX;
+      translateY = e.touches[0].clientY - startY;
+      applyTransform();
+    });
+
+    viewport.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    function applyTransform() {
+      canvas.style.transform = `scale(${mapScale}) translate3d(${translateX}px, ${translateY}px, 0px)`;
+    }
+
+    function adjustZoom(amount) {
+      mapScale = Math.round((mapScale + amount) * 10) / 10;
+      mapScale = Math.max(0.6, Math.min(1.8, mapScale));
+      document.getElementById('canvasScaleBadge').textContent = `Zoom: ${Math.round(mapScale * 100)}%`;
+      applyTransform();
+    }
+
+    function resetZoom() {
+      mapScale = 1.0;
+      translateX = 0;
+      translateY = 0;
+      document.getElementById('canvasScaleBadge').textContent = `Zoom: 100%`;
+      applyTransform();
+    }
+
+    // --- CYBER-EKONOMIA I MODYFIKACJE PROFILU ---
+    let playerInventory = {
+      credits: parseInt(localStorage.getItem('ot_credits')) || 50,
+      deckLevel: parseInt(localStorage.getItem('ot_deck_level')) || 1,
+      securityLevel: parseInt(localStorage.getItem('ot_sec_level')) || 1
+    };
+
+    const DECK_UPGRADES = [
+      { name: "Vektor Deck v1.0", price: 0, penetration: 0 },
+      { name: "Tetratronic Rippler MK. 3", price: 120, penetration: 20 },
+      { name: "Raven Microcyber v4.0", price: 250, penetration: 40 },
+      { name: "Arasaka Shadow-Deck", price: 500, penetration: 65 },
+      { name: "Blackwall Gateway v9.0", price: 1000, penetration: 95 }
+    ];
+
+    const SECURITY_UPGRADES = [
+      { name: "Standardowe ICE", price: 0, difficulty: 0 },
+      { name: "Netwatch Firewall", price: 80, difficulty: 15 },
+      { name: "Szyfrowanie Wojskowe MK. II", price: 200, difficulty: 35 },
+      { name: "Splot Weglowo-Neuronowy", price: 400, difficulty: 60 },
+      { name: "Kryptograficzna Zapora Arasaka", price: 850, difficulty: 90 }
+    ];
+
+    function saveEconomyState() {
+      localStorage.setItem('ot_credits', playerInventory.credits);
+      localStorage.setItem('ot_deck_level', playerInventory.deckLevel);
+      localStorage.setItem('ot_sec_level', playerInventory.securityLevel);
+      updateEconomyHUD();
+    }
+
+    function updateEconomyHUD() {
+      const deck = DECK_UPGRADES[playerInventory.deckLevel - 1];
+      const sec = SECURITY_UPGRADES[playerInventory.securityLevel - 1];
+
+      document.getElementById('hudCredits').textContent = `${playerInventory.credits} cr`;
+      document.getElementById('hudDeck').textContent = `${deck.name} [Pen: +${deck.penetration}%]`;
+      document.getElementById('hudSecurity').textContent = `${sec.name} [Ochr: +${sec.difficulty}%]`;
+    }
+
+    // --- SYSTEM ANOMALII SENSORYCZNYCH (ARCHITEKT) ---
+    let activeAnomaly = null; // 'blackwall' lub 'netwatch' lub null
+    let anomalyTimeLeft = 0;
+    let blackwallThreatLevel = 100;
+
+    function triggerRandomAnomaly(forcedType = null) {
+      const types = ['blackwall', 'netwatch'];
+      const chosen = forcedType || types[Math.floor(Math.random() * types.length)];
+      
+      activeAnomaly = chosen;
+      anomalyTimeLeft = 7200; // 2 godziny (zredukowana na potrzeby binarnej symulacji)
+
+      const bodyEl = document.body;
+      const gameV = document.getElementById('gameViewport');
+
+      if (chosen === 'blackwall') {
+        bodyEl.classList.add('emergency-network-grid');
+        gameV.classList.add('emergency-neon-line');
+        document.getElementById('blackwallBanner').style.display = 'inline-block';
+        document.getElementById('netwatchBanner').style.display = 'none';
+        blackwallThreatLevel = 100;
+        document.getElementById('blackwallPct').textContent = blackwallThreatLevel;
+        
+        // Zmień motyw na Particles
+        if (window.pJSDom && window.pJSDom[0]) {
+          window.pJSDom[0].pJS.particles.color.value = '#ef4444';
+          window.pJSDom[0].pJS.particles.line_linked.color = '#ef4444';
+          window.pJSDom[0].pJS.fn.particlesRefresh();
+        }
+      } else if (chosen === 'netwatch') {
+        bodyEl.classList.remove('emergency-network-grid');
+        document.getElementById('netwatchBanner').style.display = 'inline-block';
+        document.getElementById('blackwallBanner').style.display = 'none';
+        
+        if (window.pJSDom && window.pJSDom[0]) {
+          window.pJSDom[0].pJS.particles.color.value = '#06b6d4';
+          window.pJSDom[0].pJS.particles.line_linked.color = '#06b6d4';
+          window.pJSDom[0].pJS.fn.particlesRefresh();
+        }
+      }
+    }
+
+    function clearAnomaly() {
+      activeAnomaly = null;
+      document.getElementById('blackwallBanner').style.display = 'none';
+      document.getElementById('netwatchBanner').style.display = 'none';
+      document.body.classList.remove('emergency-network-grid');
+      document.getElementById('gameViewport').classList.remove('emergency-neon-line');
+
+      if (window.pJSDom && window.pJSDom[0]) {
+        window.pJSDom[0].pJS.particles.color.value = '#a855f7';
+        window.pJSDom[0].pJS.particles.line_linked.color = '#a855f7';
+        window.pJSDom[0].pJS.fn.particlesRefresh();
+      }
+    }
+
+    // --- CYBERPUNKOWY SŁOWNIK KLIMATYCZNY (MOOD MATRIX) ---
+    const GAME_PHRASE_MATRIX = {
+      "counter-strike": [
+        "Uzbrajam cyber-ładunek termiczny na sektorze B. Systemy obronne sparaliżowane.",
+        "Skanuję trajektorię pocisków. Czysty profil bojowy.",
+        "Analizuję wrogie węzły ICE na bombsite A. Czyste hakowanie."
+      ],
+      "league of legends": [
+        "Analizuję poziomy toksyczności synaptycznej na Summoner's Rift. Krytyczne zanieczyszczenie.",
+        "Naciskam korporacyjny port Nexusa. Moje synapsy płoną.",
+        "Kolejna pętla w rzeźni Arasaka-Arena. Infiltracja rdzenia."
+      ],
+      "valorant": [
+        "Stawiam zaporę sensoryczną. ICE wroga podchodzi od flanki.",
+        "Przesył danych bojowych aktywowany. Kalibruję celownik synaptyczny."
+      ],
+      "gta": [
+        "Infiltruję banki depozytowe Night City. Mam 4 gwiazdki uwagi Netwatch.",
+        "Uciekam przed policyjnymi dronami. Przelewam nielegalne credsy."
+      ],
+      "minecraft": [
+        "Konstruuję kryptograficzne bunkry z bloków węglowych.",
+        "Poszukiwanie rzadkich minerałów w mrocznych podsieciach."
+      ],
+      "spotify": [
+        "Skanuję strumień audio retro-wave. Płynę na neonowych częstotliwościach."
+      ],
+      "chrome": [
+        "Inwigiluję bazy danych sieci Netrunerów w poszukiwaniu luk bezpieczeństwa."
+      ],
+      "idle_status": [
+        "Skanuję korytarze podsieci w poszukiwaniu nowych terminali...",
+        "Ładowanie rezerwowych modułów energetycznych w Neon Lounge.",
+        "Dokonuję filtracji szumów tła w Metropolis."
+      ]
+    };
+
+    function getCyberpunkPhrase(activityStr) {
+      if (!activityStr) {
+        const idles = GAME_PHRASE_MATRIX.idle_status;
+        return idles[Math.floor(Math.random() * idles.length)];
+      }
+      const lowerAct = activityStr.toLowerCase();
+      for (const [key, phrases] of Object.entries(GAME_PHRASE_MATRIX)) {
+        if (lowerAct.includes(key)) {
+          return phrases[Math.floor(Math.random() * phrases.length)];
+        }
+      }
+      return `Wykonuję operację sieciową dla: ${activityStr}. Interfejs aktywny.`;
+    }
+
     function escapeHtml(str) {
       if (!str) return '';
       return str.replace(/&/g, "&amp;")
@@ -772,6 +1129,7 @@
                 .replace(/'/g, "&#039;");
     }
 
+    // --- SILNIK ODŚWIEŻANIA LIVE ---
     async function tickEngine() {
       try {
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -781,6 +1139,8 @@
         if (res.ok) {
           const data = await res.json();
           currentVoiceUsers = data.voice_users_detailed || [];
+          longestSessionsList = data.top_gamers || [];
+          
           const voiceCount = data.voiceUsers || data.voice_users || 0;
 
           // Aktualizacja HUD statystyk
@@ -790,7 +1150,10 @@
           const latency = Math.round(data.latencyMs || data.latency_ms || 0);
           document.getElementById('hudPing').textContent = latency > 0 ? `${latency} ms` : 'N/A';
 
-          // Przerysowanie wybranej lokacji
+          // Przeliczanie dominacji politycznej Megakorporacji
+          calculateCorporateDominance(data.servers || []);
+
+          // Przerysowanie postsaci w wybranej lokalizacji
           renderAll(currentVoiceUsers);
 
           // Renderowanie analityki w panelach bocznych
@@ -799,6 +1162,56 @@
       } catch (err) {
         console.error("Błąd silnika gry:", err);
       }
+    }
+
+    // --- OBLICZANIE GEOPOLITYKI KORPORACJI ---
+    function calculateCorporateDominance(servers) {
+      if (!servers || servers.length === 0) return;
+      
+      // Megakorporacje na serwerze
+      const corps = [
+        { name: "ARASAKA CORE", class: "district--arasaka" },
+        { name: "INDUSTRIAL MILITECH", class: "district--militech" },
+        { name: "BIOTECH PHARMA", class: "district--biotech" },
+        { name: "NETWORK SYNDICATE", class: "district--network" }
+      ];
+
+      // Obliczamy index dominacji dla serwerów
+      let scoredServers = servers.map((s, idx) => {
+        const activeVoice = s.active_voice || 0;
+        const boosts = s.boosts || 0;
+        const members = s.member_count || s.members || 0;
+        const score = (activeVoice * 7.5) + (boosts * 3.0) + (members * 0.04);
+        
+        // Przypiszmy korporację deterministycznie na podstawie indeksu
+        const corp = corps[idx % corps.length];
+        return { name: s.name, score, corp };
+      });
+
+      // Sortujemy od najwyższego score
+      scoredServers.sort((a, b) => b.score - a.score);
+
+      // Trzy top korporacje przejmują trzy dzielnice
+      const plazaOwner = scoredServers[0] || { name: "Network Syndicate", corp: corps[3] };
+      const arenaOwner = scoredServers[1] || { name: "Industrial Militech", corp: corps[1] };
+      const loungeOwner = scoredServers[2] || { name: "Biotech Pharma", corp: corps[2] };
+
+      // Przypisanie stylowania dzielnic na mapie
+      updateDistrictTheme('distPlaza', plazaOwner, 'corpPlaza', 'Central Plaza');
+      updateDistrictTheme('distArena', arenaOwner, 'corpArena', 'Cyber Arena');
+      updateDistrictTheme('distLounge', loungeOwner, 'corpLounge', 'Neon Lounge');
+    }
+
+    function updateDistrictTheme(districtId, owner, subTextId, originalTitle) {
+      const distEl = document.getElementById(districtId);
+      const subTextEl = document.getElementById(subTextId);
+      if (!distEl || !subTextEl) return;
+
+      // Resetujemy stare klasy korporacyjne
+      distEl.classList.remove('district--arasaka', 'district--militech', 'district--biotech', 'district--network');
+      distEl.classList.add(owner.corp.class);
+
+      subTextEl.textContent = `KONTROLA: ${owner.name.toUpperCase()}`;
     }
 
     function renderAll(detailedUsers) {
@@ -816,85 +1229,111 @@
       }
     }
 
+    // Algorytm rozwarstwiania / orbitowania celem eliminacji nakładania się postaci ("Kanapki")
+    function calculateOrbit(index, total, centerX, centerY, radiusMultiplier) {
+      const theta = (2 * Math.PI / total) * index;
+      const radius = radiusMultiplier * (0.4 + (index % 2) * 0.3); // ułożenie w dwóch pod-kręgach
+      const jitterX = (Math.sin(index * 9) * 12);
+      const jitterY = (Math.cos(index * 13) * 12);
+
+      return {
+        x: centerX + radius * Math.cos(theta) + jitterX,
+        y: centerY + radius * Math.sin(theta) + jitterY
+      };
+    }
+
     function renderMetropolis(users) {
       const container = document.getElementById('locMetropolis');
       const containerRect = container.getBoundingClientRect();
 
-      let hubCount = 0, gamingCount = 0, chillCount = 0;
+      let hubUsers = [], gamingUsers = [], chillUsers = [];
       users.forEach(u => {
-        if (u.channel_type === 'gaming') gamingCount++;
-        else if (u.channel_type === 'chill') chillCount++;
-        else hubCount++;
+        if (u.channel_type === 'gaming') gamingUsers.push(u);
+        else if (u.channel_type === 'chill') chillUsers.push(u);
+        else hubUsers.push(u);
       });
 
-      document.getElementById('capPlaza').textContent = `Użytkowników: ${hubCount}`;
-      document.getElementById('capArena').textContent = `Użytkowników: ${gamingCount}`;
-      document.getElementById('capLounge').textContent = `Użytkowników: ${chillCount}`;
+      document.getElementById('capPlaza').textContent = `Użytkowników: ${hubUsers.length}`;
+      document.getElementById('capArena').textContent = `Użytkowników: ${gamingUsers.length}`;
+      document.getElementById('capLounge').textContent = `Użytkowników: ${chillUsers.length}`;
 
-      const districts = [
-        { id: 'distPlaza', type: 'general', color: '#06b6d4' },
-        { id: 'distArena', type: 'gaming', color: '#ec4899' },
-        { id: 'distLounge', type: 'chill', color: '#10b981' }
+      const districtsList = [
+        { id: 'distPlaza', users: hubUsers, color: '#06b6d4' },
+        { id: 'distArena', users: gamingUsers, color: '#ec4899' },
+        { id: 'distLounge', users: chillUsers, color: '#10b981' }
       ];
 
-      users.forEach((user, i) => {
-        let targetType = user.channel_type || 'general';
-        let dist = districts.find(d => d.type === targetType) || districts[0];
-
-        const distEl = document.getElementById(dist.id);
+      districtsList.forEach(distInfo => {
+        const distEl = document.getElementById(distInfo.id);
         if (!distEl) return;
 
         const distRect = distEl.getBoundingClientRect();
         const relativeLeft = distRect.left - containerRect.left;
         const relativeTop = distRect.top - containerRect.top;
 
-        const citizen = document.createElement('div');
-        citizen.className = 'citizen';
+        const centerRegionX = relativeLeft + (distRect.width / 2) - 18;
+        const centerRegionY = relativeTop + (distRect.height / 2) + 20;
 
-        // Wyznaczenie pozycji wewnątrz fizycznej strefy
-        const padding = 20;
-        const posX = relativeLeft + padding + Math.random() * (distRect.width - (padding * 2) - 30);
-        const posY = relativeTop + padding + 60 + Math.random() * (distRect.height - (padding * 2) - 80);
+        distInfo.users.forEach((user, idx) => {
+          const orbitRadius = Math.min(distRect.width, distRect.height) * 0.38;
+          const pos = calculateOrbit(idx, distInfo.users.length, centerRegionX, centerRegionY, orbitRadius);
 
-        const displayName = escapeHtml(user.display_name || user.username || 'Mieszkaniec');
-        const avatar = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
-        const channelName = escapeHtml(user.channel_name || 'Głosowy');
-        const activityText = user.activities && user.activities.length > 0 ? `Gra w: ${user.activities.join(', ')}` : 'Siedzi na głosowym';
+          const citizen = document.createElement('div');
+          citizen.className = 'citizen';
 
-        citizen.style.left = `${posX}px`;
-        citizen.style.top = `${posY}px`;
+          // Symulacja surowych statusów sieciowych opartych o id użytkownika / dane dynamiczne
+          const idNum = parseInt(user.user_id || '0');
+          const isMute = user.self_mute || (idNum % 5 === 0);
+          const isDeaf = user.self_deaf || (idNum % 8 === 0);
+          const isStreaming = user.is_streaming || (idNum % 11 === 0);
+          
+          let longestRecord = longestSessionsList.find(g => String(g.user_id) === String(user.user_id));
+          const isOverloaded = (longestRecord && longestRecord.minutes > 180) || (idNum % 14 === 0);
 
-        citizen.innerHTML = `
-          <div class="citizen-avatar" style="background-image: url('${avatar}'); border-color: ${dist.color}; box-shadow: 0 0 10px ${dist.color};" title="${displayName} - ${activityText}"></div>
-          <div class="citizen-name">${displayName}</div>
-        `;
+          if (isMute) citizen.classList.add('citizen--mute');
+          if (isDeaf) citizen.classList.add('citizen--deaf');
+          if (isStreaming) citizen.classList.add('citizen--streaming');
+          if (isOverloaded) citizen.classList.add('citizen--overloaded');
 
-        // Co jakiś czas postacie wypowiadają chmurki dialogowe
-        if (user.activities && user.activities.length > 0) {
-          const bubble = document.createElement('div');
-          bubble.className = 'bubble-cloud';
-          bubble.style.border = `1.5px solid ${dist.color}`;
-          bubble.textContent = `Gram w ${user.activities[0]}! 🎮`;
-          citizen.appendChild(bubble);
-        } else if (Math.random() > 0.6) {
-          setTimeout(() => {
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble-cloud';
-            bubble.style.border = `1.5px solid ${dist.color}`;
-            bubble.textContent = `Kanał: ${channelName} 💬`;
-            citizen.appendChild(bubble);
-            setTimeout(() => bubble.remove(), 4000);
-          }, Math.random() * 6000);
-        }
+          const displayName = escapeHtml(user.display_name || user.username || 'Mieszkaniec');
+          const avatar = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
+          const channelName = escapeHtml(user.channel_name || 'Głosowy');
+          const gameName = user.activities && user.activities.length > 0 ? user.activities[0] : null;
+          const activityText = getCyberpunkPhrase(gameName);
 
-        // Fizyczne kliknięcie na obiekt gry
-        citizen.addEventListener('click', (e) => {
-          e.stopPropagation();
-          showCharacterSpeech(citizen, dist.color, `Hej! Siedzę na kanale "${channelName}"! 🚀`);
-          openCharacterModal(user, dist.color);
+          citizen.style.left = `${pos.x}px`;
+          citizen.style.top = `${pos.y}px`;
+
+          // Dynamiczna ikonka statusu przy profilu
+          let pulseFilterColor = distInfo.color;
+          if (isStreaming) pulseFilterColor = '#ef4444';
+
+          citizen.innerHTML = `
+            <div class="citizen-avatar" style="background-image: url('${avatar}'); border-color: ${pulseFilterColor}; box-shadow: 0 0 10px ${pulseFilterColor};" title="${displayName} - ${activityText}"></div>
+            <div class="citizen-name">${displayName}</div>
+          `;
+
+          // Generowanie impulsów chmurek dialogowych z matrixa klimatycznego
+          if (Math.random() > 0.72) {
+            setTimeout(() => {
+              const bubble = document.createElement('div');
+              bubble.className = 'bubble-cloud';
+              bubble.style.border = `1.5px solid ${pulseFilterColor}`;
+              bubble.textContent = gameName ? `[Matrix] ${gameName}: Infiltracja!` : activityText.substring(0, 30) + '...';
+              citizen.appendChild(bubble);
+              setTimeout(() => bubble.remove(), 4000);
+            }, Math.random() * 8000 + 1000);
+          }
+
+          // Otoczenie modalu interaktywnego po kliknięciu
+          citizen.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showCharacterSpeech(citizen, pulseFilterColor, `Sygnalizacja sensoryczna gotowa! [NET: ${channelName}]`);
+            openCharacterModal(user, pulseFilterColor);
+          });
+
+          container.appendChild(citizen);
         });
-
-        container.appendChild(citizen);
       });
     }
 
@@ -923,60 +1362,79 @@
       addZone(table2El, 'general');
       addZone(table3El, 'chill');
 
-      users.forEach((user, i) => {
-        let zone = zones.find(z => z.name === user.channel_type) || zones[Math.floor(Math.random() * zones.length)];
+      // Sortowanie użytkowników do stolików
+      let groupedTavern = { gaming: [], general: [], chill: [] };
+      users.forEach(u => {
+        let t = u.channel_type || 'general';
+        if (groupedTavern[t]) groupedTavern[t].push(u);
+        else groupedTavern.general.push(u);
+      });
 
-        const angle = Math.random() * Math.PI * 2;
-        const dist = Math.random() * (zone.radius - 20) + 15;
-        
-        let posX = zone.left + Math.cos(angle) * dist - 18;
-        let posY = zone.top + Math.sin(angle) * dist - 26;
+      // Rysujemy orbitowo wokół stolików
+      zones.forEach(zone => {
+        const zoneUsers = groupedTavern[zone.name] || [];
+        zoneUsers.forEach((user, idx) => {
+          const pos = calculateOrbit(idx, zoneUsers.length, zone.left - 18, zone.top - 26, zone.radius * 0.72);
 
-        posX = Math.max(15, Math.min(posX, containerRect.width - 50));
-        posY = Math.max(15, Math.min(posY, containerRect.height - 70));
+          const charObj = document.createElement('div');
+          charObj.className = 'character';
+          if (idx % 2 === 0) {
+            charObj.classList.add('character--drinking');
+          }
 
-        const char = document.createElement('div');
-        char.className = 'character';
-        if (Math.random() > 0.4) {
-          char.classList.add('character--drinking');
-        }
+          // Dodanie systemowych statusów dla Tawerny
+          const idNum = parseInt(user.user_id || '0');
+          const isMute = user.self_mute || (idNum % 4 === 0);
+          const isDeaf = user.self_deaf || (idNum % 7 === 0);
+          const isStreaming = user.is_streaming || (idNum % 10 === 0);
+          
+          let longestRecord = longestSessionsList.find(g => String(g.user_id) === String(user.user_id));
+          const isOverloaded = (longestRecord && longestRecord.minutes > 180) || (idNum % 14 === 0);
 
-        const displayName = escapeHtml(user.display_name || user.username || 'Biesiadnik');
-        const avatar = user.avatar_url || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.user_id}`;
-        const channelName = escapeHtml(user.channel_name || 'Rozmowy');
-        const activityText = user.activities && user.activities.length > 0 ? `W grze: ${user.activities.join(', ')}` : 'Rozkoszuje się miodem';
+          if (isMute) charObj.classList.add('character--mute');
+          if (isDeaf) charObj.classList.add('character--deaf');
+          if (isStreaming) charObj.classList.add('character--streaming');
+          if (isOverloaded) charObj.classList.add('character--overloaded');
 
-        char.style.left = `${posX}px`;
-        char.style.top = `${posY}px`;
+          const displayName = escapeHtml(user.display_name || user.username || 'Biesiadnik');
+          const avatar = user.avatar_url || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.user_id}`;
+          const gameName = user.activities && user.activities.length > 0 ? user.activities[0] : null;
+          const activityText = getCyberpunkPhrase(gameName);
 
-        char.innerHTML = `
-          <div class="character-body" style="background-image: url('${avatar}');" title="${displayName} - ${activityText}"></div>
-          <div class="character-tag">${displayName}</div>
-        `;
+          charObj.style.left = `${pos.x}px`;
+          charObj.style.top = `${pos.y}px`;
 
-        char.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const quotes = [
-            "Wypijmy za najszybszy rozwój w Polsce! 🍻",
-            "Miodu nie żałować! Za Overtime!",
-            "Tawerna na bazie MongoDB działa cudownie!",
-            "Bot Ojciec 4.0 nalewa najlepsze trunki!",
-            "Ktoś dołączy do biesiady na kanale głosowym?"
-          ];
-          const text = quotes[Math.floor(Math.random() * quotes.length)];
-          showCharacterSpeech(char, '#ff7b00', text);
-          openCharacterModal(user, '#ff7b00');
+          charObj.innerHTML = `
+            <div class="character-body" style="background-image: url('${avatar}');" title="${displayName} - ${activityText}"></div>
+            <div class="character-tag">${displayName}</div>
+          `;
+
+          charObj.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const quotes = [
+              "Synapsy zregenerowane. Nalewaj z tego barla!",
+              "Blackwall znowu szczypie mnie w chipie... Mam halucynacje?",
+              "Overtime Polska ma teraz 100% cyfrowej dominacji!",
+              "Mamy military-grade szyfrowanie, nikt mnie tu nie złamie!",
+              "Tawerna spięta bezpośrednio z bazą Mongo"
+            ];
+            const text = quotes[idNum % quotes.length];
+            showCharacterSpeech(charObj, '#ffaa00', text);
+            openCharacterModal(user, '#ffaa00');
+          });
+
+          container.appendChild(charObj);
         });
-
-        container.appendChild(char);
       });
     }
 
+    // --- CYBER-PROFIL MODAL & DETALE ---
     let currentSelectedCharacter = null;
     let hackingState = {
       active: false,
       code: '',
-      tries: 0
+      tries: 0,
+      reward: 0
     };
 
     function openCharacterModal(user, color) {
@@ -994,23 +1452,24 @@
       const consoleInputArea = document.getElementById('consoleInputArea');
 
       consoleEl.style.display = 'none';
-      consoleText.textContent = 'Autoryzacja udana. System gotowy do interakcji...';
+      consoleText.textContent = 'Port autoryzacyjny otwarty. Gotowość retro-terminala...';
       consoleInputArea.style.display = 'none';
 
       const displayName = escapeHtml(user.display_name || user.username || 'Agent');
       const avatar = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
-      const channelName = escapeHtml(user.channel_name || 'Nieznany Sektor');
-      const activityText = user.activities && user.activities.length > 0 ? `BIEŻĄCA AKTYWNOŚĆ:\nGra w: ${user.activities.join(', ')} 🎮` : 'STATUS: Czuwanie w strumieniu sensorycznym (Siedzi na głosowym)';
+      const channelName = escapeHtml(user.channel_name || 'Ukryty Sektor');
+      const gameName = user.activities && user.activities.length > 0 ? user.activities[0] : null;
+      const activityText = `MIND MATRIX SENSORS:\n${getCyberpunkPhrase(gameName)}`;
 
       // Deterministyczne statystyki cyberpunkowe na bazie user_id
       const idStr = String(user.user_id || '0');
       let idSum = 0;
       for (let i = 0; i < idStr.length; i++) idSum += idStr.charCodeAt(i);
       
-      const cyberPercent = (idSum % 61) + 39; // 39% - 99%
+      const cyberPercent = (idSum % 61) + 39; 
       const implants = [
-        "Korteks Synaptyczny", "Moduł Hakowania Satori", "Optyka Kiroshi MK4",
-        "Wzmacniacz Refleksu", "Cyber-serce Militech", "Kompilator Arasaka"
+        "Korteks Synaptyczny v4", "Moduł Hakowania Satori", "Optyka Kiroshi MK5",
+        "Wzmacniacz Refleksów Arasaka", "Biotech-Serce v2", "Kompilator Blackwall"
       ];
       const selectedImplant = implants[idSum % implants.length];
 
@@ -1019,7 +1478,7 @@
       avatarEl.style.boxShadow = `0 0 20px ${color}`;
       
       nameEl.textContent = displayName;
-      idEl.textContent = `ID NET: ${user.user_id || 'UNKNOWN'}`;
+      idEl.textContent = `UID NET: ${user.user_id || 'UNKNOWN'}`;
       chanEl.textContent = channelName;
       cyberwarEl.textContent = `${selectedImplant}: ${cyberPercent}%`;
       activityEl.innerText = activityText;
@@ -1033,6 +1492,7 @@
       hackingState.active = false;
     }
 
+    // Wyścig zbrojeń i polowanie na grube ryby
     function triggerHack() {
       if (!currentSelectedCharacter) return;
       
@@ -1048,17 +1508,39 @@
 
       hackingState.active = true;
       hackingState.tries = 3;
+
+      // Sprawdzamy czy to GRUBA RYBA (Longest Session record)
+      const idStr = String(currentSelectedCharacter.user_id);
+      let sessionRecord = longestSessionsList.find(g => String(g.user_id) === idStr);
+      let sessionMin = sessionRecord ? sessionRecord.minutes : 15;
+
+      // Obliczanie nagrody na podisth
+      let baseCred = Math.round(sessionMin * 1.5 + (Math.random() * 20));
+      if (activeAnomaly === 'netwatch') baseCred *= 3; // Potrójne nagrody w Netwatch!
+      hackingState.reward = baseCred;
+
+      // Wyliczanie trudności hakowania na podstawie ulepszeń ICE (Standardowo 0-90)
+      const targetIceMod = (parseInt(idStr.substring(idStr.length - 2)) || 20) % 65; 
       
+      // Nasze osłabienie ICE
+      const deckPen = DECK_UPGRADES[playerInventory.deckLevel - 1].penetration;
+      let finalDifficulty = Math.max(5, targetIceMod - deckPen);
+      if (activeAnomaly === 'blackwall') finalDifficulty = Math.round(finalDifficulty / 2); // Blackwall zmniejsza ICE o połowę!
+
+      // Wygeneruj unikalny kod
       const hexChars = '0123456789ABCDEF';
       let code = '';
-      for (let i = 0; i < 4; i++) {
+      const codeLength = finalDifficulty > 45 ? 5 : (finalDifficulty > 20 ? 4 : 3);
+      for (let i = 0; i < codeLength; i++) {
         code += hexChars[Math.floor(Math.random() * hexChars.length)];
       }
       hackingState.code = code;
 
-      consoleText.innerHTML = `<span class="text-info">[SYSTEM] Próba infiltracji chipu użytkownika: ${escapeHtml(currentSelectedCharacter.display_name || currentSelectedCharacter.username)}...</span><br>` +
-        `<span class="text-warning">[DECYZJA] Wykryto zaporę ICE. Wygenerowano klucz obejściowy: <strong class="text-neon-pink">${code}</strong></span><br>` +
-        `<span class="text-success">[KOMENDA] Wpisz podany 4-literowy klucz w konsoli i naciśnij Enter, aby przejąć port! (Pozostało prób: 3)</span>`;
+      consoleText.innerHTML = `<span class="text-info">[RETRO-NET] Otwieram most synaptyczny z ${escapeHtml(currentSelectedCharacter.display_name || currentSelectedCharacter.username)}...</span><br>` +
+        `<span class="text-muted">Poziom zabezpieczeń ICE strefy: ${targetIceMod}% | Penetracja Twojego Cyberdecku: -${deckPen}%</span><br>` +
+        `<span class="text-neon-pink" style="font-weight:bold;">[KOMPILAT] Zapora ICE wygenerowała wektor wejścia: <strong class="text-warning">${code}</strong></span><br>` +
+        `<span class="text-white-50">Szacowane zasoby weryfikacji danych (Credsy do kradzieży): <strong class="text-success">${hackingState.reward} cr</strong> ${sessionRecord ? '🔥 [HUNTING TARGET DECTECTED! (Rekordowa biesiady)]' : ''}</span><br>` +
+        `<span class="text-success">[RETRO-CMD] Wpisz podany wyżej klucz ICE i zatwierdź [Enter] (Pozostało prób: ${hackingState.tries})</span>`;
     }
 
     function handleConsoleInput(event) {
@@ -1069,42 +1551,158 @@
         const consoleText = document.getElementById('consoleText');
         const consoleInputArea = document.getElementById('consoleInputArea');
 
+        // Jeśli piszemy globalne kody do ukończenia anomalii Blackwall
+        if (activeAnomaly === 'blackwall' && (inputVal === 'DECODE' || inputVal.startsWith('DECODE ') || inputVal === 'STABILIZE')) {
+          const decrease = Math.round(Math.random() * 15 + 10);
+          blackwallThreatLevel -= decrease;
+          if (blackwallThreatLevel <= 0) {
+            blackwallThreatLevel = 0;
+            clearAnomaly();
+            playerInventory.credits += 250;
+            saveEconomyState();
+            consoleText.innerHTML += `<br><span class="text-success" style="font-weight:bold;">[PROTOKÓŁ ZAKOŃCZONY] Współpraca udana! Blackwall został z powrotem uszczelniony. Cała sieć ocalona! Otrzymujesz bonus +250 cr! 🎉</span>`;
+          } else {
+            document.getElementById('blackwallPct').textContent = blackwallThreatLevel;
+            consoleText.innerHTML += `<br><span class="text-info">[DEKODER] Pomyślnie wprowadzono pakiet ratunkowy. Zagrożenie Blackwalla spada o -${decrease}%. Aktualnie: ${blackwallThreatLevel}%</span>`;
+          }
+          return;
+        }
+
+        // Globalne polecenia administratorskie w CLI (Zarządzanie z Cienia)
+        if (inputVal === '/NETWATCH') {
+          triggerRandomAnomaly('netwatch');
+          consoleText.innerHTML += `<br><span class="text-info">[SYSTEM] Zainicjowano rajd sieciowy Netwatch na całe Metropolis!</span>`;
+          return;
+        }
+        if (inputVal === '/BLACKWALL') {
+          triggerRandomAnomaly('blackwall');
+          consoleText.innerHTML += `<br><span class="text-danger">[SYSTEM] Skażenie kodu rdzennym demonem z Blackwall aktywowane!</span>`;
+          return;
+        }
+        if (inputVal === '/RESET') {
+          clearAnomaly();
+          consoleText.innerHTML += `<br><span class="text-white">[SYSTEM] Cały ekosystem powraca do stabilności.</span>`;
+          return;
+        }
+        if (inputVal === '/SHOP') {
+          printShopToConsole();
+          return;
+        }
+        if (inputVal.startsWith('BUY ')) {
+          handleShopPurchase(inputVal.substring(4));
+          return;
+        }
+
+        // Jeśli aktywna jest mini-gra hackingowa pojedynczej postaci
         if (hackingState.active) {
           if (inputVal === hackingState.code) {
-            consoleText.innerHTML += `<br><span class="text-success">[ODBLOKOWANO] Sukces! Protokół synaptyczny złamany. Pobrano 500 EB (Eurodolarów)! Wszczepy przegrzane! 🔥</span>`;
+            playerInventory.credits += hackingState.reward;
+            saveEconomyState();
+
+            consoleText.innerHTML += `<br><span class="text-success" style="font-weight:bold;">[SUKCES] Naruszenie powiodło się! Przejęto ${hackingState.reward} cr i przesłano na Twój cyberdeck! Twoje zasoby: ${playerInventory.credits} cr.</span>`;
             hackingState.active = false;
             consoleInputArea.style.display = 'none';
 
             const selectorName = currentSelectedCharacter.display_name || currentSelectedCharacter.username;
-            const elements = Array.from(document.querySelectorAll('.citizen, .character'));
-            const matchedEl = elements.find(el => {
-              const nameEl = el.querySelector('.citizen-name, .character-tag');
-              return nameEl && nameEl.textContent === selectorName;
-            });
+            const matchedEl = findSpriteOnMap(selectorName);
             if (matchedEl) {
-              showCharacterSpeech(matchedEl, '#ec4899', "Ałć! Ktoś właśnie zhakował mój interfejs neuronowy! ⚡🧠");
+              showCharacterSpeech(matchedEl, '#ec4899', "Ałć! Hakują moje neuronowe wszczepy! Kradną mi kredyty! 🧠🧨");
             }
           } else {
             hackingState.tries--;
             if (hackingState.tries > 0) {
-              consoleText.innerHTML += `<br><span class="text-danger">[BŁĄD] Kod niepoprawny! Alarm zapory ICE aktywowany. Spróbuj ponownie. (Pozostało prób: ${hackingState.tries})</span>`;
+              consoleText.innerHTML += `<br><span class="text-danger">[ALERT] Deszyfracja nieudana. Klucz błędny. (Pozostało prób: ${hackingState.tries})</span>`;
             } else {
-              consoleText.innerHTML += `<br><span class="text-danger" style="font-weight:bold;">[ZABLOKOWANO] Skaner sieciowy wykrył Twoje IP! Połączenie przerwane. Synapsy zablokowane. 💀</span>`;
+              consoleText.innerHTML += `<br><span class="text-danger" style="font-weight:bold;">[ICE FIREWALL ACTIVATED] Wykryto intruza! System targetu spalił Twój port danych (-25 cr) celem unieszkodliwienia!</span>`;
+              playerInventory.credits = Math.max(0, playerInventory.credits - 25);
+              saveEconomyState();
               hackingState.active = false;
               consoleInputArea.style.display = 'none';
 
               const selectorName = currentSelectedCharacter.display_name || currentSelectedCharacter.username;
-              const elements = Array.from(document.querySelectorAll('.citizen, .character'));
-              const matchedEl = elements.find(el => {
-                const nameEl = el.querySelector('.citizen-name, .character-tag');
-                return nameEl && nameEl.textContent === selectorName;
-              });
+              const matchedEl = findSpriteOnMap(selectorName);
               if (matchedEl) {
-                showCharacterSpeech(matchedEl, '#ef4444', "Ha! Moja zapora ICE odbiła atak hakera! Wykryłem intruza!");
+                showCharacterSpeech(matchedEl, '#ef4444', "Zapora ICE odparła atak netrunnera! Systemy obronne aktywne.");
               }
             }
           }
+        } else {
+          consoleText.innerHTML += `<br><span class="text-muted">[CMD] Nie rozpoznano polecenia. Wpisz /shop by przejrzeć asortyment, lub rozpocznij hakowanie biesiadnika.</span>`;
         }
+      }
+    }
+
+    function findSpriteOnMap(name) {
+      const elements = Array.from(document.querySelectorAll('.citizen, .character'));
+      return elements.find(el => {
+        const textEl = el.querySelector('.citizen-name, .character-tag');
+        return textEl && textEl.textContent === name;
+      });
+    }
+
+    // --- SKLEP I ULEPSZENIA RETRO-NET TERMINALA ---
+    function printShopToConsole() {
+      const consoleText = document.getElementById('consoleText');
+      const nextDeck = DECK_UPGRADES[playerInventory.deckLevel] || null;
+      const nextSec = SECURITY_UPGRADES[playerInventory.securityLevel] || null;
+
+      let shopHtml = `<span class="text-warning">[ASORTYMENT CZARNEGO RYNKU]</span><br>` +
+        `Twoje fundusze: <strong class="text-warning">${playerInventory.credits} cr</strong><br>` +
+        `<span class="text-info">1. CYBERDECK:</span> Obecnie: ${DECK_UPGRADES[playerInventory.deckLevel - 1].name}<br>`;
+      
+      if (nextDeck) {
+        shopHtml += `   -> Następny poziom: <strong class="text-white">${nextDeck.name}</strong> [ICE Pen: +${nextDeck.penetration}%] | KOSZT: <strong class="text-warning">${nextDeck.price} cr</strong><br>` +
+          `   -> <span class="text-muted">Wpisz: <strong class="text-white">buy deck</strong> by zakupić.</span><br>`;
+      } else {
+        shopHtml += `   -> <span class="text-success">Posiadasz najlepszy Cyberdeck na rynku (Maksymalny poziom)!</span><br>`;
+      }
+
+      shopHtml += `<br><span class="text-pink" style="color:#ec4899;">2. OCHRONNA ZAPORA (ICE):</span> Obecnie: ${SECURITY_UPGRADES[playerInventory.securityLevel - 1].name}<br>`;
+      
+      if (nextSec) {
+        shopHtml += `   -> Następny poziom: <strong class="text-white">${nextSec.name}</strong> [Ochr: +${nextSec.difficulty}%] | KOSZT: <strong class="text-warning">${nextSec.price} cr</strong><br>` +
+          `   -> <span class="text-muted">Wpisz: <strong class="text-white">buy sec</strong> by zakupić.</span>`;
+      } else {
+        shopHtml += `   -> <span class="text-success">Posiadasz szczytowe szyfrowanie (Maksymalny poziom)!</span>`;
+      }
+
+      consoleText.innerHTML = shopHtml;
+    }
+
+    function handleShopPurchase(subCmd) {
+      const consoleText = document.getElementById('consoleText');
+      const item = subCmd.trim().toLowerCase();
+
+      if (item === 'deck') {
+        const nextDeck = DECK_UPGRADES[playerInventory.deckLevel];
+        if (!nextDeck) {
+          consoleText.innerHTML += `<br><span class="text-danger">[BŁĄD] Twój deck został już ulepszony do maksimum!</span>`;
+          return;
+        }
+        if (playerInventory.credits >= nextDeck.price) {
+          playerInventory.credits -= nextDeck.price;
+          playerInventory.deckLevel++;
+          saveEconomyState();
+          consoleText.innerHTML += `<br><span class="text-success">[ZAKUPIONO] Nowy Cyberdeck zainstalowany: ${nextDeck.name}! Poziom penetracji wzrósł o +${nextDeck.penetration}%!</span>`;
+        } else {
+          consoleText.innerHTML += `<br><span class="text-danger">[BŁĄD] Brak wystarczającej ilości Credsów! Brakuje: ${nextDeck.price - playerInventory.credits} cr</span>`;
+        }
+      } else if (item === 'sec') {
+        const nextSec = SECURITY_UPGRADES[playerInventory.securityLevel];
+        if (!nextSec) {
+          consoleText.innerHTML += `<br><span class="text-danger">[BŁĄD] Twoja zapora ochronna ICE osiągnęła limit militarnego szyfrowania!</span>`;
+          return;
+        }
+        if (playerInventory.credits >= nextSec.price) {
+          playerInventory.credits -= nextSec.price;
+          playerInventory.securityLevel++;
+          saveEconomyState();
+          consoleText.innerHTML += `<br><span class="text-success">[ZAKUPIONO] Twoje ICE pomyślnie zaktualizowane do: ${nextSec.name}!</span>`;
+        } else {
+          consoleText.innerHTML += `<br><span class="text-danger">[BŁĄD] Niewystarczająca fundusze! Koszt zapory: ${nextSec.price} cr (posiadasz: ${playerInventory.credits} cr)</span>`;
+        }
+      } else {
+        consoleText.innerHTML += `<br><span class="text-muted">[SKLEP] Niepoprawny atrybut. Spróbuj: buy deck lub buy sec</span>`;
       }
     }
 
@@ -1133,11 +1731,7 @@
         `<span class="text-neon-pink">[REAKCJA] ${displayName} wznosi toast za Twoje zdrowie! "Za Overtime Polska!"</span>`;
 
       const selectorName = currentSelectedCharacter.display_name || currentSelectedCharacter.username;
-      const elements = Array.from(document.querySelectorAll('.citizen, .character'));
-      const matchedEl = elements.find(el => {
-        const nameEl = el.querySelector('.citizen-name, .character-tag');
-        return nameEl && nameEl.textContent === selectorName;
-      });
+      const matchedEl = findSpriteOnMap(selectorName);
       if (matchedEl) {
         showCharacterSpeech(matchedEl, '#eab308', `Dzięki za ${randomDrink}! Wasze zdrowie biesiadnicy! 🍻`);
       }
@@ -1193,8 +1787,16 @@
     }
 
     // Inicjalizacja silnika Multiverse
+    updateEconomyHUD();
     setTimeout(tickEngine, 300);
     setInterval(tickEngine, 12000);
+
+    // Losowe wyzwalanie anomalii Netwatch / Blackwall co jakiś czas (np. co 90 sekund)
+    setInterval(() => {
+      if (Math.random() > 0.7 && !activeAnomaly) {
+        triggerRandomAnomaly();
+      }
+    }, 90000);
   </script>
 </body>
 </html>

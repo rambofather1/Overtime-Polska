@@ -2,6 +2,19 @@
 
 Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
 
+## [Wersja 1.5.0] - 2026-05-21
+
+### Dodano
+
+- **Silnik Żyjącej Symulacji Ekosystemu ("Extreme Level 2.0 Living Simulation")**:
+  - **Dynamiczne Rozproszone Pozycjonowanie Orbitowe**: Stworzono fizycznie wierny algorytm orbitowania orbitalnego zoptymalizowany pod kątem eliminacji nakładania się mieszkańców ("kanapki"). Każdy mieszkaniec Metropolis i biesiadnik Tawerny jest rozpraszany wektorowo za pomocą funkcji trygonometrycznych w polarnej siatce współrzędnych i unikalnego jitteru wokół centralnych punktów stref.
+  - **Geopolityczna Dominacja Megakorporacji**: Zaimplementowano dynamiczny system dominacji megakorporacji (Arasaka, Militech, Biotech Pharma, Network Syndicate) kontrolujących dzielnice handlowe, rozrywkowe i muzyczne na mapie. Podział terytorium odbywa się w czasie rzeczywistym na podstawie współczynnika aktywności telemetrycznej, boostów oraz wielkości serwerów w bazie danych, dynamicznie zmieniając branding wizualny i neonowe barwy dzielnic.
+  - **Głęboka Cyber-Ekonomia i Sklep Czarnego Rynku**: Wprowadzono systemową walutę (Kredyty) zapisywaną lokalnie na urządzeniu gracza. Stworzono zintegrowany z konsolą CLI sklep z ulepszeniami (Cyberdecki zwiększające penetrację ICE oraz zapory ICE zwiększające poziom obrony przed potencjalnymi hakami intruzów).
+  - **Zbrojne Polowanie na Grube Ryby (HVT Hunt)**: Użytkownicy o najdłuższym czasie aktywnej sesji głosowej są automatycznie oznaczani flagą systemu krytycznego ("HIGH-VALUE TARGET"), umożliwiając przejęcie bazy danych o wartości kilkukrotnie większej od standardowej.
+  - **System Globalnych Anomalii Architekta (Blackwall Breach / Netwatch Raids)**: Wprowadzono losowy system incydentów sieciowych zmieniający globalny styl wizualny (czerwone syreny alarmowe, glitche, dynamiczna modyfikacja koloru cząsteczek particles.js na krwisty czerwony lub jaskrawy błękit). Anomalie wymuszają interwencję deszyfrującą całej społeczności poprzez CLI terminalu komendą `/DECODE` / `/STABILIZE` obniżającą skażenie sieci, nagradzaną potężnymi funduszami.
+  - **Sensoryczna Macierz Nastrojów (Mood Matrix) & Cyber-Statusy**: Przetłumaczono statusy Discord (self-mute, self-deaf, streaming) na cyberpunkowe odpowiedniki (Neural Mute Active, Neural Deaf, Matrix Stream Online, Overloaded Central) połączone z dynamicznymi filtrami na awatarach postaci. Zaimplementowano słownik fraz neonowych tłumaczący gry w profilach na rasowe, klimatyczne cyber-monologi i losowo generowane dymki z matrixa na mapie.
+  - **Kontrola Kamery Drag & Zoom**: Pełnoekranowe wsparcie przeciągania mapy oraz skalowania (Drag & Zoom myszką i touch/swipe dla urządzeń mobilnych) z dokładnym badgem zoomu chroniącym przed anomaliami ekranu mobilnego.
+
 ## [Wersja 1.4.0] - 2026-05-21
 
 ### Dodano
