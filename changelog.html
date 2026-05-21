@@ -157,6 +157,65 @@
       color: rgba(255, 255, 255, 0.6);
       font-size: 1.1rem;
     }
+
+    /* Stylizacja sekcji technicznych details */
+    .tech-details {
+      margin-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 15px;
+    }
+
+    .tech-details summary {
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 750;
+      font-size: 0.8rem;
+      color: #1db954;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      user-select: none;
+      transition: color 0.2s ease;
+    }
+
+    .tech-details summary:hover {
+      color: #1ed760;
+    }
+
+    .tech-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .tech-details summary::after {
+      content: "\f078";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      transition: transform 0.3s ease;
+    }
+
+    .tech-details[open] summary::after {
+      transform: rotate(180deg);
+    }
+
+    .tech-content {
+      margin-top: 15px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      border-left: 3px solid #1db954;
+    }
+    
+    .tech-details-extreme summary {
+      color: #ef4444 !important;
+    }
+    .tech-details-extreme summary:hover {
+      color: #f87171 !important;
+    }
+    .tech-details-extreme .tech-content {
+      border-left: 3px solid #ef4444 !important;
+    }
   </style>
 </head>
 <body>
@@ -172,7 +231,7 @@
       <img src="logo.png" alt="Logo" class="logo" style="max-width: 150px;">
     </div>
 
-    <h1 class="display-5 mb-2">Bot Ojciec</h1>
+    <h1 class="display-5 mb-2">Ojciec - System Ochrony Sieci Overtime</h1>
     <p class="lead-text mb-5">Dziennik zmian, ewolucji systemu oraz poprawek bezpieczeństwa sieci Overtime</p>
 
     <!-- KARTA v4.0 EXTREME -->
@@ -211,6 +270,21 @@
         <li><strong>Runtime b_ban Hardening</strong> — Komenda <code>b</code> filtruje aktywne bany na poziomie bazy danych i blokuje niefortunne próby przedwczesnego unbana, dopóki administrator nie zdecyduje o zdjęciu trwałej blokady sieciowej.</li>
         <li><strong>Zintegrowana ochrona zarządu (Board Guardrails)</strong> — Nowy system ochrony ról administracyjnych (Emperor/Board) zautomatyzował zabezpieczenia bez rozsiewania wyjątków po osobnych modułach.</li>
       </ul>
+
+      <!-- Sekcja rozwijana - Szczegóły techniczne -->
+      <details class="tech-details tech-details-extreme">
+        <summary>Pokaż szczegóły implementacyjne kodu (v4.0)</summary>
+        <div class="tech-content text-white-50">
+          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
+          <ul class="change-list">
+            <li>Refaktoryzacja całego modułu <code>Daddy Voice</code> — Zastąpiono rozproszone eventy na rzecz uporządkowanej pętli sprawdzania spójności opartej o natywne biblioteczki <code>tasks.Loop</code> z częstotliwością odświeżania wynoszącą 10 sekund.</li>
+            <li>Nowy wzorzec uprawnień dynamicznych — Klasa <code>VoicePermissionGuard</code> zastąpiła stare, surowe manipulatory <code>PermissionOverwrite</code> w celu zablokowania przypadkowego ominięcia mutowania (Mute Bypass) przez uprawnionych członków.</li>
+            <li>Zaprojektowanie asynchronicznego bufora zapisu eventów — W module <code>activity_service.py</code> wdrożono kolejkowanie w pamięci podręcznej (Batching) i grupowy zapis obiektów telemetrycznych do MongoDB co 15 sekund, drastycznie zmniejszając narzut I/O i blokowanie event loopa.</li>
+            <li>Filtrowanie i indeksacja bazy danych — Wdrożono kompozytowe klucze indeksujące w bazie MongoDB Atlas na polach <code>{ "operator_id": 1, "action_type": 1, "timestamp": -1 }</code> w celu optymalizacji i błyskawicznego serwowania wyników paginacji w <code>operator_dossier_view.py</code>.</li>
+            <li>Automatyczna retencja logów — Skrypt <code>retention_policy.py</code> okresowo odrzuca i usuwa historyczne wpisy o statusach z bazy MongoDB oraz archiwizuje pliki JSONL starsze niż 90 dni do skompresowanych paczek GZIP.</li>
+          </ul>
+        </div>
+      </details>
     </div>
 
     <!-- KARTA v2.7.1 -->
@@ -229,6 +303,19 @@
         <li>System ciasteczek z wróżbą (fortune cookie) przeniesiony z twardych stałych do elastycznej konfiguracji bazodanowej z poziomami uprawnień per-serwer.</li>
         <li>Konfigurator <code>/setup</code> dający operatorom pełne zarządzanie kategoriami i limitami z poziomu GUI.</li>
       </ul>
+
+      <!-- Sekcja rozwijana - Szczegóły techniczne -->
+      <details class="tech-details">
+        <summary>Pokaż szczegóły implementacyjne kodu (v2.7.1)</summary>
+        <div class="tech-content text-white-50">
+          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
+          <ul class="change-list">
+            <li>Całkowita migracja bota na <code>discord.app_commands.CommandTree</code> — Usunięto przestarzały paradygmat parsowania wiadomości tekstowych <code>on_message</code> na rzecz pełnej synchronizacji komend ukośnikowych (slash commands).</li>
+            <li>Wykorzystanie modalnych interfejsów <code>discord.ui.Modal</code> do konfiguracji bota — Pozwala to na eliminację błędnych danych wejściowych bezpośrednio po stronie Discorda, zabezpieczając API przed zagnieżdżonymi atakami RegEx Injection.</li>
+            <li>System unieważniania lokalnej pamięci podręcznej — Poprawna synchronizacja ciasteczek z wróżbą poprzez nasłuchiwanie webhooków bazy MongoDB, co aktualizuje lokalne instancje w pamięci RAM bez konieczności restartu całego bota.</li>
+          </ul>
+        </div>
+      </details>
     </div>
 
     <!-- KARTA v1.17 -->
@@ -248,6 +335,19 @@
         <li>Komendy czyszczenia ustrukturyzowanego <code>&edit_warn</code>, <code>&delete_warn</code> oraz <code>&mass_remove_warn</code> dla administratora głównego.</li>
         <li>Zliczanie w czasie rzeczywistym ogólnej liczby użytkowników i monitoring kanałów głosowych dystrybuowany do głównego serwera API.</li>
       </ul>
+
+      <!-- Sekcja rozwijana - Szczegóły techniczne -->
+      <details class="tech-details">
+        <summary>Pokaż szczegóły implementacyjne kodu (v1.17)</summary>
+        <div class="tech-content text-white-50">
+          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
+          <ul class="change-list">
+            <li>Stworzenie zdefiniowanego schematu bazy danych (Warn Schema) w zbiorach MongoClient — <code>{ "user_id": int64, "guild_id": int64, "reason": str, "operator_id": int64, "timestamp": datetime, "active": bool }</code>.</li>
+            <li>Wdrożenie asynchronicznego tła systemowego <code>clean_expired_warns_loops</code> — Demon odpytuje bazę raz na dobę i automatycznie flaguje przeterminowane wpisy (active: false), redukując narzut odpytywania uprawnień przy starcie sesji użytkownika.</li>
+            <li>Agregowanie udziałów sieciowych — Użycie potoków <code>$group</code> oraz <code>$sum</code> w MongoDB Atlas w celu zbierania live-statystyk obecności na kanałach do komunikacji ze stronią główną portalu.</li>
+          </ul>
+        </div>
+      </details>
     </div>
 
     <!-- KARTA v1.10 -->
@@ -256,7 +356,7 @@
         <span class="badge bg-secondary px-3 py-2 version-tag">v1.10 - Wieloserwerowość i Timeouty</span>
         <span class="date-tag">3 Czerwca 2024</span>
       </div>
-      <p class="text-white-50">Unifikacja systemu nakładania przerw i moderacji trans-serwerowej w obrębie całej sieci Overtime.</p>
+      <p class="text-white-50">Unifikacja sistema nakładania przerw i moderacji trans-serwerowej w obrębie całej sieci Overtime.</p>
 
       <div class="change-category added">
         <i class="fas fa-plus"></i> Dodano
@@ -266,6 +366,19 @@
         <li>Podpory dla logów technicznych segregowanych w katalogu <code>logs/</code> bezpośrednio na serwery.</li>
         <li>Automatyczny system zarządzania mediami (tworzenie dedykowanych wątków i dopasowanie reakcji na kanałach self-media / selfie).</li>
       </ul>
+
+      <!-- Sekcja rozwijana - Szczegóły techniczne -->
+      <details class="tech-details">
+        <summary>Pokaż szczegóły implementacyjne kodu (v1.10)</summary>
+        <div class="tech-content text-white-50">
+          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
+          <ul class="change-list">
+            <li>Nienakładający się narzut sieciowy HTTP — Całkowicie wycofano synchroniczną bibliotekę <code>requests</code> na rzecz asynchronicznych sesji <code>aiohttp.ClientSession</code> do komunikacji z serwerem API Overtime Polska.</li>
+            <li>Parser dynamicznych interwałów delta — Dodano autorski parser czasu obsługujący formaty <code>1d</code>, <code>12h</code>, <code>30m</code> i prawidłowo mapujący je na jednostki <code>datetime.timedelta</code> przekazywane bezpośrednio do natywnej metody <code>discord.Member.timeout()</code>.</li>
+            <li>Architektura auto-wątków w mediach — Moduł <code>autothread_handler.py</code> automatycznie śledzi obrazy w strumieniu i bez opóźnień tworzy podwątek o nazwie "Komentarze" poprzez <code>message.create_thread</code>.</li>
+          </ul>
+        </div>
+      </details>
     </div>
 
     <!-- KARTA v1.07 -->
@@ -275,6 +388,18 @@
         <span class="date-tag">6 Sierpnia 2023</span>
       </div>
       <p class="text-white-50">Stworzenie pierwszych zaawansowanych logów serwerowych odpornych na błędy.</p>
+
+      <!-- Sekcja rozwijana - Szczegóły techniczne -->
+      <details class="tech-details">
+        <summary>Pokaż szczegóły implementacyjne kodu (v1.07)</summary>
+        <div class="tech-content text-white-50">
+          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
+          <ul class="change-list">
+            <li>Niezależne rejestrowanie wyjątków — Wdrożono moduł <code>error_logger.py</code> asynchronicznie zapisujący ślady stosu (Stacktrace) do rotacyjnych plików płaskich <code>logs/bot_errors.log</code> (z limitem rozmiaru 10MB per plik).</li>
+            <li>Zabezpieczenie przed limitami zapytań — Globalne przechwytywanie wyjątków <code>discord.errors.HTTPException</code> chroniące bota przed zatorami w przypadku przekroczenia limitu zapytań API (Muted State 429).</li>
+          </ul>
+        </div>
+      </details>
     </div>
 
     <!-- KARTA v1.01 -->
@@ -284,6 +409,17 @@
         <span class="date-tag">16 Lipca 2023</span>
       </div>
       <p class="text-white-50">Inicjalne wdrożenie powiadomień na prywatne wiadomości z potwierdzeniem zdjęcia blokady.</p>
+
+      <!-- Sekcja rozwijana - Szczegóły techniczne -->
+      <details class="tech-details">
+        <summary>Pokaż szczegóły implementacyjne kodu (v1.01)</summary>
+        <div class="tech-content text-white-50">
+          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
+          <ul class="change-list">
+            <li>Niezawodna wysyłka powiadomień prywatnych — Dodanie bezpiecznego bloku <code>try...except discord.Forbidden</code> przy unbanowaniu, chroniącego pętlę roboczą przed przerwaniem działania w sytuacji, gdy usunięty użytkownik zablokował otrzymywanie wiadomości od bota.</li>
+          </ul>
+        </div>
+      </details>
     </div>
 
     <!-- Stopka -->
