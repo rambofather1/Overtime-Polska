@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Changelog - Bot Ojciec - Overtime Polska</title>
+  <meta name="description" content="Historia aktualizacji i changelog polskiego bota Ojciec wspierającego społeczność Overtime Polska.">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amboy&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    /* Nadpisanie domyślnego overflow: hidden z styles.css dla podstrony changelog */
+    html, body {
+      overflow-y: auto !important;
+      height: auto !important;
+      min-height: 100vh;
+      display: block !important;
+    }
+    
+    .changelog-container {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .changelog-card {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 25px;
+      text-align: left;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .changelog-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(29, 185, 84, 0.3) !important;
+    }
+
+    .version-tag {
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .date-tag {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .change-category {
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      margin-top: 15px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .added { color: #1db954; }
+    .changed { color: #38bdf8; }
+    .fixed { color: #f87171; }
+    .removed { color: #a1a1aa; }
+
+    .change-list {
+      list-style-type: none;
+      padding-left: 0;
+      margin-bottom: 15px;
+    }
+
+    .change-list li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      color: #e4e4e7;
+    }
+
+    .change-list li::before {
+      content: "•";
+      position: absolute;
+      left: 5px;
+      color: #71717a;
+    }
+
+    /* custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #000;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46;
+    }
+
+    .back-btn {
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background-color: #fff !important;
+      color: #000 !important;
+      transform: translateX(-3px);
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="changelog-container text-center">
+    <!-- Przycisk powrotu -->
+    <div class="text-start mb-4">
+      <a href="index.html" class="btn btn-outline-light back-btn rounded-pill px-4"><i class="fas fa-arrow-left me-2"></i>Powrót do strony głównej</a>
+    </div>
+
+    <div class="logo-container d-flex justify-content-center align-items-center mb-4">
+      <img src="logo.png" alt="Logo" class="logo" style="max-width: 150px;">
+    </div>
+
+    <h1 class="display-5 mb-2">Bot Ojciec</h1>
+    <p class="text-muted mb-5">Dziennik zmian, ulepszeń i poprawek naszej oficjalnej maskotki discordowej</p>
+
+    <!-- Karta Changelogu v2.7.1 -->
+    <div class="changelog-card">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <span class="badge bg-success px-3 py-2 version-tag"><i class="fab fa-discord me-2"></i>v2.7.1 - Nowy Standard UI</span>
+        <span class="date-tag">21 Maja 2026</span>
+      </div>
+      <p class="text-zinc-400">Główna aktualizacja przenosząca silnik interakcji na bibliotekę <code>discord.py 2.7.1</code>. Całkowite przejście w stronę podejścia <em>interaction-first / commandless</em>, stawiającego wygode użytkownika i interfejs graficzny na pierwszym miejscu.</p>
+      
+      <div class="change-category added">
+        <i class="fas fa-plus"></i> Dodano
+      </div>
+      <ul class="change-list">
+        <li>Interaktywne panele konfiguracyjne wykorzystujące rozwijane menu (selecty) oraz przyciski (buttons).</li>
+        <li>System dynamicznych profili użytkowników w oparciu o modale ułatwiające wprowadzanie danych.</li>
+        <li>Nową strukturę komend ukośnikowych (slash commands) w pełni opisanych w języku polskim.</li>
+      </ul>
+
+      <div class="change-category changed">
+        <i class="fas fa-sync"></i> Zmieniono
+      </div>
+      <ul class="change-list">
+        <li>Zoptymalizowano system synchronizacji bazodanowych z MongoDB Atlas, redukując opóźnienia i zapytania.</li>
+        <li>Zintegrowano moduł ciasteczek z wróżbą (fortune cookie), który od teraz posiada pełny interfejs panelu zamiast komend tekstowych.</li>
+      </ul>
+
+      <div class="change-category removed">
+        <i class="fas fa-trash"></i> Usunięto
+      </div>
+      <ul class="change-list">
+        <li>Usunięto zbędne i rzadko używane komendy tekstowe z prefiksem, oczyszczając kod z legacy modułów.</li>
+      </ul>
+    </div>
+
+    <!-- Karta Changelogu v2.0.0 -->
+    <div class="changelog-card">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <span class="badge bg-secondary px-3 py-2 version-tag">v2.0.0 - Rewolucja Bazy Danych</span>
+        <span class="date-tag">10 Lutego 2026</span>
+      </div>
+      <p class="text-zinc-400">Migracja wewnętrznego przechowywania danych z lokalnych plików JSON na stabilną, skalowalną i rozproszoną chmurę MongoDB Atlas.</p>
+
+      <div class="change-category added">
+        <i class="fas fa-plus"></i> Dodano
+      </div>
+      <ul class="change-list">
+        <li>Pełna integracja z globalnym API Overtime Polska, zasilającym licznik LIVE na naszej platformie WWW.</li>
+        <li>Automatyczny system zapisu aktywnych użytkowników na kanałach głosowych.</li>
+      </ul>
+
+      <div class="change-category fixed">
+        <i class="fas fa-tools"></i> Naprawiono
+      </div>
+      <ul class="change-list">
+        <li>Naprawiono wygasanie sesji i sporadyczne błędy odpytywania API Discorda podczas dużego ruchu.</li>
+      </ul>
+    </div>
+
+    <!-- Karta Changelogu v1.2.0 -->
+    <div class="changelog-card mb-5">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <span class="badge bg-secondary px-3 py-2 version-tag">v1.2.0 - Stabilny Fundament</span>
+        <span class="date-tag">15 Listopada 2025</span>
+      </div>
+      <p class="text-zinc-400">Stworzenie bazowych funkcji bota, zarządzanie rolami, automatyczne powitania oraz implementacja ról za punkty aktywności.</p>
+    </div>
+
+    <!-- Stopka -->
+    <p class="text-muted small mt-5 pb-5">© 2026 <a href="https://linktr.ee/overtimepolska" target="_blank" class="text-secondary text-decoration-none">Overtime Polska</a>. Wszelkie prawa zastrzeżone.</p>
+  </div>
+
+  <!-- Skrypty -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -11,12 +11,17 @@ const COLLECTION = process.env.COLLECTION_NAME || 'razem';
 let cachedClient = null;
 let cachedDb = null;
 
-// Cache dla ostatniego wyniku w przypadku problemów z połączeniem
-let lastResult = null;
-
 async function connectToDatabase() {
   if (cachedClient && cachedDb) {
-    return { client: cachedClient, db: cachedDb };
+    try {
+      // Szybki test czy połączenie działa (ping)
+      await cachedDb.command({ ping: 1 });
+      return { client: cachedClient, db: cachedDb };
+    } catch (e) {
+      console.log('Połączenie z cache wygasło, nawiązywanie nowego...');
+      cachedClient = null;
+      cachedDb = null;
+    }
   }
 
   const client = new MongoClient(MONGO_URI);
@@ -41,41 +46,32 @@ async function getUserCount() {
     
     const collection = db.collection(COLLECTION);
     
-    // Pobierz dokument z liczbą użytkowników
+    // Zawsze pobieraj aktualny dokument z bazy danych bez pamięci podręcznej wyników
     const result = await collection.findOne({});
     
     if (!result) {
-      throw new Error('Nie znaleziono dokumentu z danymi');
+      throw new Error('Nie znaleziono dokumentu z danymi w bazie');
     }
     
-    // Zapisz wynik do cache
-    lastResult = {
+    return {
       totalCount: result.total_users || result.totalUsers || 0,
       voiceUsers: result.voice_users || result.voiceUsers || 0,
       dataSource: 'MongoDB Atlas',
       servers: result.servers || []
     };
-    
-    return lastResult;
   } catch (error) {
-    console.error('Błąd podczas łączenia z MongoDB:', error);
-    
-    // Jeśli mamy cache, zwróć go z oznaczeniem
-    if (lastResult) {
-      return { ...lastResult, fromCache: true };
-    }
-    
-    // W przypadku braku cache, zwróć wartość domyślną
-    return { 
-      totalCount: 0, 
-      voiceUsers: 0,
-      error: error.message,
-      fromBackup: true
-    };
+    console.error('Błąd podczas pobierania danych z MongoDB:', error);
+    throw error;
   }
 }
 
 module.exports = async (req, res) => {
+  // Wyłączenie cache w przeglądarkach i na serwerach proxy Vercel
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   // Obsługa CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -83,7 +79,6 @@ module.exports = async (req, res) => {
   
   // Logowanie
   console.log(`[Vercel API] Otrzymano żądanie: ${req.method} ${req.url}`);
-  console.log('[Vercel API] Headers:', req.headers);
   
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -98,7 +93,7 @@ module.exports = async (req, res) => {
     }
 
     const data = await getUserCount();
-    console.log('[Vercel API] Pobrano dane:', data);
+    console.log('[Vercel API] Pobrano dane live:', data);
     
     // Dodaj timestamp ostatniej aktualizacji
     const result = {
@@ -110,7 +105,7 @@ module.exports = async (req, res) => {
   } catch (error) {
     console.error('[Vercel API] Błąd podczas pobierania danych:', error);
     res.status(500).json({ 
-      error: 'Wystąpił błąd podczas pobierania danych',
+      error: 'Wystąpił błąd podczas pobierania danych z bazy danych',
       message: error.message 
     });
   }
