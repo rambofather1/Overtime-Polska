@@ -237,38 +237,54 @@
     <!-- KARTA v4.0 EXTREME -->
     <div class="changelog-card changelog-card--extreme">
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <span class="badge bg-danger px-3 py-2 version-tag"><i class="fas fa-fire me-2"></i>v4.0 EXTREME - Standard v4 i Telemetria</span>
+        <span class="badge bg-danger px-3 py-2 version-tag"><i class="fas fa-fire me-2"></i>v4.0 EXTREME - Era Commandless, Telemetria & Auto-healing</span>
         <span class="date-tag">21 Maja 2026</span>
       </div>
-      <p class="text-white-50">Przełomowa, potężna przebudowa wewnętrznej architektury, bazy danych oraz interfejsu mechaniki wspierania sieci społecznościowej. Aktualna linia produkcyjna 4.0 reprezentuje stabilny, zoptymalizowany standard operacyjny zorientowany w 100% na interakcje komponentowe (interaction-first / commandless).</p>
+      <p class="text-white-50">Przełomowa, potężna epoka w rozwoju systemu chroniącego sieć społecznościową Overtime Polska. Przejście na w pełni zintegrowany model <strong>Commandless & Interaction-First</strong>, zaawansowaną telemetrykę zachowań, redundantne mechanizmy przeżywalności usług oraz głęboką de-hardkodyfikację wszystkich modułów operacyjnych.</p>
       
       <div class="change-category highlight">
-        <i class="fas fa-chart-line"></i> Moderation Cockpit & Telemetry Backbone
+        <i class="fas fa-chart-line"></i> Centralny Strumień Telemetrii i Social Graph
       </div>
       <ul class="change-list">
-        <li><strong>Filtrowanie Dossier</strong> (<code>operator_dossier_view.py</code>, <code>case_service.py</code>) — Wprowadzono filtry historii spraw według typu akcji, serwera i operatora działające na bieżąco bez przeładowania panelu.</li>
-        <li><strong>Zintegrowane Telemetry Coverage</strong> (<code>activity_service.py</code>) — Nowy strumień telemetryczny <code>activity_events</code> gromadzący i klasyfikujący akcje z wiadomości, interakcji, reakcji (<code>REACTION_ADD/REMOVE</code>) oraz cyklu życia serwerów i ról.</li>
-        <li><strong>Dashboard Read-Side API</strong> (<code>activity_analytics.py</code>) — Dodano gotowe endpointy analityczne dla panelu operacyjnego (najbardziej aktywni, top kanały, overalpy głosowe do analizy powiązań).</li>
-        <li><strong>Trwałość logów i usuwanie danych</strong> — Dodano politykę retencji danych czyszczącą stare wpisy Mongo/JSONL oraz automatyczną sanitaryzację wzorców z wrażliwymi danymi.</li>
+        <li><strong>Strukturalna Telemetria Aktywności</strong> (<code>activity_service.py</code>) — Wprowadzenie centralnego systemu <code>activity_events</code> zapisującego zdarzenia z wiadomości (tekst, edycje, usunięcia, attachmenty), bezpośrednich interakcji, ról, administracji (<code>GUILD_UPDATE</code>, <code>CHANNEL/THREAD_CREATE</code> itp.) oraz surowych reakcji (<code>REACTION_ADD/REMOVE</code>) najlepiej-staralnie do MongoDB i plików JSONL.</li>
+        <li><strong>API Analityczne & Social Graph Engine</strong> (<code>activity_analytics.py</code>) — Wdrożenie warstwy mapującej overlapping sesji głosowych do analityki relacji (Top 5 współobecnych osób) oraz automatycznej detekcji kandydatów na watchlistę operacyjną.</li>
+        <li><strong>Strukturalne logi procesowe BOT_LOG</strong> (<code>core/logger.py</code>) — Każde zdarzenie z loggera aplikacji jest mirrorowane jako strukturalny event systemowy, eliminując potrzebę parsowania tekstowych logów przez dashboard.</li>
+        <li><strong>Polityka Prawna i Retencja</strong> — Wprowadzenie okresowego auto-sweepu czyszczącego z Mongo stare logi, sanitaryzacji wzorców wrażliwych oraz restrykcyjnego maskowania w strumieniu telemetrii.</li>
+      </ul>
+
+      <div class="change-category added">
+        <i class="fas fa-robot"></i> Daddy Voice's: Samoleczenie i Pełna Redundancja
+      </div>
+      <ul class="change-list">
+        <li><strong>Restart-Safe Reconcile Loop</strong> (<code>cogs/temp_vc/events.py</code>) — Zaawansowany demon sprawdzania spójności odpytuje serwer Discorda i bazę Mongo, bezbłędnie usuwając puste pokoje po restartach bota i odzyskując osierocone kanały bez dublowania, z uwzględnieniem bezpiecznej listy <code>safe_channel_ids</code>.</li>
+        <li><strong>Automatyczna Polityka Nieobecności</strong> — System automatycznie deleguje własność pokoju (na użytkownika o najdłuższym stażu) przy odejściu właściciela lub usuwa kanał po upłynięciu ustalonego czasu karencji (<code>owner_absence_grace_seconds</code>).</li>
+        <li><strong>Blokada Lobby i Zarządzanie Bitrate</strong> — Kanały typu lobby i voting są bezwarunkowo wymuszane jako publiczne, a właściciel dostał precyzyjne sterowanie bitrate w locie rejestrujące eventy audytowe.</li>
+      </ul>
+
+      <div class="change-category highlight">
+        <i class="fas fa-shield-alt"></i> Redukcja Decyzyjna: Dossier i Godmode Cockpit
+      </div>
+      <ul class="change-list">
+        <li><strong>Restart-Safe Dossier Przyciski</strong> (<code>ui/views/operator_dossier_view.py</code>) — Przyciski na kartach raportowych zmieniono na dynamiczne komponenty <code>DynamicItem</code> połączone trwałym custom_id, dzięki czemu działają natychmiast po rebootach bez zależności od stanu RAM procesu.</li>
+        <li><strong>Zarządowe Zabezpieczenia (Board Guardrails)</strong> (<code>utils/permissions.py</code>) — Wdrożenie globalnej klasy ochronnej zabezpieczającej administrację i konta zarządu (w tym <code>BOARD_EQUIVALENT_USER_IDS</code>) przed banami lub blokadami ze strony innych moderatorów.</li>
+        <li><strong>Prywatny Cockpit Godmode</strong> (<code>ui/views/godmode_view.py</code>) — Scentralizowany panel administratorski owner-only, eliminujący dziesiątki przestarzałych komend tekstowych na rzecz bezpiecznego modal-flow z wbudowanym eksportem banów i mass_ban previews.</li>
+        <li><strong>Dwufazowy Potwierdzenia i Bezpieczeństwo Dostarczeń</strong> — Ciężkie akcje (Ban, Unban, Przerwa) przechodzą przez jawny krok potrwierdzeń z podglądem przewidywanych ubytków. System gwarantuje dostarczenie powiadomienia DM do zbanowanego użytkownika przed fizycznym nałożeniem blokady na serwerach sieci.</li>
       </ul>
 
       <div class="change-category changed">
-        <i class="fas fa-sync"></i> Daddy Voice's: Restart Safety & Auto-healing
+        <i class="fas fa-cookie-bite"></i> Fortune Cookie: Przejście do Modułu Runtime
       </div>
       <ul class="change-list">
-        <li><strong>Zabezpieczenie przed rebootem</strong> — Pętla <code>reconcile_loop</code> wznawia i automatycznie porządkuje puste lub osierocone kanały tymczasowe po restarcie bota. Wyeliminowano ryzyko błędu pamięci podatnej i dublowania pokoi.</li>
-        <li><strong>Absence & Continuity Policy</strong> — Gdy właściciel tymczasowego kanału głosowego opuści serwer lub kanał na zbyt długi czas, bot automatycznie przechodzi w fazę delegowania własności (najdłużej obecny) lub usuwa kanał.</li>
-        <li><strong>Audio Abuse Shield</strong> — Przeniesiono dynamiczne nadpisywanie uprawnień na bezpieczniejszy mechanizm, zapobiegając nadużywaniu funkcji wyciszania (mute bypass) przez osoby uprawnione do obsługi kanałów.</li>
-        <li><strong>Ulepszenie interfejsu (LayoutView v4)</strong> — Gęstszy układ sekcji, stany statusu ANSI z kolorami i wydzielone dedykowane przyciski pod statusy zaproszeń (lobby voting, public, private).</li>
+        <li><strong>Odhardkodowanie i Dziedziczenie Konfiguracji</strong> (<code>services/guild_settings_service.py</code>) — Wróżby (komenda <code>wr</code>) łączą bazowy profil globalny z lokalnymi nadpisami serwerów (pula, dozwolone kanały rytuału, dedykowany cooldown, exempt roles).</li>
+        <li><strong>Ślad Audytowy claims</strong> — Każde pomyślne losowanie rejestruje ustrukturyzowany event telemetryczny <code>EVT_FORTUNE_CLAIM</code> do celów statystycznych.</li>
       </ul>
 
-      <div class="change-category highlight">
-        <i class="fas fa-shield-alt"></i> Moderation, Security & Guardrails
+      <div class="change-category fixed">
+        <i class="fas fa-tools"></i> Techniczne Twardnienie (Interaction Hardening)
       </div>
       <ul class="change-list">
-        <li><strong>Dwufazowe potwierdzenia operatorskie</strong> (<code>operator_dossier_view.py</code>) — Krytyczne akcje moderacyjne (Ban, Unban, Przerwa) przechodzą teraz przez etap potwierdzenia Tak/Nie z prywatnym podglądem przewidywanych ubytków sieciowych.</li>
-        <li><strong>Runtime b_ban Hardening</strong> — Komenda <code>b</code> filtruje aktywne bany na poziomie bazy danych i blokuje niefortunne próby przedwczesnego unbana, dopóki administrator nie zdecyduje o zdjęciu trwałej blokady sieciowej.</li>
-        <li><strong>Zintegrowana ochrona zarządu (Board Guardrails)</strong> — Nowy system ochrony ról administracyjnych (Emperor/Board) zautomatyzował zabezpieczenia bez rozsiewania wyjątków po osobnych modułach.</li>
+        <li><strong>Zunifikowane Response API</strong> (<code>core/interaction_responses.py</code>) — Wszystkie moduły (w tym Admin, Fortune, Stats i LFM) korzystają centralnie z helpera <code>send_interaction_response</code> z obsługą followupów, eliminując błędy typu <code>404 Unknown interaction</code>.</li>
+        <li><strong>Przebudowa Setupu i Paneli LFG/LFM/Info</strong> — Konfigurator Setup stał się dynamicznym cockpit-widokiem z podpanelami wyboru ról z natywnej platformy Discorda (takeover_role_ids) i obsługą predefiniowanych gier z aliasami i bannerami w LFG.</li>
       </ul>
 
       <!-- Sekcja rozwijana - Szczegóły techniczne -->
@@ -277,11 +293,12 @@
         <div class="tech-content text-white-50">
           <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
           <ul class="change-list">
-            <li>Refaktoryzacja całego modułu <code>Daddy Voice</code> — Zastąpiono rozproszone eventy na rzecz uporządkowanej pętli sprawdzania spójności opartej o natywne biblioteczki <code>tasks.Loop</code> z częstotliwością odświeżania wynoszącą 10 sekund.</li>
-            <li>Nowy wzorzec uprawnień dynamicznych — Klasa <code>VoicePermissionGuard</code> zastąpiła stare, surowe manipulatory <code>PermissionOverwrite</code> w celu zablokowania przypadkowego ominięcia mutowania (Mute Bypass) przez uprawnionych członków.</li>
-            <li>Zaprojektowanie asynchronicznego bufora zapisu eventów — W module <code>activity_service.py</code> wdrożono kolejkowanie w pamięci podręcznej (Batching) i grupowy zapis obiektów telemetrycznych do MongoDB co 15 sekund, drastycznie zmniejszając narzut I/O i blokowanie event loopa.</li>
-            <li>Filtrowanie i indeksacja bazy danych — Wdrożono kompozytowe klucze indeksujące w bazie MongoDB Atlas na polach <code>{ "operator_id": 1, "action_type": 1, "timestamp": -1 }</code> w celu optymalizacji i błyskawicznego serwowania wyników paginacji w <code>operator_dossier_view.py</code>.</li>
-            <li>Automatyczna retencja logów — Skrypt <code>retention_policy.py</code> okresowo odrzuca i usuwa historyczne wpisy o statusach z bazy MongoDB oraz archiwizuje pliki JSONL starsze niż 90 dni do skompresowanych paczek GZIP.</li>
+            <li><strong>Refaktoryzacja pętli osieroconych VC:</strong> Demon <code>reconcile_loop</code> w <code>events.py</code> wykorzystuje bezpieczne pętle asynchroniczne <code>tasks.Loop</code> (częstotliwość 10-15 sekund) i pobiera anomalie metodą <code>fetch_channel()</code> z handlingiem wyjątków <code>NotFound</code>, zapobiegając błędnemu kasowaniu poprawnych, istniejących kanałów stałych.</li>
+            <li><strong>Zabezpieczenie przed wyścigami w limiterze:</strong> Wprowadzono pełną synchronizację współbieżnych odpytań sieciowych w <code>core/rate_limiter.py</code> przy użyciu instancji <code>asyncio.Lock</code> w metodzie <code>acquire()</code>, eliminując bursty przepuszczane przez globalny limiter.</li>
+            <li><strong>Asynchroniczny Bufor Telemetrii (Batching):</strong> Wdrożono grupowanie zdarzeń telemetrycznych w kolekcji w pamięci podręcznej RAM (paczki co 15 sekund) z asynchronicznym zapisem poprzez MongoClient, co eliminuje mikro-przycięcia głównej pętli zdarzeń bota przy gwałtownych ruchach społeczności serwerowej.</li>
+            <li><strong>Kompozytowe Indeksy pod Overlapping sesji:</strong> Baza danych MongoDB Atlas otrzymała zoptymalizowane pod dynamiczne zapytania dashboardu indeksy: <code>channel_id + start_time</code> oraz <code>guild_id + user_id + end_time</code>, redukując narzut analizatora social-graphu i nakładających się czasowo obecności na voice.</li>
+            <li><strong>Zapewnienie spójności czasu:</strong> Normalizacja sygnatur czasowych operacji i banów w MongoDB do strefy UTC w <code>services/moderation_guard_service.py</code> przed jakimkolwiek sprawdzaniem dynamicznych okien czasowych, zabezpieczając system przed błędami rzutowania naiwnych (naive) i świadomych (aware) obiektów <code>datetime</code>.</li>
+            <li><strong>Rotacja i czyszczenie logów JSONL:</strong> Skrypt <code>retention_policy.py</code> automatycznie kompresuje przestarzałe logi systemowe bezpośrednio do archiwów GZIP z potokiem oczyszczania starych rekordów Mongo powyżej granicy retencji (90 dni).</li>
           </ul>
         </div>
       </details>
