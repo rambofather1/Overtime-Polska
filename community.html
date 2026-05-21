@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overtime Multiverse Live - Interaktywny Świat Społeczności</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #a855f7;
+      --secondary-color: #ff7b00;
+      --terminal-green: #10b981;
+      --neon-blue: #06b6d4;
+      --cyber-bg: #09090e;
+    }
+
+    body {
+      background-color: var(--cyber-bg);
+      color: #fff;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .game-window {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1300px;
+      margin: 0 auto;
+      background: rgba(10, 10, 18, 0.9);
+      border: 3px solid #1f1f2e;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.25);
+      overflow: hidden;
+    }
+
+    /* Pasek kontrolny gry */
+    .game-header {
+      background: linear-gradient(90deg, #161623, #0c0c14);
+      border-bottom: 2px solid #2e2e42;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+
+    .game-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: linear-gradient(45deg, #a855f7, #ff7b00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .game-hud {
+      display: flex;
+      gap: 15px;
+    }
+
+    .hud-stat {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Selektor lokacji (Overworld Map) */
+    .location-selector {
+      background: #11111f;
+      border-bottom: 2px solid #2e2e42;
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      gap: 15px;
+    }
+
+    .location-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #aaa;
+      padding: 8px 24px;
+      border-radius: 30px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .location-btn:hover {
+      background: rgba(168, 85, 247, 0.15);
+      border-color: var(--primary-color);
+      color: #fff;
+    }
+
+    .location-btn.active {
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 0 15px rgba(255, 123, 0, 0.4);
+    }
+
+    /* Ekran Ładowania (Load Engine) */
+    .game-viewport {
+      position: relative;
+      height: 620px;
+      width: 100%;
+      background: radial-gradient(circle, #131326 0%, #080811 100%);
+      overflow: hidden;
+    }
+
+    /* --- LOKACJA: METROPOLIS --- */
+    .city-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    .skyline {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30%;
+      background: linear-gradient(to top, rgba(168, 85, 247, 0.1) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .district {
+      position: absolute;
+      border: 2px solid;
+      border-radius: 12px;
+      padding: 15px;
+      width: 28%;
+      height: 80%;
+      top: 10%;
+      background: rgba(10, 10, 20, 0.7);
+      backdrop-filter: blur(4px);
+      box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.05);
+      transition: all 0.4s ease;
+    }
+
+    .district--hub {
+      left: 4%;
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+    }
+
+    .district--gaming {
+      left: 36%;
+      border-color: #ec4899;
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.15);
+    }
+
+    .district--chill {
+      left: 68%;
+      border-color: var(--terminal-green);
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+    }
+
+    .district-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .district-description {
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .district-capacity {
+      font-size: 0.7rem;
+      font-family: monospace;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* --- LOKACJA: TAWERNA (GOSPODA) --- */
+    .tavern-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    .fireplace {
+      position: absolute;
+      top: 5%;
+      left: 5%;
+      width: 140px;
+      height: 110px;
+      background: #1c110d;
+      border: 3px solid #854d0e;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 10px;
+    }
+
+    .fire {
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle, #f97316 20%, #ef4444 60%, transparent 100%);
+      border-radius: 50% 50% 20% 20%;
+      animation: flicker 0.15s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(0.9) rotate(-2deg); opacity: 0.8; }
+      100% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+    }
+
+    .bar-counter {
+      position: absolute;
+      top: 5%;
+      right: 5%;
+      width: 260px;
+      height: 70px;
+      background: linear-gradient(180deg, #78350f, #451a03);
+      border: 3px solid #854d0e;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+
+    .beer-mug {
+      font-size: 1.5rem;
+      animation: float 2s infinite alternate;
+    }
+
+    .tables-container {
+      position: absolute;
+      bottom: 10%;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      padding: 0 5%;
+    }
+
+    .tavern-table {
+      width: 180px;
+      height: 100px;
+      background: radial-gradient(circle, #7c2d12, #451a03);
+      border: 4px solid #a16207;
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .table-label {
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      font-weight: bold;
+      pointer-events: none;
+    }
+
+    /* --- POSTACIE (SPRITY I AWATARY) --- */
+    .citizen, .character {
+      position: absolute;
+      width: 36px;
+      height: 52px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+      transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+      cursor: pointer;
+    }
+
+    .citizen-avatar, .character-body {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      border: 2.5px solid #a855f7;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+      position: relative;
+    }
+
+    .character-body::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      right: -3px;
+      width: 10px;
+      height: 10px;
+      background-color: var(--terminal-green);
+      border-radius: 50%;
+      border: 1.5px solid #000;
+    }
+
+    /* Animacja kufla u biesiadujących */
+    .character--drinking .character-body::before {
+      content: '🍺';
+      position: absolute;
+      top: -8px;
+      right: -10px;
+      font-size: 11px;
+      animation: toastAnim 1.5s infinite alternate;
+    }
+
+    @keyframes toastAnim {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-3px) rotate(15deg); }
+    }
+
+    .citizen-name, .character-tag {
+      font-size: 0.6rem;
+      background: rgba(5, 5, 10, 0.95);
+      color: #fff;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-top: 3px;
+      white-space: nowrap;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      max-width: 85px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    /* Dymek z tekstem dla autentycznego poczucia interaktywnej gry */
+    .bubble-cloud {
+      position: absolute;
+      top: -30px;
+      background: #fff;
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      animation: floatUp 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      z-index: 25;
+      pointer-events: none;
+    }
+    .bubble-cloud::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 4px 4px 0;
+      border-style: solid;
+      border-color: #fff transparent;
+      display: block;
+      width: 0;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(8px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* --- PANEL ANALITYKI RETENCJI (STATYSTYKI GRY) --- */
+    .game-sidebar {
+      background: #0d0d16;
+      border-top: 2px solid #2e2e42;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .game-sidebar {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .analytics-panel {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 15px;
+    }
+
+    .analytics-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--secondary-color);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sidebar-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: rgba(255, 255, 255, 0.01);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      font-size: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .synergy-tag {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #df9eff;
+      font-family: monospace;
+      font-weight: bold;
+    }
+
+    .gamer-tag {
+      background: rgba(255, 123, 0, 0.15);
+      border: 1px solid rgba(255, 123, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #ffb066;
+      font-family: monospace;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="container py-4">
+    <!-- Przycisk powrotu na trakt nadrzędny -->
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+      <a href="index.html" class="btn btn-sm btn-outline-light"><i class="fas fa-arrow-left me-2"></i>Powrót do Portalu</a>
+      <span class="badge bg-danger pulse-live">LIVE SYSTEM CONNECTED</span>
+    </div>
+
+    <div class="game-window">
+      <!-- HUD KONTROLNY GRY -->
+      <div class="game-header">
+        <div class="game-title">
+          <i class="fas fa-gamepad" style="color: var(--secondary-color);"></i> Overtime Multiverse
+        </div>
+        <div class="game-hud">
+          <div class="hud-stat" title="Wszyscy aktywni członkowie na kanałach głosowych">
+            <i class="fas fa-users text-primary"></i> LICZBA GRACZY: <span id="hudVoiceUsers" class="text-white">-</span>
+          </div>
+          <div class="hud-stat" title="Aktualne tętno i ruch serwera">
+            <i class="fas fa-heartbeat text-danger"></i> PULS: <span id="hudPulse" class="text-danger">-</span>
+          </div>
+          <div class="hud-stat" title="Latencja sieciowa do serwerów Discord">
+            <i class="fas fa-wifi text-info"></i> PING: <span id="hudPing" class="text-info">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SELEKTOR LOKACJI (WORLD MAP) -->
+      <div class="location-selector">
+        <div class="location-btn active" onclick="switchLocation('metropolis')">
+          <i class="fas fa-city"></i> Metropolis City (Podgląd Ogólny)
+        </div>
+        <div class="location-btn" onclick="switchLocation('tavern')">
+          <i class="fas fa-beer"></i> Gospoda Pod Złotym Kuflem
+        </div>
+      </div>
+
+      <!-- VIEWPORT RENDERA GRY -->
+      <div class="game-viewport" id="gameViewport">
+        
+        <!-- LOKACJA MIASTA (METROPOLIS) -->
+        <div class="city-container" id="locMetropolis" style="display: block;">
+          <div class="skyline"></div>
+          
+          <div class="district district--hub" id="distPlaza">
+            <div class="district-title text-neon-blue"><i class="fas fa-store-alt"></i> Central Plaza</div>
+            <div class="district-description">Spotkania i rozmowy ogólne. Tu bije serce społeczności.</div>
+            <div class="district-capacity" id="capPlaza">Użytkowników: -</div>
+          </div>
+
+          <div class="district district--gaming" id="distArena">
+            <div class="district-title text-neon-pink"><i class="fas fa-gamepad"></i> Cyber Arena</div>
+            <div class="district-description">Rozgrywki sieciowe, potyczki i zapaleni gracze.</div>
+            <div class="district-capacity" id="capArena">Użytkowników: -</div>
+          </div>
+
+          <div class="district district--chill" id="distLounge">
+            <div class="district-title text-neon-emerald"><i class="fas fa-music"></i> Neon Lounge</div>
+            <div class="district-description">Strefa muzyczna i relaks. Spokój, radio i luźne szepty.</div>
+            <div class="district-capacity" id="capLounge">Użytkowników: -</div>
+          </div>
+        </div>
+
+        <!-- LOKACJA TAWERNY (GOSPODA) -->
+        <div class="tavern-container" id="locTavern">
+          <div class="fireplace" title="Kominek rzucający ciepło na całą salę">
+            <div class="fire"></div>
+            <div style="font-size: 0.6rem; margin-top: 5px; color: #a16207;">PIECZARA</div>
+          </div>
+
+          <div class="bar-counter" title="Główna lada z zimnymi trunkami">
+            <div class="beer-mug">🍺</div>
+            <div style="font-size: 0.65rem; color: #f59e0b;">ZŁOTY BAR TAWERNY</div>
+            <div class="beer-mug">🍺</div>
+          </div>
+
+          <div class="tables-container">
+            <div class="tavern-table" id="tableGaming">
+              <span class="table-label">Stół Wojowników (Gaming)</span>
+            </div>
+            <div class="tavern-table" id="tableGeneral">
+              <span class="table-label font-monospace">Stół Mędrców</span>
+            </div>
+            <div class="tavern-table" id="tableChill">
+              <span class="table-label">Zaułek Muzyki (Chill)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SIDEBAR LEADERBORD / RETENCJA LIVE -->
+      <div class="game-sidebar">
+        <!-- TOP SYNERGIES -->
+        <div class="analytics-panel">
+          <div class="analytics-title">
+            <i class="fas fa-heart text-danger"></i> TOP 5 Synergii Partnerskich (Najlepsi Przyjaciele)
+          </div>
+          <ul class="sidebar-list" id="synergiesList">
+            <li class="sidebar-item text-white-50 text-center">Ładowanie relacji live...</li>
+          </ul>
+        </div>
+
+        <!-- TOP GAMERS / LONGEST SESSIONS -->
+        <div class="analytics-panel">
+          <div class="analytics-title">
+            <i class="fas fa-crown text-warning"></i> TOP 5 Największych Biesiadników (Rekordy Sesji)
+          </div>
+          <ul class="sidebar-list" id="gamersList">
+            <li class="sidebar-item text-white-50 text-center">Ładowanie rekordów biesiady...</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let activeLocation = 'metropolis';
+    let currentVoiceUsers = [];
+
+    function switchLocation(loc) {
+      activeLocation = loc;
+      
+      // Aktualizacja przycisków lokacji
+      document.querySelectorAll('.location-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(loc)) {
+          btn.classList.add('active');
+        }
+      });
+
+      // Przełączenie widoczności w viewportach
+      document.getElementById('locMetropolis').style.display = loc === 'metropolis' ? 'block' : 'none';
+      document.getElementById('locTavern').style.display = loc === 'tavern' ? 'block' : 'none';
+
+      // Przerysowanie postaci ze zbuforowanych danych
+      renderAll(currentVoiceUsers);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+    }
+
+    async function tickEngine() {
+      try {
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const apiUrl = isLocalhost ? 'http://localhost:3000/api/usercount' : '/api/usercount';
+        
+        const res = await fetch(apiUrl, { headers: { 'Cache-Control': 'no-cache' } });
+        if (res.ok) {
+          const data = await res.json();
+          currentVoiceUsers = data.voice_users_detailed || [];
+          const voiceCount = data.voiceUsers || data.voice_users || 0;
+
+          // Aktualizacja HUD statystyk
+          document.getElementById('hudVoiceUsers').textContent = voiceCount;
+          document.getElementById('hudPulse').textContent = `${Math.round(60 + (voiceCount * 2.2))} BPM`;
+          
+          const latency = Math.round(data.latencyMs || data.latency_ms || 0);
+          document.getElementById('hudPing').textContent = latency > 0 ? `${latency} ms` : 'N/A';
+
+          // Przerysowanie wybranej lokacji
+          renderAll(currentVoiceUsers);
+
+          // Renderowanie analityki w panelach bocznych
+          renderAnalytics(data.top_synergies || [], data.top_gamers || []);
+        }
+      } catch (err) {
+        console.error("Błąd silnika gry:", err);
+      }
+    }
+
+    function renderAll(detailedUsers) {
+      // Czyścimy stare elementy z obu kontenerów lokacji
+      document.querySelectorAll('.citizen, .character').forEach(el => el.remove());
+
+      if (!detailedUsers || detailedUsers.length === 0) {
+        return;
+      }
+
+      if (activeLocation === 'metropolis') {
+        renderMetropolis(detailedUsers);
+      } else {
+        renderTavern(detailedUsers);
+      }
+    }
+
+    function renderMetropolis(users) {
+      const container = document.getElementById('locMetropolis');
+      const containerRect = container.getBoundingClientRect();
+
+      let hubCount = 0, gamingCount = 0, chillCount = 0;
+      users.forEach(u => {
+        if (u.channel_type === 'gaming') gamingCount++;
+        else if (u.channel_type === 'chill') chillCount++;
+        else hubCount++;
+      });
+
+      document.getElementById('capPlaza').textContent = `Użytkowników: ${hubCount}`;
+      document.getElementById('capArena').textContent = `Użytkowników: ${gamingCount}`;
+      document.getElementById('capLounge').textContent = `Użytkowników: ${chillCount}`;
+
+      const districts = [
+        { id: 'distPlaza', type: 'general', color: '#06b6d4' },
+        { id: 'distArena', type: 'gaming', color: '#ec4899' },
+        { id: 'distLounge', type: 'chill', color: '#10b981' }
+      ];
+
+      users.forEach((user, i) => {
+        let targetType = user.channel_type || 'general';
+        let dist = districts.find(d => d.type === targetType) || districts[0];
+
+        const distEl = document.getElementById(dist.id);
+        if (!distEl) return;
+
+        const distRect = distEl.getBoundingClientRect();
+        const relativeLeft = distRect.left - containerRect.left;
+        const relativeTop = distRect.top - containerRect.top;
+
+        const citizen = document.createElement('div');
+        citizen.className = 'citizen';
+
+        // Wyznaczenie pozycji wewnątrz fizycznej strefy
+        const padding = 20;
+        const posX = relativeLeft + padding + Math.random() * (distRect.width - (padding * 2) - 30);
+        const posY = relativeTop + padding + 60 + Math.random() * (distRect.height - (padding * 2) - 80);
+
+        const displayName = escapeHtml(user.display_name || user.username || 'Mieszkaniec');
+        const avatar = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
+        const channelName = escapeHtml(user.channel_name || 'Głosowy');
+        const activityText = user.activities && user.activities.length > 0 ? `Gra w: ${user.activities.join(', ')}` : 'Siedzi na głosowym';
+
+        citizen.style.left = `${posX}px`;
+        citizen.style.top = `${posY}px`;
+
+        citizen.innerHTML = `
+          <div class="citizen-avatar" style="background-image: url('${avatar}'); border-color: ${dist.color}; box-shadow: 0 0 10px ${dist.color};" title="${displayName} - ${activityText}"></div>
+          <div class="citizen-name">${displayName}</div>
+        `;
+
+        // Co jakiś czas postacie wypowiadają chmurki dialogowe
+        if (user.activities && user.activities.length > 0) {
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble-cloud';
+          bubble.style.border = `1.5px solid ${dist.color}`;
+          bubble.textContent = `Gram w ${user.activities[0]}! 🎮`;
+          citizen.appendChild(bubble);
+        } else if (Math.random() > 0.6) {
+          setTimeout(() => {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble-cloud';
+            bubble.style.border = `1.5px solid ${dist.color}`;
+            bubble.textContent = `Kanał: ${channelName} 💬`;
+            citizen.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 4000);
+          }, Math.random() * 6000);
+        }
+
+        // Fizyczne kliknięcie na obiekt gry
+        citizen.addEventListener('click', (e) => {
+          e.stopPropagation();
+          showCharacterSpeech(citizen, dist.color, `Hej! Siedzę na kanale "${channelName}"! 🚀`);
+        });
+
+        container.appendChild(citizen);
+      });
+    }
+
+    function renderTavern(users) {
+      const container = document.getElementById('locTavern');
+      const containerRect = container.getBoundingClientRect();
+
+      const table1El = document.getElementById('tableGaming');
+      const table2El = document.getElementById('tableGeneral');
+      const table3El = document.getElementById('tableChill');
+
+      const zones = [];
+      function addZone(el, type) {
+        if (el) {
+          const r = el.getBoundingClientRect();
+          zones.push({
+            name: type,
+            left: r.left - containerRect.left + (r.width / 2),
+            top: r.top - containerRect.top + (r.height / 2),
+            radius: r.width / 2 + 10
+          });
+        }
+      }
+
+      addZone(table1El, 'gaming');
+      addZone(table2El, 'general');
+      addZone(table3El, 'chill');
+
+      users.forEach((user, i) => {
+        let zone = zones.find(z => z.name === user.channel_type) || zones[Math.floor(Math.random() * zones.length)];
+
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * (zone.radius - 20) + 15;
+        
+        let posX = zone.left + Math.cos(angle) * dist - 18;
+        let posY = zone.top + Math.sin(angle) * dist - 26;
+
+        posX = Math.max(15, Math.min(posX, containerRect.width - 50));
+        posY = Math.max(15, Math.min(posY, containerRect.height - 70));
+
+        const char = document.createElement('div');
+        char.className = 'character';
+        if (Math.random() > 0.4) {
+          char.classList.add('character--drinking');
+        }
+
+        const displayName = escapeHtml(user.display_name || user.username || 'Biesiadnik');
+        const avatar = user.avatar_url || `https://api.dicebear.com/7.x/adventurer/svg?seed=${user.user_id}`;
+        const channelName = escapeHtml(user.channel_name || 'Rozmowy');
+        const activityText = user.activities && user.activities.length > 0 ? `W grze: ${user.activities.join(', ')}` : 'Rozkoszuje się miodem';
+
+        char.style.left = `${posX}px`;
+        char.style.top = `${posY}px`;
+
+        char.innerHTML = `
+          <div class="character-body" style="background-image: url('${avatar}');" title="${displayName} - ${activityText}"></div>
+          <div class="character-tag">${displayName}</div>
+        `;
+
+        char.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const quotes = [
+            "Wypijmy za najszybszy rozwój w Polsce! 🍻",
+            "Miodu nie żałować! Za Overtime!",
+            "Tawerna na bazie MongoDB działa cudownie!",
+            "Bot Ojciec 4.0 nalewa najlepsze trunki!",
+            "Ktoś dołączy do biesiady na kanale głosowym?"
+          ];
+          const text = quotes[Math.floor(Math.random() * quotes.length)];
+          showCharacterSpeech(char, '#ff7b00', text);
+        });
+
+        container.appendChild(char);
+      });
+    }
+
+    function showCharacterSpeech(element, borderColor, message) {
+      // Usunięcie starych dymków z tego konkretnego obiektu
+      const old = element.querySelector('.bubble-cloud');
+      if (old) old.remove();
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble-cloud';
+      bubble.style.border = `1.5px solid ${borderColor}`;
+      bubble.textContent = message;
+      element.appendChild(bubble);
+
+      setTimeout(() => bubble.remove(), 4000);
+    }
+
+    function renderAnalytics(synergies, gamers) {
+      const synList = document.getElementById('synergiesList');
+      synList.innerHTML = '';
+      
+      if (synergies.length === 0) {
+        synList.innerHTML = '<li class="sidebar-item text-white-50 text-center">Brak wykazanych synergii w tym tygodniu</li>';
+      } else {
+        synergies.forEach((s, idx) => {
+          const item = document.createElement('li');
+          item.className = 'sidebar-item';
+          item.innerHTML = `
+            <span><strong>${idx + 1}.</strong> ${escapeHtml(s.partner_a)} + ${escapeHtml(s.partner_b)}</span>
+            <span class="synergy-tag"><i class="fas fa-heartbeat me-1"></i>${Math.round(s.duration)} min</span>
+          `;
+          synList.appendChild(item);
+        });
+      }
+
+      const gamList = document.getElementById('gamersList');
+      gamList.innerHTML = '';
+      if (gamers.length === 0) {
+        gamList.innerHTML = '<li class="sidebar-item text-white-50 text-center">Nikt jeszcze nie pobił rekordu sesji...</li>';
+      } else {
+        gamers.forEach((g, idx) => {
+          const item = document.createElement('li');
+          item.className = 'sidebar-item';
+          item.innerHTML = `
+            <span><strong>${idx + 1}.</strong> ${escapeHtml(g.username)}</span>
+            <span class="gamer-tag"><i class="fas fa-stopwatch me-1"></i>${Math.round(g.minutes)} min</span>
+          `;
+          gamList.appendChild(item);
+        });
+      }
+    }
+
+    // Inicjalizacja silnika Multiverse
+    setTimeout(tickEngine, 300);
+    setInterval(tickEngine, 12000);
+  </script>
+</body>
+</html>
