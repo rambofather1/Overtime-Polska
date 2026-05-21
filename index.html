@@ -38,6 +38,7 @@
             <a href="https://www.youtube.com/@Overtimepl" target="_blank" class="btn btn-outline-danger mx-2"><i class="fab fa-youtube me-2"></i>YouTube</a>
             <a href="https://discord.gg/fkTkCM66Yx" target="_blank" class="btn btn-outline-info mx-2"><i class="fab fa-discord me-2"></i>Discord</a>
             <a href="changelog.html" class="btn btn-outline-warning mx-2"><i class="fas fa-scroll me-2"></i>Changelogi Botów</a>
+            <a href="tavern.html" class="btn btn-outline-success mx-2"><i class="fas fa-beer me-2"></i>Tawerna Live</a>
           </div>
           
           <div class="stats-container">
@@ -49,6 +50,18 @@
             <div class="progress mt-3" style="height: 10px; background-color: rgba(255,255,255,0.1);">
               <div id="progressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%;" 
                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+
+            <div class="row mt-3 text-center small text-white-50">
+              <div class="col-6">
+                <div><i class="fas fa-server me-1"></i>Serwery: <span id="connectedServersCount" class="text-white font-monospace">-</span></div>
+              </div>
+              <div class="col-6">
+                <div><i class="fas fa-microchip me-1"></i>Shardy: <span id="shardCountDisplay" class="text-white font-monospace">-</span></div>
+              </div>
+              <div class="col-12 mt-2">
+                <div><i class="fas fa-wifi me-1"></i>Ping sieci bota: <span id="latencyMsDisplay" class="text-white font-monospace">-</span></div>
+              </div>
             </div>
           </div>
           
@@ -227,6 +240,21 @@
             }
             dataSourceElement.textContent = sourceText;
           }
+
+          // Aktualizacja nowych wskaźników sieciowych i technicznych
+          const connectedServersElement = document.getElementById("connectedServersCount");
+          if (connectedServersElement) {
+            connectedServersElement.textContent = (data.connectedServers || 0).toLocaleString('pl-PL');
+          }
+          const shardCountElement = document.getElementById("shardCountDisplay");
+          if (shardCountElement) {
+            shardCountElement.textContent = data.shardCount || 1;
+          }
+          const latencyMsElement = document.getElementById("latencyMsDisplay");
+          if (latencyMsElement) {
+            const latVal = Math.round(data.latencyMs || data.latency_ms || 0);
+            latencyMsElement.textContent = latVal > 0 ? `${latVal} ms` : 'N/A';
+          }
           
           // Wyświetlanie dodatkowych informacji
           const discordCountElement = document.getElementById("discordCount");
@@ -263,13 +291,36 @@
               const width = Math.max((memberCount / highestMemberCount) * 100, 8);
               const rankClass = index < 3 ? ` server-rank--top-${index + 1}` : '';
 
+              // Budowanie odznak (badges) dla serwerów
+              let badgesHTML = '';
+              if (server.is_verified) {
+                badgesHTML += `<span class="badge bg-primary text-white ms-1" style="font-size: 0.65rem;" title="Zweryfikowany serwer Discord"><i class="fas fa-check-circle"></i></span>`;
+              } else if (server.is_partnered) {
+                badgesHTML += `<span class="badge bg-info text-dark ms-1" style="font-size: 0.65rem;" title="Partner Discord"><i class="fas fa-handshake"></i></span>`;
+              }
+
+              // Booster level / counts
+              if (server.boosts > 0) {
+                const tierEmoji = '💎';
+                badgesHTML += `<span class="badge bg-dark text-warning ms-1 border border-warning" style="font-size: 0.65rem; color: #ff73fa !important; border-color: #ff73fa !important;" title="${server.boosts} Boostów (Poziom ${server.boost_tier || 0})"><i class="fas fa-gem"></i> ${server.boosts}</span>`;
+              }
+
+              // Vanity URL / custom invite link
+              let inviteLinkHTML = '';
+              if (server.vanity_code) {
+                inviteLinkHTML = `<a href="https://discord.gg/${server.vanity_code}" target="_blank" class="text-decoration-none text-success float-end ms-2 small" title="Szybkie dołączenie przez unikalne zaproszenie: ${server.vanity_code}"><i class="fas fa-external-link-alt"></i></a>`;
+              }
+
               serversHTML += `
                 <div class="server-card" title="${serverName}: ${memberCount.toLocaleString('pl-PL')} członków">
                   <div class="server-card__topline">
                     <span class="server-rank${rankClass}">#${index + 1}</span>
-                    <span class="server-count">${memberCount.toLocaleString('pl-PL')} osób</span>
+                    <span class="server-count">
+                      ${memberCount.toLocaleString('pl-PL')} osób
+                      ${inviteLinkHTML}
+                    </span>
                   </div>
-                  <div class="server-name">${serverName}</div>
+                  <div class="server-name">${serverName}${badgesHTML}</div>
                   <div class="server-bar" aria-hidden="true">
                     <span style="width: ${Math.min(width, 100)}%"></span>
                   </div>

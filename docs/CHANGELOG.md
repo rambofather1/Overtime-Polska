@@ -2,6 +2,20 @@
 
 Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
 
+## [Wersja 1.2.0] - 2026-05-21
+
+### Dodano
+
+- Dynamiczne wskaźniki techniczne na żywo bezpośrednio z MongoDB bota:
+  - **Liczba połączonych serwerów** (`connected_servers`).
+  - **Liczba aktywnych shardów** (`shard_count`).
+  - **Opóźnienie sieciowe bota (Ping API)** (`latency_ms`).
+- Nowe atrybuty serwerów w sekcji "Największe serwery Overtime" na stronie głównej:
+  - **Złote/fioletowe diamentowe odznaki boostów** (`boosts`, `boost_tier`) dla serwerów posiadających ulepszenia.
+  - **Ikony weryfikacji i partnerstwa** (`is_verified` oraz `is_partnered`) przy nazwach serwerów.
+  - **Dynamiczne linki szybkiego dołączenia** do serwerów wykorzystujące własny vanity URL (`vanity_code`).
+- Mapowanie zaawansowanych właściwości statystycznych serwerów w API Express (`api/db.js`) i Vercel Function (`api/usercount.js`) z kompletnym, bezpiecznym zestawem fallbacków chroniących przed brakiem danych w starszych wpisach bazodanowych.
+
 ## [Wersja 1.1.0] - 2026-05-21
 
 ### Dodano

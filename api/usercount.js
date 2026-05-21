@@ -56,10 +56,19 @@ async function getUserCount() {
     return {
       totalCount: result.total_users || result.totalUsers || 0,
       voiceUsers: result.voice_users || result.voiceUsers || 0,
+      connectedServers: result.connected_servers || 0,
+      latencyMs: result.latency_ms || 0,
+      shardCount: result.shard_count || 1,
       dataSource: 'MongoDB Atlas',
       servers: (result.servers || []).map(s => ({
         ...s,
-        member_count: s.members || s.member_count || 0
+        member_count: s.members || s.member_count || 0,
+        active_voice: s.active_voice || 0,
+        boosts: s.boosts || 0,
+        boost_tier: s.boost_tier || 0,
+        vanity_code: s.vanity_code || null,
+        is_partnered: s.is_partnered || false,
+        is_verified: s.is_verified || false
       }))
     };
   } catch (error) {

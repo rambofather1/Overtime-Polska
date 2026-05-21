@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Overtime Tawerna Live - Wizualizacja Głosowa Społeczności</title>
+  <meta name="description" content="Zobacz na żywo jak nasza społeczność biesiaduje w gospodzie! Liczba gości odzwierciedla osoby na kanałach głosowych.">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amboy&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <style>
+    body {
+      background-color: #0b0603 !important; /* Ciepła, ciemna barwa tawerny */
+    }
+    
+    .tavern-container {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      min-height: 550px;
+      margin: 20px auto;
+      background: linear-gradient(to bottom, rgba(54, 29, 14, 0.4), rgba(20, 10, 5, 0.8)), url('https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?q=80&w=1200&auto=format&fit=crop') no-repeat center center;
+      background-size: cover;
+      border: 4px solid #5a2e13;
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(212, 114, 34, 0.3), inset 0 0 100px rgba(0,0,0,0.8);
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .tavern-header {
+      background: rgba(11, 6, 3, 0.85);
+      border-top: 3px solid #ff7b00;
+      border-bottom: 3px solid #ff7b00;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(5px);
+    }
+
+    .fireplace {
+      position: absolute;
+      bottom: 20px;
+      left: 5%;
+      width: 140px;
+      height: 160px;
+      background: rgba(43, 24, 15, 0.9);
+      border-radius: 15px 15px 0 0;
+      border: 3px solid #3c1e0a;
+      box-shadow: 0 0 30px rgba(255, 115, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 10px;
+    }
+
+    .fire {
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at bottom, #ffea00, #ff5100, transparent);
+      border-radius: 50% 50% 20% 20%;
+      animation: flicker 0.15s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(0.9) rotate(-2deg); opacity: 0.8; box-shadow: 0 0 20px #ff5100; }
+      100% { transform: scale(1.1) rotate(2deg); opacity: 1; box-shadow: 0 0 35px #ff7b00; }
+    }
+
+    .bar-counter {
+      position: absolute;
+      bottom: 20px;
+      right: 5%;
+      width: 250px;
+      height: 100px;
+      background: #46250e;
+      border-top: 10px solid #723e19;
+      border-radius: 8px 8px 0 0;
+      box-shadow: inset 0 10px 20px rgba(0,0,0,0.4), 0 10px 20px rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      padding-top: 5px;
+    }
+
+    .beer-mug {
+      width: 20px;
+      height: 25px;
+      background: #f1b026;
+      border: 2px solid #fff;
+      border-radius: 3px;
+      position: relative;
+    }
+    .beer-mug::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      right: -7px;
+      width: 8px;
+      height: 12px;
+      border: 2px solid #fff;
+      border-left: none;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .tables-container {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      flex-wrap: wrap;
+      margin-top: 60px;
+      margin-bottom: 150px;
+    }
+
+    .tavern-table {
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, #522d14, #361b0a);
+      border: 8px solid #201006;
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 15px 25px rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .tavern-table::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 50%;
+    }
+
+    .table-label {
+      position: absolute;
+      top: -30px;
+      width: 100%;
+      text-align: center;
+      background: rgba(11,6,3,0.9);
+      border: 1px solid #ff7b00;
+      font-size: 0.75rem;
+      border-radius: 6px;
+      padding: 2px 4px;
+      color: #ffd699;
+      white-space: nowrap;
+    }
+
+    /* Postacie biesiadników */
+    .character {
+      position: absolute;
+      width: 32px;
+      height: 45px;
+      transition: all 1s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    .character-body {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-size: cover;
+      border: 2px solid #ff7b00;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+    }
+
+    .character-tag {
+      font-size: 0.65rem;
+      background: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      padding: 1px 5px;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-top: 2px;
+      border: 1px solid rgba(255, 123, 0, 0.5);
+      pointer-events: none;
+    }
+
+    /* Animowany kufel u postaci */
+    .character--drinking .character-body::after {
+      content: '🍺';
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      font-size: 10px;
+      animation: cheer 2s infinite alternate;
+    }
+
+    @keyframes cheer {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-4px) rotate(15deg); }
+    }
+
+    .status-lights {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .tavern-stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 10px 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="container py-4">
+    <div class="content w-100" style="max-width: 1100px;">
+      <div class="logo-container">
+        <a href="index.html"><img src="logo.png" alt="Logo" class="logo" style="max-width: 140px;"></a>
+      </div>
+
+      <div class="tavern-header text-center">
+        <h1 class="display-6 m-0 text-white"><i class="fas fa-beer text-warning me-2"></i>Tawerna Overtime Live</h1>
+        <p class="text-white-50 m-0 mt-2">
+          Interaktywny świat na żywo spięty bezpośrednio z kanałami głosowymi. 
+          Każda osoba na kanale głosowym Discorda to nowa postać biesiadująca w gospodzie!
+        </p>
+      </div>
+
+      <div class="row g-3 justify-content-center mb-4">
+        <div class="col-md-3 col-6">
+          <div class="tavern-stat-card">
+            <div class="text-white-50 small">Biesiadnicy (Głosowe)</div>
+            <div id="activeVoiceUsers" class="fs-4 text-warning font-monospace">-</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="tavern-stat-card">
+            <div class="text-white-50 small">Temperatura w karczmie</div>
+            <div id="garrisonTemp" class="fs-4 text-danger font-monospace">21°C</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="tavern-stat-card">
+            <div class="text-white-50 small">Pełne Kufle Piwa</div>
+            <div id="mugsCount" class="fs-4 text-success font-monospace">-</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="tavern-stat-card">
+            <div class="text-white-50 small">Status Połączenia</div>
+            <div id="connectionStatus" class="fs-4 text-info"><span class="badge bg-success">ONLINE</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTERAKTYWNA PLANSZA TAWERNY -->
+      <div class="tavern-container">
+        <!-- Palenisko kominkowe -->
+        <div class="fireplace" title="Ciepły starodawny kominek. Podsyca klimat!">
+          <div class="fire"></div>
+          <div class="text-white-50" style="font-size: 0.6rem; margin-top: 5px;">KOMINEK</div>
+        </div>
+
+        <!-- Lada Barowa -->
+        <div class="bar-counter" id="barCounter" title="Lada barmana. Tu biesiadnicy zamawiają trunki.">
+          <div class="beer-mug" style="transform: scale(0.8);"></div>
+          <div class="beer-mug" style="transform: scale(0.9); margin-top: 4px;"></div>
+          <div class="text-white-50 w-100 text-center" style="font-size: 0.65rem; position: absolute; bottom: 5px;">BAR TAWERNY</div>
+        </div>
+
+        <!-- Stoły drewniane w tawernie -->
+        <div class="tables-container">
+          <div class="tavern-table" id="table1">
+            <span class="table-label">Stół Wojowników (Gry)</span>
+          </div>
+          <div class="tavern-table" id="table2">
+            <span class="table-label">Stół Mędrców (Pogaduchy)</span>
+          </div>
+          <div class="tavern-table" id="table3">
+            <span class="table-label">Stół Muzyczny (Jam Session)</span>
+          </div>
+        </div>
+
+        <!-- Dynamiczne postacie będą wstrzykiwane i pozycjonowane absolutnie wewnątrz tawerny -->
+        <div id="tavernFloor"></div>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="index.html" class="btn btn-outline-light px-4"><i class="fas fa-arrow-left me-2"></i>Wróć na Stronę Główną</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Zestaw ciekawych średniowieczno-gildyjnych imion/tytułów do losowania gości, gdy nie ma ich pełnych pseudonimów z bazy
+    const fantasyNames = [
+      "Wiedźmin", "Bard", "Karczmarz", "Rycerz", "Łowca", "Czarodziej", "Skryba", 
+      "Szlachcic", "Kupiec", "Krasnolud", "Najemnik", "Zwiadowca", "Alchemik", 
+      "Paladyn", "Płatnerz", "Błazen", "Oberżysta", "Wojownik"
+    ];
+
+    const avatars = [
+      "https://api.dicebear.com/7.x/bottts/svg?seed=1",
+      "https://api.dicebear.com/7.x/bottts/svg?seed=5",
+      "https://api.dicebear.com/7.x/identicon/svg?seed=9",
+      "https://api.dicebear.com/7.x/adventurer/svg?seed=barry",
+      "https://api.dicebear.com/7.x/adventurer/svg?seed=shelly",
+      "https://api.dicebear.com/7.x/adventurer/svg?seed=jerry",
+      "https://api.dicebear.com/7.x/adventurer/svg?seed=simon",
+      "https://api.dicebear.com/7.x/pixel-art/svg?seed=peter",
+      "https://api.dicebear.com/7.x/pixel-art/svg?seed=wolf"
+    ];
+
+    async function updateTavern() {
+      try {
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const apiUrl = isLocalhost ? 'http://localhost:3000/api/usercount' : '/api/usercount';
+        
+        const res = await fetch(apiUrl, {
+          headers: { 'Cache-Control': 'no-cache' }
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          const voiceCount = data.voiceUsers || data.voice_users || 0;
+          
+          document.getElementById('activeVoiceUsers').textContent = voiceCount;
+          document.getElementById('mugsCount').textContent = Math.round(voiceCount * 1.5 + 2);
+          
+          // Aktualizuj temperaturę dynamicznie wraz z tłokiem w tawernie!
+          const temp = 18 + Math.min(Math.round(voiceCount / 3), 15);
+          document.getElementById('garrisonTemp').textContent = `${temp}°C`;
+
+          // Generowanie ludzików
+          renderCharacters(voiceCount);
+        }
+      } catch (err) {
+        console.error("Błąd aktualizacji tawerny:", err);
+        document.getElementById('connectionStatus').innerHTML = '<span class="badge bg-danger">OFFLINE</span>';
+      }
+    }
+
+    function renderCharacters(count) {
+      const floor = document.getElementById('tavernFloor');
+      floor.innerHTML = ''; // czyszczenie poprzednich postaci
+      
+      if (count <= 0) {
+        // Pusta tawerna
+        floor.innerHTML = '<div class="text-center text-white-50 w-100" style="position: absolute; top: 40%;">Karczma jest aktualnie pusta... Wszyscy ruszyli na trakt.</div>';
+        return;
+      }
+
+      // Definiujemy strefy pozycjonowania (stoły i bar)
+      const table1El = document.getElementById('table1');
+      const table2El = document.getElementById('table2');
+      const table3El = document.getElementById('table3');
+      const barEl = document.getElementById('barCounter');
+
+      const zones = [];
+
+      // Pobieranie koordynatów stref względem kontenera planszy
+      const containerRect = document.querySelector('.tavern-container').getBoundingClientRect();
+
+      function addZoneCoords(el, name) {
+        if (el) {
+          const r = el.getBoundingClientRect();
+          zones.push({
+            name: name,
+            left: r.left - containerRect.left + (r.width / 2),
+            top: r.top - containerRect.top + (r.height / 2),
+            radius: r.width / 2 + 10
+          });
+        }
+      }
+
+      addZoneCoords(table1El, 'stół 1');
+      addZoneCoords(table2El, 'stół 2');
+      addZoneCoords(table3El, 'stół 3');
+      
+      if (barEl) {
+        const r = barEl.getBoundingClientRect();
+        zones.push({
+          name: 'bar',
+          left: r.left - containerRect.left + (r.width / 2),
+          top: r.top - containerRect.top + 30,
+          radius: r.width / 3
+        });
+      }
+
+      for (let i = 0; i < count; i++) {
+        // Losujemy strefę dla gościa
+        const zone = zones[Math.floor(Math.random() * zones.length)];
+        
+        // Obliczamy losową pozycję wokół środka strefy (okrąg dla stołów, elipsa dla baru)
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * (zone.radius - 20) + 15;
+        
+        let posX = zone.left + Math.cos(angle) * dist - 16; // środkowanie
+        let posY = zone.top + Math.sin(angle) * dist - 22;
+
+        // Upewniamy się, że nie wychodzi poza widoczny kontener
+        posX = Math.max(20, Math.min(posX, containerRect.width - 60));
+        posY = Math.max(20, Math.min(posY, containerRect.height - 80));
+
+        // Tworzenie elementu postaci
+        const char = document.createElement('div');
+        char.className = 'character';
+        if (Math.random() > 0.4) {
+          char.classList.add('character--drinking');
+        }
+
+        // Tytuł / Pseudonim
+        const pseudo = fantasyNames[i % fantasyNames.length] + ` #${100 + i}`;
+        const avatarUrl = avatars[i % avatars.length];
+
+        char.style.left = `${posX}px`;
+        char.style.top = `${posY}px`;
+
+        char.innerHTML = `
+          <div class="character-body" style="background-image: url('${avatarUrl}');" title="${pseudo}"></div>
+          <div class="character-tag">${pseudo}</div>
+        `;
+
+        // Interaktywny smaczek - kliknięcie biesiadnika wywołuje okrzyk!
+        char.addEventListener('click', () => {
+          const quotes = [
+            "Za pomyślność Overtime!",
+            "Karczmarzu, dolej miodu!",
+            "Te statystyki na żywo są niesamowite!",
+            "Wypijmy za najszybszy rozwój w Polsce!",
+            "Słyszałeś o nowym bocie Ojciec 4.0?",
+            "Ciii, słucham barda przy trzecim stole!"
+          ];
+          alert(`${pseudo} wznosi toast: "${quotes[Math.floor(Math.random() * quotes.length)]}"`);
+        });
+
+        floor.appendChild(char);
+      }
+    }
+
+    // Pierwsze załadowanie
+    setTimeout(updateTavern, 500);
+    // Odświeżanie tawerny co 15 sekund dla dynamicznego i płynnego efektu
+    setInterval(updateTavern, 15000);
+  </script>
+</body>
+</html>
