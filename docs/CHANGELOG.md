@@ -2,6 +2,17 @@
 
 Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
 
+## [Wersja 1.3.0] - 2026-05-21
+
+### Dodano
+
+- **Prawdziwa wieloobszarowa telemetria postaci na żywo**:
+  - Podstrona Tawerny Live ([tavern.html](tavern.html)) oraz Miasta Metropolis Live ([metropolis.html](metropolis.html)) zostały w pełni zintegrowane z tablicą `voice_users_detailed` z bazy MongoDB Atlas.
+  - Zamiast statycznych, fikcyjnych postaci i losowych awataryzacji, portal generuje teraz **realnie przebywających na kanałach Discorda użytkowników**.
+  - Każda postać otrzymuje swój **prawdziwy avatar Discorda**, poprawną nazwę wyświetlaną (`display_name`) oraz dynamicznie generowany dymek dialogowy lub toast opisujący grę, w którą aktualnie gra na bazie tablicy `user.activities`.
+  - Przypisywanie biesiadników do konkretnych stołów w Tawernie oraz dzielnic w Metropolis ("gaming" -> Cyber Arena, "chill" -> Neon Lounge, "general" -> Central Plaza) odbywa się teraz w pełni dynamicznie na podstawie sklasyfikowanego przez bota typu kanału głosowego (`channel_type`).
+  - Dodano bezpieczne funkcje escapowania kodu HTML (`escapeHtml`) w skryptach frontendu, zapobiegając atakom typu XSS przy renderowaniu metadanych użytkowników Discorda.
+
 ## [Wersja 1.2.0] - 2026-05-21
 
 ### Dodano

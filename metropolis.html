@@ -353,43 +353,66 @@
           document.getElementById('citizenCount').textContent = voiceCount;
           document.getElementById('cityPulse').textContent = `${Math.round(60 + (voiceCount * 2))} BPM`;
 
-          updateCitizens(data.servers, voiceCount);
+          updateCitizens(data.voice_users_detailed || []);
         }
       } catch (err) {
         console.error("Błąd tętna metropolis:", err);
       }
     }
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+    }
+
     // Dynamiczna alokacja zasobów i mieszkańców w dzielnicach
-    function updateCitizens(servers, totalVoice) {
+    function updateCitizens(detailedUsers) {
       const container = document.getElementById('cityContainer');
       
       // Czyścimy stare postacie, które nie są już na mapie
       const existingCitizens = document.querySelectorAll('.citizen');
       existingCitizens.forEach(c => c.remove());
 
-      if (totalVoice <= 0) {
+      if (!detailedUsers || detailedUsers.length === 0) {
+        document.getElementById('hubCap').textContent = `Mieszkańców: 0`;
+        document.getElementById('gamingCap').textContent = `Mieszkańców: 0`;
+        document.getElementById('chillCap').textContent = `Mieszkańców: 0`;
         return;
       }
 
-      // Przydzielamy mieszkańców proporcjonalnie do dzielnic
-      let hubCount = Math.ceil(totalVoice * 0.4);
-      let gamingCount = Math.floor(totalVoice * 0.35);
-      let chillCount = totalVoice - hubCount - gamingCount;
+      // Klasyfikujemy użytkowników do dzielnic na podstawie channel_type zebranych przez bota!
+      let hubCount = 0;
+      let gamingCount = 0;
+      let chillCount = 0;
+
+      detailedUsers.forEach(user => {
+        if (user.channel_type === 'gaming') gamingCount++;
+        else if (user.channel_type === 'chill') chillCount++;
+        else hubCount++;
+      });
 
       document.getElementById('hubCap').textContent = `Mieszkańców: ${hubCount}`;
       document.getElementById('gamingCap').textContent = `Mieszkańców: ${gamingCount}`;
       document.getElementById('chillCap').textContent = `Mieszkańców: ${chillCount}`;
 
       const districts = [
-        { id: 'districtHub', count: hubCount, color: '#3b82f6' },
-        { id: 'districtGaming', count: gamingCount, color: '#ec4899' },
-        { id: 'districtChill', count: chillCount, color: '#10b981' }
+        { id: 'districtHub', type: 'general', color: '#3b82f6' },
+        { id: 'districtGaming', type: 'gaming', color: '#ec4899' },
+        { id: 'districtChill', type: 'chill', color: '#10b981' }
       ];
 
       const containerRect = container.getBoundingClientRect();
 
-      districts.forEach(dist => {
+      detailedUsers.forEach((user, i) => {
+        // Dopasowanie do odpowiedniej dzielnicy
+        let targetType = user.channel_type || 'general';
+        let dist = districts.find(d => d.type === targetType);
+        if (!dist) dist = districts[0]; // fallback to hub
+
         const distEl = document.getElementById(dist.id);
         if (!distEl) return;
         
@@ -397,50 +420,60 @@
         const relativeLeft = distRect.left - containerRect.left;
         const relativeTop = distRect.top - containerRect.top;
 
-        for (let i = 0; i < dist.count; i++) {
-          const citizen = document.createElement('div');
-          citizen.className = 'citizen';
+        const citizen = document.createElement('div');
+        citizen.className = 'citizen';
 
-          // Losujemy unikalną pozycję wewnątrz dzielnicy
-          const padding = 25;
-          const posX = relativeLeft + padding + Math.random() * (distRect.width - (padding * 2) - 30);
-          const posY = relativeTop + padding + 60 + Math.random() * (distRect.height - (padding * 2) - 80);
+        // Losujemy unikalną pozycję wewnątrz dzielnicy
+        const padding = 25;
+        const posX = relativeLeft + padding + Math.random() * (distRect.width - (padding * 2) - 30);
+        const posY = relativeTop + padding + 60 + Math.random() * (distRect.height - (padding * 2) - 80);
 
-          const seed = `${dist.id}-${i}`;
-          const nick = customNicknames[i % customNicknames.length] + ` #${100 + i}`;
-          const avatar = avatarStyles[i % avatarStyles.length] + seed;
+        const displayName = escapeHtml(user.display_name || user.username || 'Nieznany Mieszkaniec');
+        const avatar = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
+        const channelName = escapeHtml(user.channel_name || 'Kanał');
+        const activityStr = user.activities && user.activities.length > 0 ? `Gra w: ${user.activities.join(', ')}` : 'Gawędzi ze społecznością';
 
-          citizen.style.left = `${posX}px`;
-          citizen.style.top = `${posY}px`;
+        citizen.style.left = `${posX}px`;
+        citizen.style.top = `${posY}px`;
 
-          citizen.innerHTML = `
-            <div class="citizen-avatar" style="background-image: url('${avatar}'); border-color: ${dist.color}; box-shadow: 0 0 10px ${dist.color};"></div>
-            <div class="citizen-name">${nick}</div>
-          `;
+        citizen.innerHTML = `
+          <div class="citizen-avatar" style="background-image: url('${avatar}'); border-color: ${dist.color}; box-shadow: 0 0 10px ${dist.color};"></div>
+          <div class="citizen-name">${displayName}</div>
+        `;
 
-          // Dynamiczne losowe dymki dialogowe co jakiś czas!
-          if (Math.random() > 0.6) {
-            setTimeout(() => {
-              const bubble = document.createElement('div');
-              bubble.className = 'bubble-cloud';
-              bubble.textContent = phrases[Math.floor(Math.random() * phrases.length)];
-              citizen.appendChild(bubble);
-              setTimeout(() => bubble.remove(), 4000);
-            }, Math.random() * 5000);
-          }
-
-          // Kliknięcie mieszkańca wywołuje toast dialogowy
-          citizen.addEventListener('click', (e) => {
-            e.stopPropagation();
+        // Dynamiczne dymki dialogowe z grami / aktywnościami na żywo!
+        if (user.activities && user.activities.length > 0) {
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble-cloud';
+          bubble.style.border = `1px solid ${dist.color}`;
+          bubble.textContent = `Gram w ${user.activities[0]}! 🎮`;
+          citizen.appendChild(bubble);
+        } else if (Math.random() > 0.5) {
+          setTimeout(() => {
             const bubble = document.createElement('div');
             bubble.className = 'bubble-cloud';
-            bubble.textContent = `Jestem w ${distEl.innerText.split('\n')[0]}! 🎉`;
+            bubble.style.border = `1px solid ${dist.color}`;
+            bubble.textContent = `Kanał: ${channelName} 💬`;
             citizen.appendChild(bubble);
-            setTimeout(() => bubble.remove(), 3000);
-          });
-
-          container.appendChild(citizen);
+            setTimeout(() => bubble.remove(), 4000);
+          }, Math.random() * 5000);
         }
+
+        // Kliknięcie mieszkańca wywołuje toast z precyzyjnymi danymi
+        citizen.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble-cloud';
+          bubble.style.border = `1px solid ${dist.color}`;
+          const customQuote = user.activities && user.activities.length > 0 
+            ? `Kocham grać w ${user.activities[0]} ze znajomymi! 🔥` 
+            : `Słucham i rozmawiam na kanale "${channelName}"! 🎧`;
+          bubble.textContent = customQuote;
+          citizen.appendChild(bubble);
+          setTimeout(() => bubble.remove(), 4000);
+        });
+
+        container.appendChild(citizen);
       });
     }
 
