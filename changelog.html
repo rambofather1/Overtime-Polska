@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Changelog - system zabezpieczeń Ojciec - Overtime Polska</title>
-  <meta name="description" content="Historia aktualizacji i changelog polskiego bota Ojciec wspierającego społeczność Overtime Polska.">
+  <meta name="description" content="Pełna historia aktualizacji i changelog zaawansowanego bota Ojciec wspierającego sieć Overtime Polska.">
   <link rel="stylesheet" href="styles.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Amboy&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
-    /* Nadpisanie domyślnego overflow: hidden z styles.css dla podstrony changelog */
+    /* Elastyczne i nowoczesne style przewijania */
     html, body {
       overflow-y: auto !important;
       height: auto !important;
@@ -22,45 +22,59 @@
     .changelog-container {
       position: relative;
       z-index: 2;
-      max-width: 800px;
+      max-width: 850px;
       margin: 40px auto;
       padding: 0 20px;
     }
 
     .changelog-card {
-      background: rgba(255, 255, 255, 0.03) !important;
-      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      background: rgba(255, 255, 255, 0.02) !important;
+      border: 1px solid rgba(255, 255, 255, 0.06) !important;
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
       border-radius: 20px;
       padding: 30px;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
       text-align: left;
-      transition: transform 0.3s ease, border-color 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .changelog-card:hover {
       transform: translateY(-2px);
-      border-color: rgba(29, 185, 84, 0.3) !important;
+      border-color: rgba(29, 185, 84, 0.4) !important;
+      background: rgba(255, 255, 255, 0.03) !important;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* Oznaczenie wersji Extreme */
+    .changelog-card--extreme {
+      border: 1px solid rgba(239, 68, 68, 0.2) !important;
+      background: linear-gradient(180deg, rgba(239, 68, 68, 0.03), rgba(0, 0, 0, 0)) !important;
+    }
+
+    .changelog-card--extreme:hover {
+      border-color: rgba(239, 68, 68, 0.6) !important;
     }
 
     .version-tag {
-      font-size: 1.1rem;
-      font-weight: bold;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
     }
 
     .date-tag {
       font-size: 0.85rem;
-      color: #888;
+      color: rgba(255,255,255,0.5);
+      font-family: inherit;
     }
 
     .change-category {
-      font-weight: bold;
+      font-weight: 700;
       text-transform: uppercase;
-      font-size: 0.8rem;
-      letter-spacing: 1px;
-      margin-top: 15px;
-      margin-bottom: 5px;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      margin-top: 20px;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -70,26 +84,45 @@
     .changed { color: #38bdf8; }
     .fixed { color: #f87171; }
     .removed { color: #a1a1aa; }
+    .highlight { color: #eab308; }
 
     .change-list {
       list-style-type: none;
       padding-left: 0;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .change-list li {
       position: relative;
       padding-left: 20px;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-      color: #e4e4e7;
+      margin-bottom: 10px;
+      font-size: 0.92rem;
+      color: #dfdfe0;
+      line-height: 1.5;
     }
 
     .change-list li::before {
       content: "•";
       position: absolute;
       left: 5px;
-      color: #71717a;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .change-list li code {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    /* stylizacja dla podsekcji szczegółowych */
+    .changelog-card h4 {
+      font-size: 0.95rem;
+      color: #fff;
+      margin-top: 15px;
+      margin-bottom: 6px;
+      font-weight: 600;
     }
 
     /* custom scrollbar */
@@ -102,12 +135,12 @@
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #27272a;
-      border-radius: 4px;
+      background: #222;
+      border-radius: 999px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #3f3f46;
+      background: #1db954;
     }
 
     .back-btn {
@@ -118,6 +151,11 @@
       background-color: #fff !important;
       color: #000 !important;
       transform: translateX(-3px);
+    }
+
+    .lead-text {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 1.1rem;
     }
   </style>
 </head>
@@ -135,72 +173,117 @@
     </div>
 
     <h1 class="display-5 mb-2">Bot Ojciec</h1>
-    <p class="text-muted mb-5">Dziennik zmian, ulepszeń i poprawek naszej oficjalnej maskotki discordowej</p>
+    <p class="lead-text mb-5">Dziennik zmian, ewolucji systemu oraz poprawek bezpieczeństwa sieci Overtime</p>
 
-    <!-- Karta Changelogu v2.7.1 -->
+    <!-- KARTA v4.0 EXTREME -->
+    <div class="changelog-card changelog-card--extreme">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <span class="badge bg-danger px-3 py-2 version-tag"><i class="fas fa-fire me-2"></i>v4.0 EXTREME - Standard v4 i Telemetria</span>
+        <span class="date-tag">21 Maja 2026</span>
+      </div>
+      <p class="text-white-50">Przełomowa, potężna przebudowa wewnętrznej architektury, bazy danych oraz interfejsu mechaniki wspierania sieci społecznościowej. Aktualna linia produkcyjna 4.0 reprezentuje stabilny, zoptymalizowany standard operacyjny zorientowany w 100% na interakcje komponentowe (interaction-first / commandless).</p>
+      
+      <div class="change-category highlight">
+        <i class="fas fa-chart-line"></i> Moderation Cockpit & Telemetry Backbone
+      </div>
+      <ul class="change-list">
+        <li><strong>Filtrowanie Dossier</strong> (<code>operator_dossier_view.py</code>, <code>case_service.py</code>) — Wprowadzono filtry historii spraw według typu akcji, serwera i operatora działające na bieżąco bez przeładowania panelu.</li>
+        <li><strong>Zintegrowane Telemetry Coverage</strong> (<code>activity_service.py</code>) — Nowy strumień telemetryczny <code>activity_events</code> gromadzący i klasyfikujący akcje z wiadomości, interakcji, reakcji (<code>REACTION_ADD/REMOVE</code>) oraz cyklu życia serwerów i ról.</li>
+        <li><strong>Dashboard Read-Side API</strong> (<code>activity_analytics.py</code>) — Dodano gotowe endpointy analityczne dla panelu operacyjnego (najbardziej aktywni, top kanały, overalpy głosowe do analizy powiązań).</li>
+        <li><strong>Trwałość logów i usuwanie danych</strong> — Dodano politykę retencji danych czyszczącą stare wpisy Mongo/JSONL oraz automatyczną sanitaryzację wzorców z wrażliwymi danymi.</li>
+      </ul>
+
+      <div class="change-category changed">
+        <i class="fas fa-sync"></i> Daddy Voice's: Restart Safety & Auto-healing
+      </div>
+      <ul class="change-list">
+        <li><strong>Zabezpieczenie przed rebootem</strong> — Pętla <code>reconcile_loop</code> wznawia i automatycznie porządkuje puste lub osierocone kanały tymczasowe po restarcie bota. Wyeliminowano ryzyko błędu pamięci podatnej i dublowania pokoi.</li>
+        <li><strong>Absence & Continuity Policy</strong> — Gdy właściciel tymczasowego kanału głosowego opuści serwer lub kanał na zbyt długi czas, bot automatycznie przechodzi w fazę delegowania własności (najdłużej obecny) lub usuwa kanał.</li>
+        <li><strong>Audio Abuse Shield</strong> — Przeniesiono dynamiczne nadpisywanie uprawnień na bezpieczniejszy mechanizm, zapobiegając nadużywaniu funkcji wyciszania (mute bypass) przez osoby uprawnione do obsługi kanałów.</li>
+        <li><strong>Ulepszenie interfejsu (LayoutView v4)</strong> — Gęstszy układ sekcji, stany statusu ANSI z kolorami i wydzielone dedykowane przyciski pod statusy zaproszeń (lobby voting, public, private).</li>
+      </ul>
+
+      <div class="change-category highlight">
+        <i class="fas fa-shield-alt"></i> Moderation, Security & Guardrails
+      </div>
+      <ul class="change-list">
+        <li><strong>Dwufazowe potwierdzenia operatorskie</strong> (<code>operator_dossier_view.py</code>) — Krytyczne akcje moderacyjne (Ban, Unban, Przerwa) przechodzą teraz przez etap potwierdzenia Tak/Nie z prywatnym podglądem przewidywanych ubytków sieciowych.</li>
+        <li><strong>Runtime b_ban Hardening</strong> — Komenda <code>b</code> filtruje aktywne bany na poziomie bazy danych i blokuje niefortunne próby przedwczesnego unbana, dopóki administrator nie zdecyduje o zdjęciu trwałej blokady sieciowej.</li>
+        <li><strong>Zintegrowana ochrona zarządu (Board Guardrails)</strong> — Nowy system ochrony ról administracyjnych (Emperor/Board) zautomatyzował zabezpieczenia bez rozsiewania wyjątków po osobnych modułach.</li>
+      </ul>
+    </div>
+
+    <!-- KARTA v2.7.1 -->
     <div class="changelog-card">
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
         <span class="badge bg-success px-3 py-2 version-tag"><i class="fab fa-discord me-2"></i>v2.7.1 - Nowy Standard UI</span>
         <span class="date-tag">21 Maja 2026</span>
       </div>
-      <p class="text-zinc-400">Główna aktualizacja przenosząca silnik interakcji na bibliotekę <code>discord.py 2.7.1</code>. Całkowite przejście w stronę podejścia <em>interaction-first / commandless</em>, stawiającego wygode użytkownika i interfejs graficzny na pierwszym miejscu.</p>
+      <p class="text-white-50">Przełomowa optymalizacja i gruntowna restrukturyzacja całego systemu operacyjnego pod bibliotekę <code>discord.py 2.7.1</code>. Wprowadzenie założeń "interaction-first / commandless".</p>
       
       <div class="change-category added">
         <i class="fas fa-plus"></i> Dodano
       </div>
       <ul class="change-list">
-        <li>Interaktywne panele konfiguracyjne wykorzystujące rozwijane menu (selecty) oraz przyciski (buttons).</li>
-        <li>System dynamicznych profili użytkowników w oparciu o modale ułatwiające wprowadzanie danych.</li>
-        <li>Nową strukturę komend ukośnikowych (slash commands) w pełni opisanych w języku polskim.</li>
-      </ul>
-
-      <div class="change-category changed">
-        <i class="fas fa-sync"></i> Zmieniono
-      </div>
-      <ul class="change-list">
-        <li>Zoptymalizowano system synchronizacji bazodanowych z MongoDB Atlas, redukując opóźnienia i zapytania.</li>
-        <li>Zintegrowano moduł ciasteczek z wróżbą (fortune cookie), który od teraz posiada pełny interfejs panelu zamiast komend tekstowych.</li>
-      </ul>
-
-      <div class="change-category removed">
-        <i class="fas fa-trash"></i> Usunięto
-      </div>
-      <ul class="change-list">
-        <li>Usunięto zbędne i rzadko używane komendy tekstowe z prefiksem, oczyszczając kod z legacy modułów.</li>
+        <li>Nowe systemy konfiguracyjne bazujące na rozwijanych menu, przyciskach i bezpośrednich modalach.</li>
+        <li>System ciasteczek z wróżbą (fortune cookie) przeniesiony z twardych stałych do elastycznej konfiguracji bazodanowej z poziomami uprawnień per-serwer.</li>
+        <li>Konfigurator <code>/setup</code> dający operatorom pełne zarządzanie kategoriami i limitami z poziomu GUI.</li>
       </ul>
     </div>
 
-    <!-- Karta Changelogu v2.0.0 -->
+    <!-- KARTA v1.17 -->
     <div class="changelog-card">
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <span class="badge bg-secondary px-3 py-2 version-tag">v2.0.0 - Rewolucja Bazy Danych</span>
-        <span class="date-tag">10 Lutego 2026</span>
+        <span class="badge bg-secondary px-3 py-2 version-tag">v1.17 - System Warnów i Logowania</span>
+        <span class="date-tag">20 Lipca 2024</span>
       </div>
-      <p class="text-zinc-400">Migracja wewnętrznego przechowywania danych z lokalnych plików JSON na stabilną, skalowalną i rozproszoną chmurę MongoDB Atlas.</p>
+      <p class="text-white-50">Rozszerzenie pakietu moderacyjnego o bezpieczne, ustrukturyzowane ostrzeżenia powiązane z bazą danych.</p>
 
       <div class="change-category added">
         <i class="fas fa-plus"></i> Dodano
       </div>
       <ul class="change-list">
-        <li>Pełna integracja z globalnym API Overtime Polska, zasilającym licznik LIVE na naszej platformie WWW.</li>
-        <li>Automatyczny system zapisu aktywnych użytkowników na kanałach głosowych.</li>
-      </ul>
-
-      <div class="change-category fixed">
-        <i class="fas fa-tools"></i> Naprawiono
-      </div>
-      <ul class="change-list">
-        <li>Naprawiono wygasanie sesji i sporadyczne błędy odpytywania API Discorda podczas dużego ruchu.</li>
+        <li>Komenda <code>&warn</code> (aliasy: <code>&note</code>, <code>&upomnij</code>) zapisująca ostrzeżenia bezpośrednio w bazie z cyklem autoretencji 30 dni.</li>
+        <li>Powiadomienia w formie bogato zdobionych formularzy embed (osadzonych) wysyłanych bezpośrednio na prywatne wiadomości ukaranego użytkownika.</li>
+        <li>Komendy czyszczenia ustrukturyzowanego <code>&edit_warn</code>, <code>&delete_warn</code> oraz <code>&mass_remove_warn</code> dla administratora głównego.</li>
+        <li>Zliczanie w czasie rzeczywistym ogólnej liczby użytkowników i monitoring kanałów głosowych dystrybuowany do głównego serwera API.</li>
       </ul>
     </div>
 
-    <!-- Karta Changelogu v1.2.0 -->
-    <div class="changelog-card mb-5">
+    <!-- KARTA v1.10 -->
+    <div class="changelog-card">
       <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <span class="badge bg-secondary px-3 py-2 version-tag">v1.2.0 - Stabilny Fundament</span>
-        <span class="date-tag">15 Listopada 2025</span>
+        <span class="badge bg-secondary px-3 py-2 version-tag">v1.10 - Wieloserwerowość i Timeouty</span>
+        <span class="date-tag">3 Czerwca 2024</span>
       </div>
-      <p class="text-zinc-400">Stworzenie bazowych funkcji bota, zarządzanie rolami, automatyczne powitania oraz implementacja ról za punkty aktywności.</p>
+      <p class="text-white-50">Unifikacja systemu nakładania przerw i moderacji trans-serwerowej w obrębie całej sieci Overtime.</p>
+
+      <div class="change-category added">
+        <i class="fas fa-plus"></i> Dodano
+      </div>
+      <ul class="change-list">
+        <li>Komenda <code>&przerwa</code> (aliasy: <code>&p</code>, <code>&break</code>, <code>&roblox</code>, <code>&fortnite</code>) dająca operatorom możliwość precyzyjnego ograniczenia dostępu (timeout) na wszystkich stowarzyszonych serwerach w ułamku sekundy.</li>
+        <li>Podpory dla logów technicznych segregowanych w katalogu <code>logs/</code> bezpośrednio na serwery.</li>
+        <li>Automatyczny system zarządzania mediami (tworzenie dedykowanych wątków i dopasowanie reakcji na kanałach self-media / selfie).</li>
+      </ul>
+    </div>
+
+    <!-- KARTA v1.07 -->
+    <div class="changelog-card">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <span class="badge bg-secondary px-3 py-2 version-tag">v1.07 - System Logów Technicznych</span>
+        <span class="date-tag">6 Sierpnia 2023</span>
+      </div>
+      <p class="text-white-50">Stworzenie pierwszych zaawansowanych logów serwerowych odpornych na błędy.</p>
+    </div>
+
+    <!-- KARTA v1.01 -->
+    <div class="changelog-card">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <span class="badge bg-secondary px-3 py-2 version-tag">v1.01 - Notyfikacje unban-deliv</span>
+        <span class="date-tag">16 Lipca 2023</span>
+      </div>
+      <p class="text-white-50">Inicjalne wdrożenie powiadomień na prywatne wiadomości z potwierdzeniem zdjęcia blokady.</p>
     </div>
 
     <!-- Stopka -->
