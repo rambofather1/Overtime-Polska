@@ -3,17 +3,18 @@
 
 import discord
 from discord.ext import tasks, commands
-import motor.motor_asyncio
+import pymongo
 import datetime
 import logging
+import asyncio
 
 class TelemetryBackbone(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        # Instancjonowanie asynchronicznego klienta MongoDB Atlas
+        # Instancjonowanie klienta pymongo i integracja nieblokująca poprzez run_in_executor
         # Podmień poniższy URI na swój poprawny Connection String
         self.mongo_uri = "mongodb+srv://user:password@cluster.mongodb.net/NazwaBazy?retryWrites=true&w=majority"
-        self.client = motor.motor_asyncio.AsyncIOMotorClient(self.mongo_uri)
+        self.client = pymongo.MongoClient(self.mongo_uri)
         self.db = self.client["overtime_polska"] # Nazwa bazy danych
         self.collection = self.db["razem"]       # Nazwa kolekcji wspólnej
         
@@ -22,6 +23,14 @@ class TelemetryBackbone(commands.Cog):
 
     def cog_unload(self):
         self.telemetry_pulse.cancel()
+
+    def _sync_save(self, payload):
+        """Synchroniczny zapis do bazy wywoływany w osobnym executorze, aby nie blokować pętli zdarzeń bota"""
+        self.collection.update_one(
+            {"_id": "global_telemetry"},
+            {"$set": payload},
+            upsert=True
+        )
 
     @tasks.loop(seconds=15)
     async def telemetry_pulse(self):
@@ -55,6 +64,9 @@ class TelemetryBackbone(commands.Cog):
                 
                 # Pobranie spersonalizowanego odnośnika zaproszenia (Vanity URL)
                 vanity_code = guild.vanity_url_code if "VANITY_URL" in guild.features else None
+                
+                # Sformatowanie ikony gildii
+                icon_url = str(guild.icon.url) if guild.icon else None
 
                 # Budowanie mapy pojedynczej gildii
                 server_info = {
@@ -66,7 +78,8 @@ class TelemetryBackbone(commands.Cog):
                     "boost_tier": boost_tier,
                     "vanity_code": vanity_code,
                     "is_partnered": is_partnered,
-                    "is_verified": is_verified
+                    "is_verified": is_verified,
+                    "icon": icon_url
                 }
                 servers_data.append(server_info)
 
@@ -85,11 +98,10 @@ class TelemetryBackbone(commands.Cog):
                 "lastUpdated": datetime.datetime.now(datetime.timezone.utc)
             }
 
-            await self.collection.update_one(
-                {"_id": "global_telemetry"},
-                {"$set": payload},
-                upsert=True
-            )
+            # Wywołanie synchronicznej metody zapisu w executorze asyncio (nieblokujące dla bota)
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(None, self._sync_save, payload)
+            
             logging.info(f"[Telemetria] Pomyślnie zsynchronizowano dane live: {total_users} użytkowników na {connected_servers} serwerach.")
 
         except Exception as e:

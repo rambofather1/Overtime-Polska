@@ -37,12 +37,13 @@ async function getUserCount() {
       servers: (result.servers || []).map(s => ({
         ...s,
         member_count: s.members || s.member_count || 0,
-        active_voice: s.active_voice || 0,
+        active_voice: s.active_voice || s.activeVoice || 0,
         boosts: s.boosts || 0,
-        boost_tier: s.boost_tier || 0,
-        vanity_code: s.vanity_code || null,
+        boost_tier: s.boost_tier || s.premium_tier || 0,
+        vanity_code: s.vanity_code || s.vanityCode || null,
         is_partnered: s.is_partnered || false,
-        is_verified: s.is_verified || false
+        is_verified: s.is_verified || false,
+        icon: s.icon || null
       }))
     };
   } catch (error) {
