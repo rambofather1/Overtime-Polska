@@ -12,7 +12,7 @@ Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci s
 ### Zmieniono
 - Podkręcono responsywność pobierania danych użytkowników live.
 - Usunięto przestarzały, długoterminowy cache odpowiedzi w wątkach backendu PM2 (`api/db.js`) i Vercel API (`api/usercount.js`), który serwował nieaktualne statystyki użytkowników w przypadku spowolnienia bazy danych. API odpytuje teraz bezpośrednio MongoDB przy każdym zapytaniu, co gwarantuje 100% autentyczność stanu live licznika.
-- Przebudowano sekcję największych serwerów na stronie głównej: zamiast prostych badge'y pojawił się czytelny ranking z numeracją, paskami udziału i lepszą prezentacją nazw oraz liczby członków.
+- Przebudowano sekcję największych serwerów na stronie głównej: zamiast prostych badge'y pojawił się czytelny, pionowo przewijany ranking topki (scroll box) z numeracją, paskami udziału i lepszą prezentacją nazw oraz liczby członków (rozwiązuje to problem zbytniego rozmywania się i rozciągania strony).
 
 ---
 *Rejestr prowadzony zgodnie z wymaganiami technicznymi i standardami jakości zespołu Overtime Polska.*

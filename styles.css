@@ -170,6 +170,28 @@ h1 {
 .servers-leaderboard {
     display: grid;
     gap: 10px;
+    max-height: 290px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Dostosowanie paska przewijania dla samej listy serwerów */
+.servers-leaderboard::-webkit-scrollbar {
+    width: 6px;
+}
+
+.servers-leaderboard::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 999px;
+}
+
+.servers-leaderboard::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+}
+
+.servers-leaderboard::-webkit-scrollbar-thumb:hover {
+    background: rgba(29, 185, 84, 0.5);
 }
 
 .server-card {
