@@ -35,9 +35,12 @@ class TelemetryBackbone(commands.Cog):
             upsert=True
         )
 
-    def _sync_accumulate_voice(self, user_id, username, duration_minutes):
-        """Synchroniczna akumulacja minut głosowych użytkownika"""
-        analytics_collection = self.db["analizy"]
+    def _sync_accumulate_voice(self, user_id, username, duration_minutes, partners=None):
+        """Synchroniczna akumulacja minut głosowych użytkownika oraz synergii i sesji rekordowych"""
+        # Spójny zapis bezpośrednio do kolekcji "razem", aby ułatwić agregację w API Node.js/Vercel
+        analytics_collection = self.collection
+
+        # 1. Zwykła inkrementacja czasu całkowitego
         analytics_collection.update_one(
             {"_id": "voice_analytics"},
             {
@@ -47,31 +50,103 @@ class TelemetryBackbone(commands.Cog):
             upsert=True
         )
 
+        # 2. Rekord najdłuższych sesji (all_time_longest_sessions)
+        analytics_collection.update_one(
+            {"_id": "voice_analytics"},
+            {
+                "$push": {
+                    "all_time_longest_sessions": {
+                        "$each": [{
+                            "user_id": user_id,
+                            "username": username,
+                            "duration_minutes": duration_minutes,
+                            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()
+                        }],
+                        "$sort": {"duration_minutes": -1},
+                        "$slice": 100
+                    }
+                }
+            },
+            upsert=True
+        )
+
+        # 3. Kumulacja synergii partnerskich (synergy_couples)
+        if partners:
+            for p in partners:
+                p_name = p["user_b_name"]
+                t_mins = p["together_minutes"]
+                
+                # Zabezpieczenie przed samozaliczeniem i alfabetyczny porządek par
+                user_a, user_b = sorted([username, p_name])
+                
+                # Próba inkrementacji istniejącej pary
+                db_res = analytics_collection.update_one(
+                    {"_id": "voice_analytics", "synergy_couples.user_a": user_a, "synergy_couples.user_b": user_b},
+                    {"$inc": {"synergy_couples.$.together_minutes": t_mins}}
+                )
+                
+                # Brak pary -> dodanie nowego elementu
+                if db_res.matched_count == 0:
+                    analytics_collection.update_one(
+                        {"_id": "voice_analytics"},
+                        {
+                            "$push": {
+                                "synergy_couples": {
+                                    "user_a": user_a,
+                                    "user_b": user_b,
+                                    "together_minutes": t_mins
+                                }
+                            }
+                        },
+                        upsert=True
+                    )
+
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
-        """Mierzenie czasu sesji głosowej w czasie rzeczywistym"""
+        """Mierzenie czasu sesji głosowej oraz wykrywanie partnerstw/synergii na żywo"""
         user_id = str(member.id)
+        now = datetime.datetime.now(datetime.timezone.utc)
         
-        # Wejście na kanał głosowy (nie było kanału przedtem, a teraz jest)
-        if before.channel is None and after.channel is not None:
-            self.active_sessions[user_id] = datetime.datetime.now(datetime.timezone.utc)
-            
-        # Wyjściem z kanału głosowego (był kanał przedtem, a teraz go nie ma)
-        elif before.channel is not None and after.channel is None:
+        # Wykrycie realnego opuszczenia kanału lub przełączenia na inny
+        if before.channel is not None and (after.channel is None or before.channel.id != after.channel.id):
             joined_time = self.active_sessions.pop(user_id, None)
             if joined_time:
-                duration = datetime.datetime.now(datetime.timezone.utc) - joined_time
+                duration = now - joined_time
                 duration_minutes = round(duration.total_seconds() / 60.0, 1)
                 
                 if duration_minutes > 0.1:
+                    # Wykrywanie partnerów, którzy dzielili kanał w tym samym czasie
+                    partners = []
+                    for other_member in before.channel.members:
+                        if other_member.bot or other_member.id == member.id:
+                            continue
+                        other_id = str(other_member.id)
+                        other_joined = self.active_sessions.get(other_id)
+                        if other_joined:
+                            # Wspólny czas na tym samym kanale
+                            overlap_start = max(joined_time, other_joined)
+                            overlap_duration = now - overlap_start
+                            overlap_mins = round(overlap_duration.total_seconds() / 60.0, 1)
+                            if overlap_mins > 0.1:
+                                partners.append({
+                                    "user_b_id": other_id,
+                                    "user_b_name": other_member.display_name,
+                                    "together_minutes": overlap_mins
+                                })
+
                     loop = asyncio.get_event_loop()
                     await loop.run_in_executor(
                         None, 
                         self._sync_accumulate_voice, 
                         user_id, 
                         member.display_name, 
-                        duration_minutes
+                        duration_minutes,
+                        partners
                     )
+            
+        # Wykrycie dołączenia na kanał lub przełączenia na inny
+        if after.channel is not None and (before.channel is None or before.channel.id != after.channel.id):
+            self.active_sessions[user_id] = now
 
     def _classify_channel(self, channel_name):
         """Inteligentna klasyfikacja przeznaczenia kanału głosu na podstawie nazwy i emoji"""

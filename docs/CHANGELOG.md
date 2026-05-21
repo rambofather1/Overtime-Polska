@@ -12,6 +12,10 @@ Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci s
   - Każda postać otrzymuje swój **prawdziwy avatar Discorda**, poprawną nazwę wyświetlaną (`display_name`) oraz dynamicznie generowany dymek dialogowy lub toast opisujący grę, w którą aktualnie gra na bazie tablicy `user.activities`.
   - Przypisywanie biesiadników do konkretnych stołów w Tawernie oraz dzielnic w Metropolis ("gaming" -> Cyber Arena, "chill" -> Neon Lounge, "general" -> Central Plaza) odbywa się teraz w pełni dynamicznie na podstawie sklasyfikowanego przez bota typu kanału głosowego (`channel_type`).
   - Dodano bezpieczne funkcje escapowania kodu HTML (`escapeHtml`) w skryptach frontendu, zapobiegając atakom typu XSS przy renderowaniu metadanych użytkowników Discorda.
+- **Analityka i Synergia Głosowa (Retention & Connection Analytics)**:
+  - Zaimplementowano w pełni nieblokujący asynchroniczny moduł akumulowania i zapisu statystyk sesji (`voice_analytics`) u bota.
+  - Wdrożono agregację statystyk **TOP 5 najlepszych synergii partnerskich** (`synergy_couples`), która bada wspólny czas spędzany na kanałach (z unikalnym alfabetycznym grupowaniem par użytkowników), oraz **TOP 5 rekordowych czasów sesji** (`all_time_longest_sessions`).
+  - Zaktualizowano punkty dostępowe API (`api/usercount.js` oraz `api/db.js`) o precyzyjne potężne potoki agregacji MongoDB Atlas w celu udostępnienia tych statystyk dla całego systemu.
 
 ## [Wersja 1.2.0] - 2026-05-21
 

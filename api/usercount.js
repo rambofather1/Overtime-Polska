@@ -46,20 +46,65 @@ async function getUserCount() {
     
     const collection = db.collection(COLLECTION);
     
-    // Zawsze pobieraj aktualny dokument z bazy danych bez pamięci podręcznej wyników
-    const result = await collection.findOne({});
+    // Pobieramy nadrzędny dokument telemetrii
+    let result = await collection.findOne({ _id: "global_telemetry" });
+    if (!result) {
+      // Fallback w razie braku migrowanego dokumentu
+      result = await collection.findOne({ _id: { $ne: "voice_analytics" } });
+    }
     
     if (!result) {
       throw new Error('Nie znaleziono dokumentu z danymi w bazie');
     }
     
+    // Pobranie TOP 5 najlepszych synergii partnerskich z kolekcji live
+    let topSynergies = [];
+    try {
+      topSynergies = await collection.aggregate([
+        { $match: { _id: "voice_analytics" } },
+        { $unwind: "$synergy_couples" },
+        { $sort: { "synergy_couples.together_minutes": -1 } },
+        { $limit: 5 },
+        { $project: {
+            _id: 0,
+            partner_a: "$synergy_couples.user_a",
+            partner_b: "$synergy_couples.user_b",
+            duration: "$synergy_couples.together_minutes"
+        }}
+      ]).toArray();
+    } catch (e) {
+      console.warn("Błąd aggregacji synergii (prawdopodobnie brak jeszcze danych):", e.message);
+    }
+
+    // Pobranie rekordów najdłuższych sesji (największych biesiadników serwera)
+    let topGamers = [];
+    try {
+      topGamers = await collection.aggregate([
+        { $match: { _id: "voice_analytics" } },
+        { $unwind: "$all_time_longest_sessions" },
+        { $sort: { "all_time_longest_sessions.duration_minutes": -1 } },
+        { $limit: 5 },
+        { $project: {
+            _id: 0,
+            username: "$all_time_longest_sessions.username",
+            user_id: "$all_time_longest_sessions.user_id",
+            minutes: "$all_time_longest_sessions.duration_minutes"
+        }}
+      ]).toArray();
+    } catch (e) {
+      console.warn("Błąd aggregacji rekordowych sesji:", e.message);
+    }
+    
     return {
       totalCount: result.total_users || result.totalUsers || 0,
       voiceUsers: result.voice_users || result.voiceUsers || 0,
+      voice_users_detailed: result.voice_users_detailed || [],
       connectedServers: result.connected_servers || 0,
       latencyMs: result.latency_ms || 0,
       shardCount: result.shard_count || 1,
       dataSource: 'MongoDB Atlas',
+      top_synergies: topSynergies,
+      top_gamers: topGamers,
       servers: (result.servers || []).map(s => ({
         ...s,
         member_count: s.members || s.member_count || 0,
