@@ -25,6 +25,12 @@ app.use(express.static(path.join(__dirname, '..')));
 
 // Endpoint do pobierania liczby użytkowników - obsługuje obie ścieżki
 app.get(['/api/usercount', '/usercount'], async (req, res) => {
+  // Wyłączenie silnego cache po stronie przeglądarki i serwerów proxy pośredniczących
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   try {
     // Logowanie informacji o żądaniu
     console.log('Otrzymano żądanie danych użytkowników');

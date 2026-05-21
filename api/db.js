@@ -31,7 +31,10 @@ async function getUserCount() {
       totalCount: result.total_users || result.totalUsers || 0,
       voiceUsers: result.voice_users || result.voiceUsers || 0,
       dataSource: 'MongoDB Atlas (Główna)',
-      servers: result.servers || []
+      servers: (result.servers || []).map(s => ({
+        ...s,
+        member_count: s.members || s.member_count || 0
+      }))
     };
   } catch (error) {
     console.error('Błąd podczas pobierania danych z MongoDB Atlas:', error);
