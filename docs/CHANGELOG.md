@@ -2,6 +2,18 @@
 
 Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
 
+## [Wersja 1.4.0] - 2026-05-21
+
+### Dodano
+
+- **Głęboka Cyberpunkowa Interaktywność Wyglądu ("Interaction-First" / RPG Game Mechanics)**:
+  - Wdrożono dedykowany, zaawansowany modal cyberpunkowego profilu postaci ([community.html](community.html)) wywoływany kliknięciem na dowolnego obywatela Metropolis lub biesiadnika w Gospodzie.
+  - Wyświetlanie precyzyjnych szczegółów profilu: powiększony cyberpunkowy awatar z dynamiczną poświatą neonową, prawdziwym identyfikatorem NET (UID Discorda), bieżącą lokalizacją głosową oraz autentycznym statusem Discord (aktywności lub tryb czuwania sensorycznego).
+  - **Mechanizm Cyber-Wszczepów**: Generator deterministycznych ulepszeń technologicznych (np. *Korteks Synaptyczny*, *Optyka Kiroshi MK4*, *Moduł Hakowania Satori*) wraz z poziomem integracji (39% - 99%) wyliczany na podstawie statycznego skrótu identyfikatora użytkownika.
+  - **Retro Mini-Gra Hackerska**: Wbudowana gra tekstowa CLI (Retro Terminal v4.0.9). Gracz podejmuje próbę infiltracji cyberware mieszkańca przez łamanie trójbarierowej zapory ICE. System generuje klucz obejściowy, który gracz musi poprawnie wprowadzić do konsoli. Sukces lub porażka wywołują autentyczną dynamiczną reakcję postaci w postaci unoszących się dymków dialogowych w czasie rzeczywistym nad awatarem na mapie!
+  - **Interaktywny System Toastów / Stawiania Drinków**: Opcjonalna cyberpunkowa akcja pozwalająca postawić mieszkańcowi jeden z klasycznych cyber-trunków (np. *Johnny Hand*, *Wściekły Cyber-Pies*, *Sake Arasaka Special*). Postacie natychmiastowo dziękują, wznosząc wirtualny toast zintegrowany z interfejsem dymków na globalnej planszy.
+  - Ujednolicony i usprawniony mechanizm nasłuchu zdarzeń we frontendzie z zabezpieczeniami zapobiegającymi propagacji bąbelkowej kliknięć.
+
 ## [Wersja 1.3.0] - 2026-05-21
 
 ### Dodano
