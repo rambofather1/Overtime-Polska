@@ -4,7 +4,7 @@ Bieżący podgląd stanu prac i integracji systemu portalu.
 
 ## Podsumowanie stanu
 
-- **Postęp prac:** 100% (Projekt po pełnym audycie bezpieczeństwa, eliminacji błędów składniowych i optymalizacji obronnej. Wszystkie cele zaawansowanej gamifikacji oraz cyber-ekonomii działają całkowicie bezbłędnie.)
+- **Postęp prac:** 100% (Projekt po pełnym audycie bezpieczeństwa, implementacji systemów World Interaction, eliminacji błędów składniowych i optymalizacji obronnej. Wszystkie cele zaawansowanej gamifikacji, cyber-ekonomii oraz dynamicznej telemetrii sieciowej działają całkowicie bezbłędnie.)
 - **Szacowane pozostałe roboczogodziny:** 0h (Zero długów technicznych, stabilne wykonanie)
 
 ## Aktualne Funkcje
@@ -30,3 +30,7 @@ Bieżący podgląd stanu prac i integracji systemu portalu.
    - **Bezkomendowy Czarny Rynek i Hex Keypad**: Wprowadzenie w pełni wizualnego modułu zakupów ekwipunku bez wpisywania `/shop` oraz klikalnej matrycy dekodera Hex-Keypad ułatwiającej mobilne hakowanie ICE jednym palcem.
    - **Siatka Responsywna Sub-HUD**: Dynamiczne dostosowanie układu paska statystyk bazy i podglądu biesiadnika do ekranów smartfonów (grid-to-flex vertical stack).
    - **Neonowe Szkło Społecznościowe (Premium Cyber-Buttons)**: Transformacja tradycyjnych przycisków w responsywną siatkę zintegrowanych neonowych łączników o dedykowanych marżach poświatowych dla YouTube, Discord, Linktree oraz przycisku Multiverse Gry Live.
+9. **Wektorowy Cyber-Ruch i Zaawansowana Interaktywność (v1.5.5 - 100%):**
+   - **Dynamiczne Światłowody (Laser Connection Lines)**: Integracja nakładki SVG i silnika generowania kabli laserowych z dynamiczną animacją ruchu pakietów w czasie rzeczywistym (dashOffset).
+   - **Inwigilacyjne Drony Patrolowe**: Latające, interaktywne drony chroniące sieć Metropolis ze skanującymi stożkami UV, nagradzające gracza kredytami po kliknięciu.
+   - **Hacker Deck Side-drawer**: Wysuwany terminal boczny decku netrunnerskiego, prezentujący skład i parametry każdego pokoju głosowego oddzielnie po kliknięciu w locie we wskazany punkt. Podwójna funkcjonalność dynamicznej infiltracji barier ochronnych (ICE Breach) oraz zautomatyzowanego napełniania kielichów wirtualnych spacerowiczów (Deploy Cyber-drinks). Customowy system unoszących się logów, efektów bonusowych i dynamicznych dymków dialogowych.

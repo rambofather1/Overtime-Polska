@@ -426,6 +426,134 @@
       100% { transform: scale(1) translateY(0); opacity: 1; }
     }
 
+    /* --- CZĘŚĆ EKSTREMALNA: DRONY, CENTRALNY MAINFRAME, LINIE LASEROWE --- */
+    .cyber-drone {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      z-index: 45;
+      pointer-events: auto;
+      cursor: pointer;
+      transition: filter 0.3s ease;
+    }
+
+    .cyber-drone:hover {
+      filter: drop-shadow(0 0 15px var(--cyber-cyan));
+    }
+
+    .drone-chassis {
+      width: 36px;
+      height: 24px;
+      background: #111424;
+      border: 2px solid var(--cyber-cyan);
+      border-radius: 6px;
+      position: relative;
+    }
+
+    .drone-eyes {
+      width: 8px;
+      height: 8px;
+      background: var(--cyber-cyan);
+      border-radius: 50%;
+      position: absolute;
+      top: 6px;
+      left: 12px;
+      box-shadow: 0 0 10px var(--cyber-cyan);
+      animation: blinkEye 0.4s infinite alternate;
+    }
+
+    .drone-laser {
+      position: absolute;
+      top: 24px;
+      left: -32px;
+      width: 100px;
+      height: 150px;
+      background: linear-gradient(180deg, rgba(0, 240, 255, 0.28) 0%, rgba(0, 240, 255, 0.0) 95%);
+      clip-path: polygon(50% 0, 0 100%, 100% 100%);
+      animation: laserScan 2.2s infinite ease-in-out alternate;
+      transform-origin: 50% 0%;
+      pointer-events: none;
+    }
+
+    .drone-patrol-1 {
+      animation: droneFloat1 25s infinite linear;
+    }
+
+    .drone-patrol-2 {
+      animation: droneFloat2 32s infinite linear;
+    }
+
+    @keyframes laserScan {
+      0% { transform: rotate(-20deg); }
+      100% { transform: rotate(20deg); }
+    }
+
+    @keyframes blinkEye {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    @keyframes droneFloat1 {
+      0% { left: 400px; top: 300px; }
+      25% { left: 1500px; top: 400px; }
+      50% { left: 1300px; top: 1100px; }
+      75% { left: 500px; top: 900px; }
+      100% { left: 400px; top: 300px; }
+    }
+
+    @keyframes droneFloat2 {
+      0% { left: 1700px; top: 1000px; }
+      33% { left: 1200px; top: 1100px; }
+      66% { left: 1100px; top: 400px; }
+      100% { left: 1700px; top: 1000px; }
+    }
+
+    @keyframes dashMove {
+      to {
+        stroke-dashoffset: -1000;
+      }
+    }
+
+    /* Centralny rdzeń mainframe */
+    .pulsing-core {
+      border: 2px solid var(--secondary-color) !important;
+      background: linear-gradient(185deg, rgba(236,72,153,0.06) 0%, rgba(11,12,22,0.92) 100%) !important;
+      box-shadow: 0 0 35px rgba(236,72,153,0.3) !important;
+      transition: all 0.5s ease;
+    }
+
+    .pulsing-core:hover {
+      box-shadow: 0 0 50px rgba(236,72,153,0.6) !important;
+      border-color: #ff007f !important;
+    }
+
+    .core-antennas {
+      height: 10px;
+      width: 100%;
+      background: repeating-linear-gradient(90deg, var(--secondary-color), var(--secondary-color) 4px, transparent 4px, transparent 12px);
+      animation: alertPulse 1.2s infinite alternate;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    /* Efekt unoszenia się kredytów i cyfrowych ulepszeń */
+    .floating-text-effect {
+      position: absolute;
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: var(--cyber-emerald);
+      font-family: 'Orbitron', monospace;
+      animation: floatUpFade 1.6s forwards;
+      pointer-events: none;
+      z-index: 1000;
+      text-shadow: 0 0 8px var(--cyber-emerald);
+    }
+
+    @keyframes floatUpFade {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-70px); opacity: 0; }
+    }
+
     /* --- DOLNE METRYKI (ACORDION NA SMARTFONACH) --- */
     .widget-container {
       background: rgba(11, 12, 22, 0.88);
@@ -591,6 +719,35 @@
       <div id="canvasViewport">
         <!-- Płótno mapy -->
         <div id="canvasMap" class="canvas-map">
+          <!-- Linia kablowa SVG laserów sieciowych -->
+          <svg id="canvasSvgLines" style="position: absolute; width: 100%; height: 100%; pointer-events: none; z-index: 5; top: 0; left: 0;"></svg>
+
+          <!-- Centralny wektorowy Mainframe Tower -->
+          <div id="mainframeCoreNode" class="location-card text-center pulsing-core" style="position: absolute; left: 1000px; top: 750px; width: 330px; border-color: var(--secondary-color); --glow-color: rgba(236,72,153,0.35); z-index: 30;">
+            <div class="core-antennas"></div>
+            <div class="corp-tag" style="--tag-border: var(--secondary-color)">[OVERTIME PRIMARY MAINFRAME]</div>
+            <h3 class="glitch-header text-pink fs-5" style="letter-spacing:1px;"><i class="fas fa-satellite-dish me-2"></i>METROPOLIS CORE</h3>
+            <p class="text-white-50 small mt-2" style="font-size:0.75rem; line-height:1.4;">Centralny ruter telemetryczny sieciowy. Dynamicznie spina kable przesyłowe audio wszystkich podwęzłów.</p>
+            <div class="bg-dark py-1 px-2 rounded font-monospace" style="color: var(--cyber-cyan); font-size:0.7rem; display:flex; justify-content:space-between; align-items:center;">
+              <span>RUTER STATUS:</span>
+              <span id="mainframeDiagnostics">ONLINE / SYNC [0 MS]</span>
+            </div>
+          </div>
+
+          <!-- Samodzielnie latające wojskowe drony patrolowe -->
+          <div class="cyber-drone drone-patrol-1" onclick="interactDrone(1, event)">
+            <div class="drone-chassis">
+              <div class="drone-eyes"></div>
+            </div>
+            <div class="drone-laser"></div>
+          </div>
+          <div class="cyber-drone drone-patrol-2" onclick="interactDrone(2, event)">
+            <div class="drone-chassis" style="border-color: var(--secondary-color);">
+              <div class="drone-eyes" style="background: var(--secondary-color); box-shadow: 0 0 10px var(--secondary-color);"></div>
+            </div>
+            <div class="drone-laser" style="background: linear-gradient(180deg, rgba(236, 72, 153, 0.28) 0%, rgba(236, 72, 153, 0) 95%);"></div>
+          </div>
+
           <!-- Obwody / Węzły Lokacji generowane dynamicznie przez JS wewnątrz stanowych punktów -->
         </div>
 
@@ -667,6 +824,37 @@
       </div>
     </section>
   </main>
+
+  <!-- BOCZNY TERMINAL NETRUNNERA (INFILTRATE & CYBER-DRINKS) -->
+  <div id="cyberTerminalSide" class="border-cyber p-3" style="position: fixed; right: -400px; top: 120px; width: 340px; z-index: 1050; background: rgba(11, 12, 22, 0.95); transition: right 0.4s ease; border-radius: 12px; box-shadow: 0 0 35px rgba(168, 85, 247, 0.45);">
+    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-secondary">
+      <span class="font-monospace text-neon-emerald fw-bold"><i class="fas fa-terminal me-2"></i>NETRUNNER DECK COMPILER</span>
+      <button class="btn btn-sm btn-outline-danger" onclick="closeCyberTerminal()" style="padding: 1px 6px; font-size: 0.75rem;">X</button>
+    </div>
+    <div class="font-monospace text-white-50 small mb-2">TARGET CHANNEL: <strong class="text-white" id="termChannelName">-</strong></div>
+    <div class="font-monospace text-white-50 small mb-3">MEMBER COUNT: <strong class="text-info" id="termChannelUsers">-</strong></div>
+    <div id="termChannelRealUsers" class="mb-3" style="max-height: 120px; overflow-y: auto; border: 1px dashed rgba(255,255,255,0.08); padding: 5px; border-radius: 4px;">
+      <div class="text-muted small">Brak aktywnych spacerowiczów</div>
+    </div>
+    <div class="d-flex flex-column gap-2">
+      <button class="btn-cyber font-monospace btn-sm w-100" id="btnInfiltrate" onclick="infiltrateNode()"><i class="fas fa-user-secret me-2"></i>⚡ INFILTRATE (HACK ICE)</button>
+      <button class="btn-cyber btn-cyber-warning font-monospace btn-sm w-100" onclick="deployCyberDrinks()"><i class="fas fa-beer me-2"></i>🍺 DEPLOY CYBER-DRINKS</button>
+    </div>
+    <!-- Dynamiczna belka ładowania wewnątrz terminala hackingowego -->
+    <div class="mt-3 d-none" id="termHackProgressContainer">
+      <div class="d-flex justify-content-between small text-warning font-monospace" style="font-size:0.7rem;">
+        <span>DESZYFRACJA BAZY DANYCH...</span>
+        <span id="termHackPct">0%</span>
+      </div>
+      <div class="hud-progress-bar" style="height:4px; margin-top:2px;">
+        <div class="hud-progress-fill" id="termHackBar" style="width: 0%; background: var(--cyber-warning); box-shadow:0 0 8px var(--cyber-warning);"></div>
+      </div>
+    </div>
+    <div id="termConsoleLogs" class="bg-dark p-2 mt-3 font-monospace rounded text-success" style="font-size: 0.65rem; height: 90px; overflow-y: auto; line-height: normal; border: 1px solid rgba(0, 240, 255, 0.15);">
+      &gt; Deck standby.<br>
+      &gt; Wskaż dowolny węzeł na mapie.
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script src="app.js"></script>
@@ -996,8 +1184,8 @@
       // 1. Desktop Render (Infinite Map Węzły)
       const desktopMap = document.getElementById('canvasMap');
       
-      // Zachowujemy aktorów i siatkę, usuwamy tylko stare wejściowe karty lokacji
-      document.querySelectorAll('.canvas-map .location-card').forEach(n => n.remove());
+      // Zachowujemy aktorów i siatkę, usuwamy tylko stare wejściowe karty lokacji (oprócz centralnego mainframe)
+      document.querySelectorAll('.canvas-map .location-card:not(.pulsing-core)').forEach(n => n.remove());
 
       STATE.nodes.forEach(node => {
         const card = document.createElement('div');
@@ -1034,8 +1222,17 @@
           `;
         }
 
+        // Dodanie interakcji terminala bocznego po kliknięciu na kartę węzła
+        card.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectChannelHubNode(node);
+        });
+
         desktopMap.appendChild(card);
       });
+
+      // Rysowanie laserowych połączeń kablowych
+      drawLaserConnections();
 
       // 2. Mobile Render (Responsive Grid Viewport)
       const mobileContainer = document.getElementById('mobileCardsContainer');
@@ -1251,6 +1448,271 @@
         btn.className = "btn-cyber btn-danger";
       }
       renderContent();
+    }
+
+    // --- SYSTEM DYNAMICZNYCH POŁĄCZEŃ SVG KABLI ŚWIATŁOWODOWYCH ---
+    function drawLaserConnections() {
+      const svg = document.getElementById('canvasSvgLines');
+      if (!svg) return;
+      svg.innerHTML = '';
+
+      if (!STATE.apiOnline) {
+        const diag = document.getElementById('mainframeDiagnostics');
+        if (diag) {
+          diag.innerHTML = 'SYSTEM OFFLINE / TIMEOUT';
+          diag.style.color = 'var(--cyber-critical)';
+        }
+        return;
+      }
+
+      // Punkt centralny (Mainframe Tower)
+      const mainframeX = 1000 + 165; // środek szerokości mainframe (330px)
+      const mainframeY = 750 + 90;   // środek wysokości mainframe (~180px)
+
+      let activeConnections = 0;
+
+      STATE.nodes.forEach(node => {
+        if (node.activeUsers === null || node.activeUsers === 0) return;
+
+        // Środek karty węzła (karty mają 300px szerokości i ok 160px wysokości)
+        const nodeX = node.coordinates.x + 150;
+        const nodeY = node.coordinates.y + 80;
+
+        // Tworzymy zakrzywioną linię (krzywa Beizera) dla bardziej cyber-organicznego wyglądu
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const controlX = (mainframeX + nodeX) / 2;
+        const controlY = Math.min(mainframeY, nodeY) - 80; // uniesienie kontrolne dla łuku
+
+        const d = `M ${mainframeX} ${mainframeY} Q ${controlX} ${controlY}, ${nodeX} ${nodeY}`;
+        
+        path.setAttribute('d', d);
+        path.setAttribute('stroke', node.statusColor || '#00f0ff');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('fill', 'none');
+        path.setAttribute('opacity', '0.65');
+        
+        // Unikalny styl: animacja przesuwających się impulsów świetlnych
+        path.setAttribute('style', `
+          filter: drop-shadow(0 0 5px ${node.statusColor});
+          stroke-dasharray: 10 12;
+          animation: dashMove 28s linear infinite;
+        `);
+
+        svg.appendChild(path);
+        activeConnections++;
+      });
+
+      // Aktualizowanie diagnostyki głównego mainframe
+      const diag = document.getElementById('mainframeDiagnostics');
+      if (diag) {
+        diag.innerHTML = `ONLINE / SYNC [${activeConnections} LINKÓW]`;
+        diag.style.color = 'var(--cyber-emerald)';
+      }
+    }
+
+    // --- TERMINAL NETRUNNERA: INTERAKTYWNA INTEGRACJA ---
+    let selectedNodeGlobal = null;
+    let isHackingActive = false;
+
+    function selectChannelHubNode(node) {
+      if (!STATE.apiOnline) return;
+      selectedNodeGlobal = node;
+
+      const terminal = document.getElementById('cyberTerminalSide');
+      terminal.style.right = '20px';
+
+      document.getElementById('termChannelName').textContent = node.name;
+      document.getElementById('termChannelUsers').textContent = `${node.activeUsers} aktywności biesiadników`;
+
+      const listUsersBox = document.getElementById('termChannelRealUsers');
+      listUsersBox.innerHTML = '';
+
+      if (node.realUsers && node.realUsers.length > 0) {
+        node.realUsers.forEach(user => {
+          const row = document.createElement('div');
+          row.className = 'd-flex align-items-center gap-2 mb-1 py-1 px-2 rounded';
+          row.style.background = 'rgba(255,255,255,0.03)';
+          row.style.borderLeft = `2px solid ${node.statusColor}`;
+
+          const pfp = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
+          const gameText = user.activities && user.activities.length > 0 ? ` (gra: ${user.activities[0]})` : '';
+
+          row.innerHTML = `
+            <img src="${pfp}" style="width: 16px; height: 16px; border-radius: 50%;">
+            <span class="text-white font-monospace" style="font-size:0.7rem; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">
+              ${user.display_name || user.username}${gameText}
+            </span>
+          `;
+          listUsersBox.appendChild(row);
+        });
+      } else {
+        listUsersBox.innerHTML = `<div class="text-muted small">Brak spacerowiczów w bazie (Symulacja botów)</div>`;
+      }
+
+      // Reset ukrytych pól ładowania
+      document.getElementById('termHackProgressContainer').classList.add('d-none');
+      
+      const logs = document.getElementById('termConsoleLogs');
+      logs.innerHTML = `
+        &gt; Nawiązano link z węzłem [${node.name}].<br>
+        &gt; Lokalny protokół zabezpieczeń: MD-5 / ICE Shield.<br>
+        &gt; Szybkość przesyłu pakietów: 1.2 Gbps.<br>
+        &gt; Deck operacyjny gotowy na infiltrację (HACK ICE)...
+      `;
+      logs.scrollTop = logs.scrollHeight;
+    }
+
+    function closeCyberTerminal() {
+      document.getElementById('cyberTerminalSide').style.right = '-400px';
+      selectedNodeGlobal = null;
+    }
+
+    // Łamanie zabezpieczeń węzła (Hacking ICE)
+    function infiltrateNode() {
+      if (!selectedNodeGlobal || isHackingActive) return;
+
+      isHackingActive = true;
+      document.getElementById('btnInfiltrate').disabled = true;
+
+      const progressContainer = document.getElementById('termHackProgressContainer');
+      const progressBar = document.getElementById('termHackBar');
+      const progressPct = document.getElementById('termHackPct');
+      const logs = document.getElementById('termConsoleLogs');
+
+      progressContainer.classList.remove('d-none');
+      progressBar.style.width = '0%';
+      progressPct.textContent = '0%';
+
+      logs.innerHTML += `<br>&gt; Inicjalizacja pakietów deszyfrujących...`;
+      logs.scrollTop = logs.scrollHeight;
+
+      let pct = 0;
+      const interval = setInterval(() => {
+        pct += Math.floor(Math.random() * 15) + 5;
+        if (pct >= 100) {
+          pct = 100;
+          clearInterval(interval);
+
+          // Hack udany!
+          isHackingActive = false;
+          document.getElementById('btnInfiltrate').disabled = false;
+          progressContainer.classList.add('d-none');
+
+          // Dodajemy kredyty
+          const creditsReward = 250 + Math.floor(Math.random() * 150);
+          STATE.userStats.credits += creditsReward;
+          initUserStats(); // animacja dodania
+
+          // Wizualny efekt floating text w miejscu wybranego węzła
+          showFloatingBonusEffect(`+${creditsReward} cr`, selectedNodeGlobal.coordinates.x + 150, selectedNodeGlobal.coordinates.y + 40);
+
+          logs.innerHTML += `
+            <br><span class="text-neon-emerald">&gt; DESZYFRACJA UDANA!</span>
+            <br><span class="text-warning">&gt; Pozyskano dane i przetransferowano +${creditsReward} cr!</span>
+          `;
+          logs.scrollTop = logs.scrollHeight;
+        }
+
+        progressBar.style.width = `${pct}%`;
+        progressPct.textContent = `${pct}%`;
+
+        if (pct > 30 && pct < 50 && !logs.innerHTML.includes('Rozszyfrowywanie sygnatur')) {
+          logs.innerHTML += `<br>&gt; Rozszyfrowywanie sygnatur klastra...`;
+          logs.scrollTop = logs.scrollHeight;
+        }
+        if (pct > 70 && pct < 85 && !logs.innerHTML.includes('Omijanie barier firewall')) {
+          logs.innerHTML += `<br>&gt; Omijanie barier firewall (Militech ICE bypass)...`;
+          logs.scrollTop = logs.scrollHeight;
+        }
+      }, 150);
+    }
+
+    // Deploying cyber-drinks (Cheers popups over citizens)
+    function deployCyberDrinks() {
+      if (!selectedNodeGlobal) return;
+
+      const logs = document.getElementById('termConsoleLogs');
+      logs.innerHTML += `
+        <br>&gt; Rozlewam cyber-drinki dla spacerowiczów kanału [${selectedNodeGlobal.name}]...
+        <br><span class="text-info">&gt; Synchroniczny toast w toku! 🍻 Cheers!</span>
+      `;
+      logs.scrollTop = logs.scrollHeight;
+
+      // Unoszący się tekst w miejscu węzła
+      showFloatingBonusEffect("Cheers! 🍺", selectedNodeGlobal.coordinates.x + 150, selectedNodeGlobal.coordinates.y - 10);
+
+      // Wszystkim aktorom z tego węzła dodajemy dymki dialogowe z toastem!
+      const actors = document.querySelectorAll('.cyber-actor');
+      actors.forEach(actor => {
+        // Sprawdzamy dystans od węzła celem identyfikacji aktorów przypisanych
+        const left = parseFloat(actor.style.left);
+        const top = parseFloat(actor.style.top);
+        const dx = left - (selectedNodeGlobal.coordinates.x + 180);
+        const dy = top - (selectedNodeGlobal.coordinates.y + 110);
+        const distance = Math.sqrt(dx*dx + dy*dy);
+
+        if (distance < 160) {
+          // Usunięcie poprzedniego dymku i nałożenie nowego
+          const old = actor.querySelector('.bubble-cloud');
+          if (old) old.remove();
+
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble-cloud';
+          bubble.style.borderColor = 'var(--cyber-cyan)';
+          bubble.textContent = "🍺 Na zdrowie, Netrunnerzy! 🚀";
+          actor.appendChild(bubble);
+
+          setTimeout(() => bubble.remove(), 4000);
+        }
+      });
+    }
+
+    // Interaktywne drony opancerzone (Kliknięcie daje drobną premię kredytów i odgłos skanowania)
+    function interactDrone(droneId, event) {
+      if (event) event.stopPropagation();
+      
+      const px = event ? event.clientX : 1000;
+      const py = event ? event.clientY : 800;
+
+      const randomCredits = 50 + Math.floor(Math.random() * 50);
+      STATE.userStats.credits += randomCredits;
+      initUserStats();
+
+      // Pokaż floating effect w punkcie kliknięcia myszką na seryjnym porcie
+      const viewport = document.getElementById('canvasMap');
+      const rect = viewport.getBoundingClientRect();
+      const relativeX = (px - rect.left) / (window.devicePixelRatio || 1); // zgrubne pozycjonowanie na mapie
+      const relativeY = (py - rect.top) / (window.devicePixelRatio || 1);
+
+      showFloatingBonusEffect(`+${randomCredits} cr (DRONE SCAN)`, relativeX || 1000, relativeY || 700);
+
+      const logs = document.getElementById('termConsoleLogs');
+      if (logs) {
+        logs.innerHTML += `
+          <br><span class="text-cyan">&gt; Przejęto strumień danych drona #${droneId}!</span>
+          <br>&gt; Pozyskano przesyłowe pakiety diagnostyczne (+${randomCredits} cr).
+        `;
+        logs.scrollTop = logs.scrollHeight;
+      }
+    }
+
+    // Pokazuje na mapie unoszący się tekst o danej treści i współrzędnych
+    function showFloatingBonusEffect(text, x, y) {
+      const container = document.getElementById('canvasMap');
+      if (!container) return;
+
+      const el = document.createElement('div');
+      el.className = 'floating-text-effect';
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+      el.textContent = text;
+
+      container.appendChild(el);
+
+      // Usunięcie po zakończeniu animacji
+      setTimeout(() => {
+        el.remove();
+      }, 1600);
     }
 
     // Helper ułatwiający konwersję kodu szesnastkowego do RGBA dla neonowych poświat

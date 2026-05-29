@@ -2,6 +2,19 @@
 
 Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
 
+## [Wersja 1.5.5] - 2026-05-30
+
+### Dodano i Udoskonalono (High-Tech Laser Cables, Military Patrolling Drones & Interactive Hacker Deck)
+
+- **Centralny Maszt Metropolis (Central Mainframe Tower)**: Dodano monumentalny wektorowy punkt centralny na mapie Metropolis — „PRIMARY MAINFRAME”. Pełni on rolę serwera-rutera spajającego cały ruch i dynamicznie kalkulującego statusy linków.
+- **Dynamiczne Światłowody Neonowe (Glowing SVG Laser Links)**: Wdrożono nakładkę wektorową SVG (`canvasSvgLines`) rysującą w czasie rzeczywistym zakrzywione światłowody (krzywe Beziera) łączące strefy biesiadne z centralnym mainframem. Kable posiadają dynamicznie płynący strumień świetlny (`stroke-dasharray` z animacją `dashMove` na 60 FPS), wizualizujący aktywność poszczególnych kanałów głosowych w czasie rzeczywistym.
+- **Opancerzone Drony Patrolowe (Military Laser-scanning Drones)**: Wprowadzono do ekosystemu dwa automatycznie krążące drony wojskowe, przemieszczające się po skomplikowanych trajektoriach orbitalnych. Drony rzucają ruchomy stożek laserowy skanujący teren (`drone-laser` z animacją `laserScan`). Kliknięcie drona umożliwia "przejęcie jego pakietów" i nagradza gracza kredytami, wywołując urocze latające bonusy i logi w konsoli.
+- **Boczna Konsola Infiltracji Hakerskiej (Hacker Deck Side-Terminal Drawer)**: Stworzono w pełni interaktywny boczny panel operacyjny `cyberTerminalSide` dla Netrunnerów. Kliknięcie dowolnej dzielnicy w locie wysuwa terminal deszyfrujący, prezentujący szczegółową listę obecnych tam biesiadników, ich gry oraz statusy.
+- **Operacje Decku (Infiltrate ICE & Cyber-Drinks)**:
+  - Opcja **Infiltrate (Hack ICE!)** odpala dynamiczną, wieloetapową procedurę łamania firewallu z paskiem postępu % i konsolą logującą procesy. Zwieńczona jest przyznaniem kredytów i pływającym efektem "+cr" w miejscu węzła.
+  - Opcja **Deploy Cyber-Drinks** rozsyła wirtualne drinki do wszystkich biesiadników na wskazanym kanale głosowym Discorda. Mieszkańcy wokół stołu momentalnie reagują dymkami dialogowymi na żywo („🍺 Na zdrowie, Netrunnerzy! 🚀”) oraz toastem.
+- **Wyeliminowanie Błędu Usuwania Mainframe'u**: Zoptymalizowano usuwanie starych nodów przy pollingu, chroniąc centralny maszt przed usunięciem przy użyciu strukturalnego filtra selektora CSS `:not(.pulsing-core)`.
+
 ## [Wersja 1.5.4] - 2026-05-30
 
 ### Dodano i Udoskonalono (Real-Time Dynamic Spatial Clustering)
