@@ -2,6 +2,16 @@
 
 Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
 
+## [Wersja 1.5.4] - 2026-05-30
+
+### Dodano i Udoskonalono (Real-Time Dynamic Spatial Clustering)
+
+- **Mechanizm Dynamicznych Stołów Kanałowych (Dynamic Spatial Clustering Engine)**: Zastąpiono statyczne, sztywno zdefiniowane 5 dzielnic w [metropolis.html](metropolis.html) systemem adaptacyjnego tworzenia wirtualnych stołów/płytek operacyjnych w czasie rzeczywistym. Algorytm grupuje użytkowników znajdujących się w danej chwili na tych samych kanałach głosowych Discorda i automatycznie generuje dla nich fizyczne stoliki na planie Infinite Canvas.
+- **Orbity Przeciwkolizyjne i Trasy Trygonometryczne**: Stoły są rozstawiane w locie na płótnie mapy przy użyciu rygorystycznego algorytmu trygonometrycznego (promieniście, ze zmiennymi promieniami orbit i krokami kątowymi wokół punktu środkowego `x: 1000, y: 750`), co w 100% gwarantuje, że nowo pozycjonowane pokoje nigdy nie będą się nakładać ani zlewać.
+- **Rzeczywista Wizualizacja Biesiadników (Discord Profile Importer)**: Usunięto generowanie fikcyjnych avatarów i losowych identyfikatorów oznaczonych jako `NetUser_999`. Obecnie wokół stołów spacerują i krążą autentyczni użytkownicy pobrani z telemetrii bazy danych z ich oryginalnymi nickami Discorda oraz avatarami.
+- **Płynna Prezentacja Aktywności (Dynamic Conversation Bubbles)**: Każdy mieszkaniec ma teraz spersonalizowany, dynamiczny dymek po kliknięciu. Jeżeli użytkownik aktualnie w coś gra (co rejestruje API na jego koncie Discord), to mieszkaniec dumnie zakomunikuje: „Gram w: [Nazwa Gry]! 🎮”, wzmacniając immersję cyfrowej cyber-karuzeli grawitacyjnej.
+- **Optymalizacja Czasu Ładowania (Instant-loading v2.0)**: Całkowicie wyłączono sztuczny sleep `setTimeout` trwający 1.2 sekundy przy otwieraniu strony, dzięki czemu Metropolis ładuje się natychmiast po pobraniu danych sieciowych (redukcja opóźnienia startowego do 0ms). Dodatkowo, polling telemetryczny został skrócony co do częstotwa z 8 sekund do 3.5 sekundy, dając błyskawiczny efekt synchronizacji zmian na kanałach.
+
 ## [Wersja 1.5.3] - 2026-05-30
 
 ### Dodano i Udoskonalono (Interaction-First & Mobile Modernization)

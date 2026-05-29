@@ -916,28 +916,41 @@
       STATE.nodes.forEach(node => {
         if (node.activeUsers === null || node.activeUsers === 0) return;
 
-        // Liczba wirtualnych postaci na dzielnicę
-        const actorCount = Math.min(Math.floor(node.activeUsers / 3) + 1, 8);
+        // Jeśli mamy prawdziwych użytkowników z bazy, bierzemy ich dane! W przeciwnym razie generujemy boty
+        const hasReal = node.realUsers && node.realUsers.length > 0;
+        const count = hasReal ? node.realUsers.length : node.activeUsers;
 
-        for (let i = 0; i < actorCount; i++) {
+        for (let i = 0; i < count; i++) {
           const actor = document.createElement('div');
           actor.className = 'cyber-actor';
           
           // Współrzędne wokół punktów centralnych lokacji z losowym jitterem
-          const offsetRadius = 60 + Math.random() * 90;
-          const angle = Math.random() * Math.PI * 2;
+          const offsetRadius = 65 + Math.random() * 70;
+          const angle = (i / count) * Math.PI * 2 + (Math.random() * 0.5); // Równomierne rozłożenie + jitter
           const x = node.coordinates.x + 180 + Math.cos(angle) * offsetRadius;
           const y = node.coordinates.y + 110 + Math.sin(angle) * offsetRadius;
 
           actor.style.left = `${x}px`;
           actor.style.top = `${y}px`;
 
-          const pSeed = `${node.id}_${i}_${Math.floor(Math.random() * 100)}`;
-          const avatarUrl = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${pSeed}`;
+          let displayName = "";
+          let avatarUrl = "";
+          let activities = [];
+
+          if (hasReal) {
+            const user = node.realUsers[i];
+            displayName = user.display_name || user.username || `User_${user.user_id?.substring(0, 5)}`;
+            avatarUrl = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
+            activities = user.activities || [];
+          } else {
+            displayName = `NetUser_${Math.floor(Math.random() * 900) + 100}`;
+            const pSeed = `${node.id}_${i}_${Math.floor(Math.random() * 100)}`;
+            avatarUrl = `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${pSeed}`;
+          }
 
           actor.innerHTML = `
             <div class="actor-avatar" style="--actor-border: ${node.statusColor}; background-image: url('${avatarUrl}');"></div>
-            <div class="actor-name">NetUser_${Math.floor(Math.random() * 999)}</div>
+            <div class="actor-name" title="${displayName}">${displayName}</div>
           `;
 
           // System dymków dialogowych przy kliknięciu na aktora
@@ -948,15 +961,19 @@
             const oldBubble = actor.querySelector('.bubble-cloud');
             if (oldBubble) oldBubble.remove();
 
-            const quotes = [
-              "Łącze stabilne! Network safe. 🔌",
-              "Infiltracja ICE zakończona pomyślnie. Skanuję...",
-              "Strefa pod patronatem gigantów Arasaka! 🏢",
-              "Słucham muzyki na żywo, niesamowity chill...",
-              "System operacyjny działa z latencją 8ms! ⚡",
-              "Wykryto anomalię sektora czarnego!"
-            ];
-            const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            let randomQuote = "";
+            if (activities.length > 0) {
+              randomQuote = `Gram w: ${activities[0]}! 🎮`;
+            } else {
+              const quotes = [
+                `Gadam na kanale: ${node.name} ⚡`,
+                "Łącze stabilne! Cyber-deck uzbrojony. 🔌",
+                "ICE łamie się znakomicie...",
+                "Overtime to najlepsza sieć! 🏢",
+                "Wykryto anomalię w Sektorze!"
+              ];
+              randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+            }
 
             const bubble = document.createElement('div');
             bubble.className = 'bubble-cloud';
@@ -966,7 +983,7 @@
 
             setTimeout(() => {
               bubble.remove();
-            }, 3000);
+            }, 3500);
           });
 
           container.appendChild(actor);
@@ -1108,28 +1125,111 @@
         const res = await fetch(apiUrl, { headers: { 'Cache-Control': 'no-cache' } });
         if (res.ok) {
           const data = await res.json();
+          
+          // Pobranie i aktualizacja statystyk nadrzędnych o partnerach/rekordach, jeśli istnieją w API
+          if (data.top_synergies && data.top_synergies.length > 0) {
+            STATE.topSynergies = data.top_synergies.map((s, idx) => ({
+              rank: idx + 1,
+              name: `${s.partner_a} + ${s.partner_b}`,
+              value: `${s.duration} min`,
+              trend: "up"
+            }));
+          }
+          if (data.top_gamers && data.top_gamers.length > 0) {
+            STATE.topFeasters = data.top_gamers.map((g, idx) => ({
+              rank: idx + 1,
+              name: g.username || `User_${g.user_id?.substring(0, 5)}`,
+              score: g.minutes,
+              timestamp: `${g.minutes} min`
+            }));
+          }
+
           const detailedUsers = data.voice_users_detailed || [];
 
-          // Rozdzielenie użytkowników na odpowiednie strefy (kanały)
-          let hubCount = 0;
-          let gamingCount = 0;
-          let chillCount = 0;
-          let syndicateCount = 0;
-
-          detailedUsers.forEach(user => {
-            const chType = user.channel_type || 'general';
-            if (chType === 'gaming') gamingCount++;
-            else if (chType === 'chill') chillCount++;
-            else if (chType === 'syndicate' || chType === 'ops') syndicateCount++;
-            else hubCount++;
-          });
-
-          // Wstrzykuje prawdziwe zliczenia w centralne źródło stanu (Single Source of Truth)
           if (STATE.apiOnline) {
-            STATE.nodes[0].activeUsers = Math.max(hubCount, 0) || 5; // seed minimum to make the city feel alive
-            STATE.nodes[1].activeUsers = Math.max(gamingCount, 0) || 4;
-            STATE.nodes[2].activeUsers = Math.max(chillCount, 0) || 2;
-            STATE.nodes[4].activeUsers = Math.max(syndicateCount, 0) || 3;
+            if (detailedUsers.length > 0) {
+              // GRUPOWANIE DYNAMICZNE: Budujemy "Stoły" dla prawdziwych osób na tych samych kanałach!
+              const channelGroups = {};
+              detailedUsers.forEach(user => {
+                const chName = user.channel_name || "Główny Hol";
+                if (!channelGroups[chName]) {
+                  channelGroups[chName] = [];
+                }
+                channelGroups[chName].push(user);
+              });
+
+              const corpsList = ["Arasaka Corp", "Militech Inc", "Biotech Pharma", "Netwatch LLC", "Network Syndicate"];
+              const neonColors = ["#00f0ff", "#ec4899", "#00ff66", "#a855f7", "#facc15"];
+
+              const newNodes = [];
+              let index = 0;
+              const keys = Object.keys(channelGroups);
+              const totalChannels = keys.length;
+
+              keys.forEach((chName) => {
+                const usersInCh = channelGroups[chName];
+                const corp = corpsList[index % corpsList.length];
+                const statusColor = neonColors[index % neonColors.length];
+
+                // Rozmieszczenie promieniście na mapie wokół centrum, aby stoły nie nakładały się!
+                const centerX = 1000;
+                const centerY = 750;
+                const R = 350 + (index % 2) * 180; // Zmienne promienie, by stworzyć strukturę orbity
+                const angle = (index / totalChannels) * Math.PI * 2;
+
+                const x = Math.round(centerX + Math.cos(angle) * R);
+                const y = Math.round(centerY + Math.sin(angle) * R);
+
+                newNodes.push({
+                  id: `dynamic_node_${index}`,
+                  name: chName,
+                  description: `Wirtualna arena biesiadna. Sektor połączony bezpośrednio z siecią.`,
+                  activeUsers: usersInCh.length,
+                  corporation: corp,
+                  coordinates: { x, y },
+                  statusColor,
+                  realUsers: usersInCh // Przechowujemy prawdziwych użytkowników w obiekcie węzła!
+                });
+
+                index++;
+              });
+
+              STATE.nodes = newNodes;
+            } else {
+              // Brak osób na kanałach - generujemy seedowane estetyczne stoły, aby miasto nie było całkiem puste
+              STATE.nodes = [
+                { 
+                  id: "districtHub", 
+                  name: "☕ Central Plaza (Simulated)", 
+                  description: "Główny cyfrowy plac. Brak biesiadników na żywo, uruchomiono symulację tętna.", 
+                  activeUsers: 5, 
+                  corporation: "Arasaka Corp", 
+                  coordinates: { x: 350, y: 300 }, 
+                  statusColor: "#00f0ff",
+                  realUsers: []
+                },
+                { 
+                  id: "districtGaming", 
+                  name: "🎮 Cyber Arena (Simulated)", 
+                  description: "Militarny sektor e-sportowych sparingów i wielkich operacji gamingowych.", 
+                  activeUsers: 3, 
+                  corporation: "Militech Inc", 
+                  coordinates: { x: 950, y: 400 }, 
+                  statusColor: "#ec4899",
+                  realUsers: []
+                },
+                { 
+                  id: "districtChill", 
+                  name: "🎵 Neon Lounge (Simulated)", 
+                  description: "Rejon głębokiej synchronizacji fal mózgowych i syntetycznego relaxu.", 
+                  activeUsers: 2, 
+                  corporation: "Biotech Pharma", 
+                  coordinates: { x: 1450, y: 350 }, 
+                  statusColor: "#00ff66",
+                  realUsers: []
+                }
+              ];
+            }
           }
           
           renderContent();
@@ -1166,17 +1266,17 @@
       renderSkeletons();
       resetCanvas();
 
-      // Symulacja 1.2 sekundy pobierania paczki danych chroniąca narzut procesora
-      setTimeout(() => {
-        STATE.loading = false;
-        initUserStats();
+      // Ładowanie natychmiastowe (INSTANT LOAD) - eliminujemy setTimeout sztucznego 1200ms
+      STATE.loading = false;
+      initUserStats();
+      
+      // Natychmiastowe odpytanie i render
+      fetchLiveTelemetry().then(() => {
         renderContent();
-        
-        // Polling danych telemetrycznych co 8 sekund
-        setInterval(fetchLiveTelemetry, 8000);
-        // Pierwotne wstrzyknięcie
-        fetchLiveTelemetry();
-      }, 1200);
+      });
+
+      // Polling skrócony z 8 sekund do 3.5 sekundy, by zmiany były widoczne niemal natychmiast!
+      setInterval(fetchLiveTelemetry, 3500);
     });
 
     // Śledzenie szerokości ekranu w celu optymalizacji i czyszczenia

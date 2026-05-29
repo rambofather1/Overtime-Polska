@@ -25,6 +25,7 @@ Bieżący podgląd stanu prac i integracji systemu portalu.
    - **Awarie Systemu "Protokół Architekta"**: System losowych anomalii (Blackwall / Netwatch) z czerwonymi syrenami/alertami glitch, dynamiczną natychmiastową repaletyzacją particles.js i trybem ratunkowym deszyfracji sieciowej.
    - **Macierz Nastrojów (Mood Matrix)**: Filtry stanów voice mute/deaf/streaming oraz terytorialne, immersyjne dymki dialogowe oparte o cyberpunkowy słownik.
    - **Nawigacja Kamerowa**: Obsługa gładkiego przeciągania mapy i skalowania (Drag & Zoom z obsługą wielodotyku touch/swipe i badgem statusowym zoomu).
+   - **Dynamiczne Grupowanie na Stoły (Spatial Clustering)**: Automatyczne grupowanie połączonych użytkowników na fizyczne wirtualne stoły na canvasie na podstawie unikalnych nazw kanałów głosowych Discorda, na których siedzą. Stoły rozkładają się automatycznie trygonometrycznie na siatce, zabezpieczając system przed nakładaniem się lokacji, a wokół stołów krążą prawdziwi zalogowani użytkownicy z ich rzeczywistymi awatarami i dymkami gier (Import Profilu live).
 8. **Kampania Commandless UI & Optymalizacja Mobile-First (100%):**
    - **Bezkomendowy Czarny Rynek i Hex Keypad**: Wprowadzenie w pełni wizualnego modułu zakupów ekwipunku bez wpisywania `/shop` oraz klikalnej matrycy dekodera Hex-Keypad ułatwiającej mobilne hakowanie ICE jednym palcem.
    - **Siatka Responsywna Sub-HUD**: Dynamiczne dostosowanie układu paska statystyk bazy i podglądu biesiadnika do ekranów smartfonów (grid-to-flex vertical stack).
