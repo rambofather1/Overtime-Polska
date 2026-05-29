@@ -2,6 +2,15 @@
 
 Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
 
+## [Wersja 1.5.3] - 2026-05-30
+
+### Dodano i Udoskonalono (Interaction-First & Mobile Modernization)
+
+- **Interaktywny Panel Czarnego Rynku i Decoupling Komend (Commandless Cyber-Shop)**: Przebudowano modal podglądu biesiadnika w [community.html](community.html) wprowadzając w pełni dotykowy, wizualny sklep Czarnego Rynku zintegrowany bezpośrednio z kartą ekwipunku. Użytkownicy mobilni i desktopowi mogą teraz błyskawicznie modernizować swoje Cyberdecki oraz pakiety ochronne ICE za pomocą dedykowanych przycisków akcji, bez konieczności wpisywania tekstowych poleceń i zasłaniania ekranu klawiaturą systemową.
+- **Klikalna Neonowa Matryca Decyzyjna (Hex-Keypad Decoder)**: Wprowadzono retro-futurystyczny panel numeryczno-szesnastkowy Hex-Keypad bezpośrednio pod konsolą łamania zabezpieczeń ICE. Umożliwia on dotykową infiltrację i deszyfrowanie wektorów wejściowych jednym kliknięciem za pomocą klikalnych płytek matrycy, idealnie symulując manualne łamanie kodu BIOS z kultowych gier RPG i chroniąc wrażliwy viewport smartfonów przed wysuwaniem się klawiatury systemowej.
+- **Pełne Przeorientowanie Responsywne (Mobile-First Hub Layout)**: Całkowicie przeprojektowano strukturę sekcji paska postępu bazy biesiadników, sub-HUD oraz karty podglądu, wprowadzając elastyczne punkty przełamań `@media (max-width: 991px)` i `@media (max-width: 768px)`. Sub-HUD i interfejsy operacyjne automatycznie przechodzą w pionowy, kafelkowy układ, co wyeliminowało błędy ściskania elementów i nakładania się kolumn na ekranach smartfonów.
+- **Neonowa Modernizacja Przyjaciół Sieciowych (Premium Cyber-Social Buttons)**: Zmodernizowano siatkę przycisków społecznościowych w [styles.css](styles.css) oraz [index.html](index.html). Standardowe przyciski Bootstrap zastąpiono ultra-nowoczesnymi, szklanymi przyciskami (cyber-glass neon buttons) z unikalnymi, pulsującymi poświatami dopasowanymi pod kątem identyfikacji wizualnej danej platformy (YouTube, Discord, Linktree). Na smartfonach główny przycisk akcji "Wejdź do Gry Live (Multiverse)" dynamicznie rozciąga się na pełną szerokość gridu i pulsuje neonowym podświetleniem dla maksymalizacji konwersji i immersji (glowing micro-interactionss).
+
 ## [Wersja 1.5.2] - 2026-05-29
 
 ### Naprawiono i Udoskonalono

@@ -656,27 +656,116 @@
       100% { transform: translateY(0); opacity: 1; }
     }
 
+    /* --- RESPONSIVE CYBER-HUD & GLOBAL SECTIONS --- */
+    .hud-sub-bar {
+      background: #09090f;
+      border-bottom: 2px solid #2d2d40;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: monospace;
+      font-size: 0.78rem;
+      position: relative;
+      z-index: 55;
+    }
+
+    .hud-sub-bar-stats {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 991px) {
+      .game-header {
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px;
+        text-align: center;
+      }
+      .game-hud {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .hud-stat {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .location-selector {
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+      }
+      .location-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
+        font-size: 0.8rem;
+      }
+      .hud-sub-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px;
+      }
+      .hud-sub-bar-stats {
+        flex-direction: column;
+        gap: 6px;
+      }
+      .game-viewport {
+        height: 460px !important;
+      }
+    }
+
     /* --- PANEL ANALITYKI RETENCJI (STATYSTYKI GRY) --- */
     .game-sidebar {
-      background: #0d0d16;
+      background: linear-gradient(180deg, #0d0d16 0%, #06060a 100%);
       border-top: 2px solid #2e2e42;
-      padding: 20px;
+      padding: 24px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 24px;
     }
 
     @media (max-width: 768px) {
       .game-sidebar {
         grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 16px;
       }
     }
 
     .analytics-panel {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(15, 15, 27, 0.6);
+      border: 1px solid rgba(168, 85, 247, 0.15);
       border-radius: 12px;
-      padding: 15px;
+      padding: 18px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .analytics-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      opacity: 0.7;
+    }
+
+    .analytics-panel:hover {
+      border-color: rgba(168, 85, 247, 0.3);
+      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.12);
+      transform: translateY(-2px);
     }
 
     .analytics-title {
@@ -684,55 +773,79 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: var(--secondary-color);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 8px;
-      margin-bottom: 12px;
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
     }
 
     .sidebar-list {
       list-style: none;
       padding: 0;
       margin: 0;
+      display: flex;
+      flex-column: column;
+      gap: 6px;
     }
 
     .sidebar-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 10px;
-      background: rgba(255, 255, 255, 0.01);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-      font-size: 0.75rem;
-      border-radius: 4px;
-      margin-bottom: 4px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 0.78rem;
+      border-radius: 8px;
+      margin-bottom: 0px;
+      transition: all 0.2s ease;
     }
 
     .sidebar-item:hover {
-      background: rgba(255, 255, 255, 0.03);
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: translateX(4px);
+    }
+
+    .sidebar-item strong {
+      color: var(--primary-color);
+      margin-right: 6px;
+      display: inline-block;
+      min-width: 15px;
     }
 
     .synergy-tag {
-      background: rgba(168, 85, 247, 0.15);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: #df9eff;
+      background: rgba(236, 72, 153, 0.1);
+      border: 1px solid rgba(236, 72, 153, 0.35);
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: #f472b6;
       font-family: monospace;
       font-weight: bold;
+      font-size: 0.7rem;
+      text-shadow: 0 0 5px rgba(236, 72, 153, 0.3);
+      box-shadow: 0 0 10px rgba(236, 72, 153, 0.05);
+      display: inline-flex;
+      align-items: center;
     }
 
     .gamer-tag {
-      background: rgba(255, 123, 0, 0.15);
-      border: 1px solid rgba(255, 123, 0, 0.3);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: #ffb066;
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.35);
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: #facc15;
       font-family: monospace;
       font-weight: bold;
+      font-size: 0.7rem;
+      text-shadow: 0 0 5px rgba(234, 179, 8, 0.3);
+      box-shadow: 0 0 10px rgba(234, 179, 8, 0.05);
+      display: inline-flex;
+      align-items: center;
     }
   </style>
 </head>
@@ -776,8 +889,8 @@
       </div>
 
       <!-- CYBER-EKONOMIA I ALERTY SENSORYCZNE -->
-      <div class="hud-sub-bar" style="background: #09090f; border-bottom: 2px solid #2d2d40; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; font-family: monospace; font-size: 0.78rem; position: relative; z-index: 55;">
-        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+      <div class="hud-sub-bar">
+        <div class="hud-sub-bar-stats">
           <span><i class="fas fa-wallet text-warning"></i> CREDYTY: <strong class="text-warning" id="hudCredits">50 cr</strong></span>
           <span><i class="fas fa-microchip text-info"></i> DECK: <strong class="text-info" id="hudDeck">Vektor Deck v1.0 [ICE Pen: 0%]</strong></span>
           <span><i class="fas fa-user-shield text-pink" style="color: #ec4899;"></i> SZYFROWANIE: <strong class="text-pink" style="color: #ec4899;" id="hudSecurity">Standardowe ICE [Sec: 0%]</strong></span>
@@ -938,6 +1051,41 @@
               <i class="fas fa-beer me-1"></i> Postaw Drink
             </button>
           </div>
+          <div class="col-12 mt-2">
+            <button class="btn btn-outline-success interactive-btn" onclick="toggleShopPanel()" id="shopToggleBtn" style="border-color: #10b981; color: #10b981;">
+              <i class="fas fa-shopping-cart me-1"></i> Czarny Rynek (Ulepszenia)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel Sklepu Czarnego Rynku -->
+      <div class="shop-panel mt-3 p-3 border border-success rounded" id="modalShopPanel" style="display: none; background: rgba(16, 185, 129, 0.04); border-color: rgba(16, 185, 129, 0.25) !important;">
+        <div class="text-neon-emerald font-monospace mb-2" style="font-weight: bold; font-size: 0.85rem; display: flex; justify-content: space-between;">
+          <span>[CZARNY RYNEK - UPGRADES]</span>
+          <span class="text-warning" id="shopCreditsDisplay">50 cr</span>
+        </div>
+        
+        <!-- Cyberdeck Row -->
+        <div class="d-flex justify-content-between align-items-center mb-2 pb-2" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <div class="font-monospace text-start" style="max-width: 60%;">
+            <div class="text-white small" style="font-weight: bold; font-size: 0.8rem;">Dostępny Cyberdeck:</div>
+            <div class="text-muted" style="font-size: 0.65rem; line-height: 1.2;" id="shopDeckName">Loading...</div>
+          </div>
+          <button class="btn btn-sm btn-outline-warning font-monospace" id="buyDeckBtn" onclick="buyDeckDirect()" style="font-size: 0.7rem; font-weight: bold; min-width: 105px;">
+            KUP: -
+          </button>
+        </div>
+
+        <!-- FIREWALL Row -->
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="font-monospace text-start" style="max-width: 60%;">
+            <div class="text-white small" style="font-weight: bold; font-size: 0.8rem;">Zapora Zapobiegawcza:</div>
+            <div class="text-muted" style="font-size: 0.65rem; line-height: 1.2;" id="shopSecName">Loading...</div>
+          </div>
+          <button class="btn btn-sm btn-outline-warning font-monospace" id="buySecBtn" onclick="buySecDirect()" style="font-size: 0.7rem; font-weight: bold; min-width: 105px;">
+            KUP: -
+          </button>
         </div>
       </div>
 
@@ -947,15 +1095,32 @@
         <div id="consoleText" class="text-white font-monospace" style="min-height: 80px; white-space: pre-wrap; line-height: 1.4;">Wybierz operację z menu powyżej...</div>
         <div id="consoleInputArea" class="mt-2" style="display: none;">
           <input type="text" id="consoleInput" class="form-control form-control-sm bg-black text-white border-secondary font-monospace" placeholder="Wpisz komendę..." onkeydown="handleConsoleInput(event)">
-        </div>
-      </div>
+          
+          <!-- Neon Hex-Pad Helper -->
+          <div class="hex-keypad-panel mt-3 border-top border-secondary pt-3" id="hexKeypad" style="border-top-color: rgba(255,255,255,0.06) !important;">
+            <div class="text-white-50 font-monospace small mb-2 text-center" style="font-size: 0.65rem;"><i class="fas fa-keyboard me-1"></i> MATRYCOWY DEKODER KLIKALNY</div>
+            <div class="row g-1 justify-content-center">
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('0')">0</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('1')">1</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('2')">2</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('3')">3</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('4')">4</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('5')">5</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('6')">6</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('7')">7</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('8')">8</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('9')">9</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('A')">A</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('B')">B</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('C')">C</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('D')">D</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('E')">E</div></div>
+              <div class="col-3"><div class="btn btn-sm btn-outline-light w-100 font-monospace py-1" style="font-size: 0.7rem; border-color: rgba(255,255,255,0.1) !important;" onclick="appendHexInput('F')">F</div></div>
+              <div class="col-6 mt-2"><button class="btn btn-sm btn-success w-100 font-monospace py-1" style="font-size: 0.7rem; font-weight: bold;" onclick="submitHexInput()"><i class="fas fa-check-circle me-1"></i>DESZYFRUJ</button></div>
+              <div class="col-6 mt-2"><button class="btn btn-sm btn-danger w-100 font-monospace py-1" style="font-size: 0.7rem; font-weight: bold;" onclick="clearHexInput()"><i class="fas fa-backspace me-1"></i>WYCZYŚĆ</button></div>
+            </div>
+          </div>
 
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-  <script src="app.js"></script>
-  <script>
     // --- SILNIK INTERAKTYWNEJ GRY CYBERPUNKOWEJ OVERTIME MULTIVERSE ---
     let activeLocation = 'metropolis';
     let currentVoiceUsers = [];
@@ -1767,8 +1932,113 @@
 
     function closeModal() {
       document.getElementById('charModalOverlay').style.display = 'none';
+      document.getElementById('modalShopPanel').style.display = 'none';
       currentSelectedCharacter = null;
       hackingState.active = false;
+    }
+
+    function toggleShopPanel() {
+      const shopPanel = document.getElementById('modalShopPanel');
+      if (shopPanel.style.display === 'none') {
+        shopPanel.style.display = 'block';
+        updateShopPanelDetails();
+      } else {
+        shopPanel.style.display = 'none';
+      }
+    }
+
+    function updateShopPanelDetails() {
+      document.getElementById('shopCreditsDisplay').textContent = `${playerInventory.credits} cr`;
+
+      // Cyberdeck Upgrade Info
+      const currentDeckLvl = playerInventory.deckLevel;
+      const nextDeck = DECK_UPGRADES[currentDeckLvl] || null;
+      const currentDeck = DECK_UPGRADES[currentDeckLvl - 1];
+      const deckNameEl = document.getElementById('shopDeckName');
+      const buyDeckBtn = document.getElementById('buyDeckBtn');
+
+      if (nextDeck) {
+        deckNameEl.innerHTML = `${currentDeck.name} <i class="fas fa-arrow-right text-warning mx-1"></i> <span class="text-white">${nextDeck.name}</span> <span class="text-neon-emerald">[ICE Pen: +${nextDeck.penetration}%]</span>`;
+        buyDeckBtn.textContent = `KUP: ${nextDeck.price} cr`;
+        buyDeckBtn.disabled = playerInventory.credits < nextDeck.price;
+        buyDeckBtn.className = playerInventory.credits >= nextDeck.price ? "btn btn-sm btn-outline-warning font-monospace" : "btn btn-sm btn-outline-secondary text-muted font-monospace";
+      } else {
+        deckNameEl.innerHTML = `${currentDeck.name} <span class="text-success">(MAKS)</span>`;
+        buyDeckBtn.textContent = `MAX`;
+        buyDeckBtn.disabled = true;
+        buyDeckBtn.className = "btn btn-sm btn-success text-white font-monospace";
+      }
+
+      // Security ICE Upgrade Info
+      const currentSecLvl = playerInventory.securityLevel;
+      const nextSec = SECURITY_UPGRADES[currentSecLvl] || null;
+      const currentSec = SECURITY_UPGRADES[currentSecLvl - 1];
+      const secNameEl = document.getElementById('shopSecName');
+      const buySecBtn = document.getElementById('buySecBtn');
+
+      if (nextSec) {
+        secNameEl.innerHTML = `${currentSec.name} <i class="fas fa-arrow-right text-warning mx-1"></i> <span class="text-white">${nextSec.name}</span> <span class="text-neon-pink">[Ochr: +${nextSec.difficulty}%]</span>`;
+        buySecBtn.textContent = `KUP: ${nextSec.price} cr`;
+        buySecBtn.disabled = playerInventory.credits < nextSec.price;
+        buySecBtn.className = playerInventory.credits >= nextSec.price ? "btn btn-sm btn-outline-warning font-monospace" : "btn btn-sm btn-outline-secondary text-muted font-monospace";
+      } else {
+        secNameEl.innerHTML = `${currentSec.name} <span class="text-success">(MAKS)</span>`;
+        buySecBtn.textContent = `MAX`;
+        buySecBtn.disabled = true;
+        buySecBtn.className = "btn btn-sm btn-success text-white font-monospace";
+      }
+    }
+
+    function buyDeckDirect() {
+      const nextDeck = DECK_UPGRADES[playerInventory.deckLevel];
+      if (!nextDeck) return;
+      if (playerInventory.credits >= nextDeck.price) {
+        playerInventory.credits -= nextDeck.price;
+        playerInventory.deckLevel++;
+        saveEconomyState();
+        updateShopPanelDetails();
+        
+        // Log i sprzeżenie zwrotne na konsoli
+        const consoleEl = document.getElementById('gameConsole');
+        const consoleText = document.getElementById('consoleText');
+        consoleEl.style.display = 'block';
+        consoleText.innerHTML = `<span class="text-success font-monospace" style="font-weight:bold;">[CZARNY RYNEK] Zakupiono ulepszenie! Twój nowy Cyberdeck to: <strong class="text-white">${nextDeck.name}</strong> [ICE Pen: +${nextDeck.penetration}%]!<br>Kredyty pobrane: -${nextDeck.price} cr. Posiadasz teraz: ${playerInventory.credits} cr.</span>`;
+      }
+    }
+
+    function buySecDirect() {
+      const nextSec = SECURITY_UPGRADES[playerInventory.securityLevel];
+      if (!nextSec) return;
+      if (playerInventory.credits >= nextSec.price) {
+        playerInventory.credits -= nextSec.price;
+        playerInventory.securityLevel++;
+        saveEconomyState();
+        updateShopPanelDetails();
+
+        // Log i sprzeżenie zwrotne na konsoli
+        const consoleEl = document.getElementById('gameConsole');
+        const consoleText = document.getElementById('consoleText');
+        consoleEl.style.display = 'block';
+        consoleText.innerHTML = `<span class="text-success font-monospace" style="font-weight:bold;">[CZARNY RYNEK] Zapora ICE pomyślnie zaktualizowana do: <strong class="text-white">${nextSec.name}</strong> [Ochrona: +${nextSec.difficulty}%]!<br>Pobrano: -${nextSec.price} cr. Posiadasz teraz: ${playerInventory.credits} cr.</span>`;
+      }
+    }
+
+    function appendHexInput(character) {
+      const input = document.getElementById('consoleInput');
+      input.value += character;
+      input.focus();
+    }
+
+    function clearHexInput() {
+      const input = document.getElementById('consoleInput');
+      input.value = '';
+      input.focus();
+    }
+
+    function submitHexInput() {
+      const input = document.getElementById('consoleInput');
+      const e = { key: 'Enter' };
+      handleConsoleInput(e);
     }
 
     // Wyścig zbrojeń i polowanie na grube ryby
