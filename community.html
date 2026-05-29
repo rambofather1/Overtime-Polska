@@ -989,11 +989,12 @@
     let translateX = 0, translateY = 0;
     let mapScale = 1.0;
 
-    // Obsługa dragowania myszką
+    // Obsługa dragowania myszką (wyłączenie transition w trakcie przeciągania)
     viewport.addEventListener('mousedown', (e) => {
       if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.citizen') || e.target.closest('.character')) return;
       isDragging = true;
       viewport.style.cursor = 'grabbing';
+      canvas.style.transition = 'none'; // Wyłączenie przejścia dla natychmiastowej reakcji na ruch myszy (brak rozmycia/klatkowania)
       startX = e.clientX - translateX;
       startY = e.clientY - translateY;
     });
@@ -1013,8 +1014,11 @@
     });
 
     window.addEventListener('mouseup', () => {
-      isDragging = false;
-      viewport.style.cursor = 'grab';
+      if (isDragging) {
+        isDragging = false;
+        viewport.style.cursor = 'grab';
+        canvas.style.transition = 'transform 0.1s ease'; // Przywrócenie płynności dla animacji zoomu
+      }
     });
 
     // Obsługa touch dla telefonów (Swipe)
@@ -1022,6 +1026,7 @@
       if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.citizen') || e.target.closest('.character')) return;
       if (e.touches.length === 1) {
         isDragging = true;
+        canvas.style.transition = 'none'; // Wyłączenie transition dla gładkiego przesuwu na telefonie
         startX = e.touches[0].clientX - translateX;
         startY = e.touches[0].clientY - translateY;
       }
@@ -1035,7 +1040,10 @@
     });
 
     viewport.addEventListener('touchend', () => {
-      isDragging = false;
+      if (isDragging) {
+        isDragging = false;
+        canvas.style.transition = 'transform 0.1s ease'; // Przywrócenie transition po dotknięciu
+      }
     });
 
     function applyTransform() {
@@ -1208,6 +1216,24 @@
         }
       }
       return `Wykonuję operację sieciową dla: ${activityStr}. Interfejs aktywny.`;
+    }
+
+    function calculateOrbit(idx, total, centerX, centerY, radius) {
+      if (total <= 1) {
+        return { x: centerX, y: centerY };
+      }
+      // Dzielimy pełen krąg na 'total' równych sektorów
+      const angle = (idx / total) * Math.PI * 2;
+      
+      // Dodajemy unikalny, powtarzalny jitter na bazie indeksu,
+      // dzięki czemu postacie mają naturalną cyber-przestrzeń i nie nakładają się idealnie jak roboty
+      const jitterX = Math.sin(idx * 7) * 12;
+      const jitterY = Math.cos(idx * 13) * 12;
+      
+      const x = centerX + Math.cos(angle) * radius + jitterX;
+      const y = centerY + Math.sin(angle) * radius + jitterY;
+      
+      return { x: Math.round(x), y: Math.round(y) };
     }
 
     function escapeHtml(str) {

@@ -2,6 +2,13 @@
 
 Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
 
+## [Wersja 1.5.2] - 2026-05-29
+
+### Naprawiono i Udoskonalono
+
+- **Przywrócenie Sprawności Map Multiverse (`calculateOrbit`)**: Naprawiono błąd braku definicji funkcji `calculateOrbit` w pliku [community.html](community.html). Brak ten wywoływał błąd `ReferenceError` w konsoli i całkowicie paraliżował silnik renderowania postaci oraz telemetrycznych biesiadników na mapach Metropolis i Tawerny. Postacie pojawiają się teraz poprawnie i stabilnie wokół swoich stref.
+- **Ultra-Innowacyjna Wydajność Przeciągania (Buttery Smooth Drag & Drop)**: Zoptymalizowano reakcję interfejsu na ruch myszą i gesty dotykowe. Narzut silnika tranzycji CSS (`transition: transform 0.1s ease;` na elemencie `#mapCanvas`) został dynamicznie wyłączony na czas trwania operacji przeciągania (drag) i włączony z powrotem przy zwolnieniu kursora/palca. Dzięki temu usunięto denerwujące lagowanie i opóźnienia mapy, nadając jej niespotykaną płynność charakterystyczną dla profesjonalnych silników gier.
+
 ## [Wersja 1.5.1] - 2026-05-21
 
 ### Naprawiono i Zabezpieczono
