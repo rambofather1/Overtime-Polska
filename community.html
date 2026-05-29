@@ -1058,12 +1058,6 @@
     }
 
     // --- CYBER-EKONOMIA I MODYFIKACJE PROFILU ---
-    let playerInventory = {
-      credits: parseInt(localStorage.getItem('ot_credits')) || 50,
-      deckLevel: parseInt(localStorage.getItem('ot_deck_level')) || 1,
-      securityLevel: parseInt(localStorage.getItem('ot_sec_level')) || 1
-    };
-
     const DECK_UPGRADES = [
       { name: "Vektor Deck v1.0", price: 0, penetration: 0 },
       { name: "Tetratronic Rippler MK. 3", price: 120, penetration: 20 },
@@ -1080,6 +1074,16 @@
       { name: "Kryptograficzna Zapora Arasaka", price: 850, difficulty: 90 }
     ];
 
+    let parsedCredits = parseInt(localStorage.getItem('ot_credits'));
+    let parsedDeck = parseInt(localStorage.getItem('ot_deck_level'));
+    let parsedSec = parseInt(localStorage.getItem('ot_sec_level'));
+
+    let playerInventory = {
+      credits: isNaN(parsedCredits) ? 50 : Math.max(0, parsedCredits),
+      deckLevel: (isNaN(parsedDeck) || parsedDeck < 1 || parsedDeck > DECK_UPGRADES.length) ? 1 : parsedDeck,
+      securityLevel: (isNaN(parsedSec) || parsedSec < 1 || parsedSec > SECURITY_UPGRADES.length) ? 1 : parsedSec
+    };
+
     function saveEconomyState() {
       localStorage.setItem('ot_credits', playerInventory.credits);
       localStorage.setItem('ot_deck_level', playerInventory.deckLevel);
@@ -1088,8 +1092,11 @@
     }
 
     function updateEconomyHUD() {
-      const deck = DECK_UPGRADES[playerInventory.deckLevel - 1];
-      const sec = SECURITY_UPGRADES[playerInventory.securityLevel - 1];
+      const deckIndex = Math.max(0, Math.min(playerInventory.deckLevel - 1, DECK_UPGRADES.length - 1));
+      const secIndex = Math.max(0, Math.min(playerInventory.securityLevel - 1, SECURITY_UPGRADES.length - 1));
+
+      const deck = DECK_UPGRADES[deckIndex];
+      const sec = SECURITY_UPGRADES[secIndex];
 
       document.getElementById('hudCredits').textContent = `${playerInventory.credits} cr`;
       document.getElementById('hudDeck').textContent = `${deck.name} [Pen: +${deck.penetration}%]`;
@@ -1672,25 +1679,6 @@
         drone.style.left = `${nextX}px`;
         drone.style.top = `${nextY}px`;
       }, 5500);
-    }
-
-          charObj.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const quotes = [
-              "Synapsy zregenerowane. Nalewaj z tego barla!",
-              "Blackwall znowu szczypie mnie w chipie... Mam halucynacje?",
-              "Overtime Polska ma teraz 100% cyfrowej dominacji!",
-              "Mamy military-grade szyfrowanie, nikt mnie tu nie złamie!",
-              "Tawerna spięta bezpośrednio z bazą Mongo"
-            ];
-            const text = quotes[idNum % quotes.length];
-            showCharacterSpeech(charObj, '#ffaa00', text);
-            openCharacterModal(user, '#ffaa00');
-          });
-
-          container.appendChild(charObj);
-        });
-      });
     }
 
     // --- CYBER-PROFIL MODAL & DETALE ---

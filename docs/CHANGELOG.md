@@ -2,6 +2,16 @@
 
 Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
 
+## [Wersja 1.5.1] - 2026-05-21
+
+### Naprawiono i Zabezpieczono
+
+- **Krytyczny Błąd Składniowy w [community.html](community.html)**: Usunięto martwy, osierocony fragment kodu (`charObj.addEventListener`) w globalnej sekcji skryptu, który wywoływał błąd parsera JavaScript w przeglądarkach u klientów i całkowicie paraliżował działanie mapy cyberpunkowej.
+- **Zabezpieczenie Inicjalizacji Ekonmicznej (Defensive Programming)**:
+  - Przeniesiono stałe konfiguracyjne czarnego rynku (`DECK_UPGRADES` oraz `SECURITY_UPGRADES`) powyżej inicjalizacji zmiennej `playerInventory`, zapobiegając błędom referencji (ReferenceError) podczas pierwszego ładowania stanu.
+  - Wprowadzono rygorystyczne walidacje i sanityzację danych wczytywanych z `localStorage` (`parsedCredits`, `parsedDeck`, `parsedSec`) chroniące przed wartościami `NaN` lub uszkodzeniem struktur zapisu przez użytkownika.
+  - Zastosowano mechanizm clampowania indeksów (funkcje `Math.max`/`Math.min`) w funkcji `updateEconomyHUD()`, eliminując potencjalne błędy typu `TypeError: Cannot read properties of undefined` przy odpytywaniu właściwości z ulepszeń poziomu cyberdecku i zabezpieczeń ICE.
+
 ## [Wersja 1.5.0] - 2026-05-21
 
 ### Dodano

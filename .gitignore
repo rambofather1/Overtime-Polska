@@ -24,3 +24,5 @@ npm-debug.log*
 .next/
 out/
 build/
+.vercel
+.env*.local
