@@ -1062,6 +1062,94 @@
       background-color: #0b0202 !important;
       box-shadow: inset 0 0 100px rgba(239, 68, 68, 0.15) !important;
     }
+
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
+    /* Global Cyber-Net Feed style */
+    .cyber-net-feed {
+      background: rgba(6, 10, 15, 0.65);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 12px;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      margin-top: 24px;
+      overflow: hidden;
+    }
+    .feed-header {
+      background: rgba(6, 182, 212, 0.08);
+      border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+      padding: 10px 16px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    .feed-status {
+      font-size: 0.7rem;
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid var(--neon-blue);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .feed-body {
+      padding: 12px 16px;
+      max-height: 140px;
+      min-height: 100px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.75rem;
+    }
+    .feed-log {
+      line-height: 1.4;
+      animation: scanlineFadeIn 0.3s ease-out;
+      border-left: 2px solid transparent;
+      padding-left: 8px;
+    }
+    .feed-log.system { border-left-color: var(--neon-blue); color: #a5f3fc; }
+    .feed-log.hack { border-left-color: var(--neon-pink); color: #fbcfe8; }
+    .feed-log.shop { border-left-color: var(--neon-green); color: #dcfce7; }
+    .feed-log.toast { border-left-color: var(--neon-yellow); color: #fef9c3; }
+    .feed-log.drone { border-left-color: var(--neon-blue); color: #bae6fd; }
+
+    /* Achievement Toasts */
+    .achievement-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(10, 15, 26, 0.95);
+      border: 2px solid var(--terminal-green);
+      border-radius: 12px;
+      padding: 16px;
+      z-index: 9999;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+      transform: translateX(120%);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      width: 320px;
+    }
+    .achievement-toast.show {
+      transform: translateX(0);
+    }
+    .achievement-toast .toast-icon {
+      filter: drop-shadow(0 0 5px currentColor);
+    }
+
+    /* Laser Links */
+    .laser-link-voice {
+      animation: laserPulse 1.5s infinite linear;
+      filter: drop-shadow(0 0 4px #10b981);
+      opacity: 0.85;
+    }
+    @keyframes laserPulse {
+      0% { stroke-dashoffset: 0; opacity: 0.6; }
+      50% { opacity: 0.9; }
+      100% { stroke-dashoffset: -20; opacity: 0.6; }
+    }
   </style>
 </head>
 <body>
@@ -1091,12 +1179,15 @@
           <div class="hud-stat" title="Latencja sieciowa do serwerów Discord">
             <i class="fas fa-wifi text-info"></i> PING: <span id="hudPing" class="text-info">-</span>
           </div>
+          <div class="hud-stat cursor-pointer" onclick="toggleAudio()" title="Włącz/Wycisz dźwięk i retro synth" style="user-select: none;">
+            <i class="fas fa-volume-up text-warning" id="audioIcon"></i> DŹWIĘK: <span id="hudAudioStatus" class="text-white">WŁ</span>
+          </div>
         </div>
       </div>
 
       <!-- Pasek Portfela i Anomaliów -->
       <div class="hud-sub-bar">
-        <div class="hud-sub-bar-stats">
+        <div class="hud-sub-bar-stats cursor-pointer" onclick="openMyProfile()" title="Otwórz Twój Własny Profil Netrunnera i osiągnięcia">
           <span><i class="fas fa-wallet text-warning"></i> CREDYTY: <strong class="text-warning" id="hudCredits">50 cr</strong></span>
           <span><i class="fas fa-microchip text-neon-blue"></i> DECK: <strong class="text-neon-blue" id="hudDeck">Vektor Deck v1.0 [ICE Pen: 0%]</strong></span>
           <span><i class="fas fa-user-shield text-neon-pink"></i> SZYFROWANIE: <strong class="text-neon-pink" id="hudSecurity">Standardowe ICE [Sec: 0%]</strong></span>
@@ -1166,6 +1257,18 @@
               </div>
             </div>
 
+          </div>
+
+          <!-- GLOBAL CYBER-NET FEED -->
+          <div class="cyber-net-feed mt-4 font-monospace">
+            <div class="feed-header text-neon-blue d-flex justify-content-between align-items-center">
+              <span><i class="fas fa-terminal me-2"></i>GLOBALNY STRUMIEŃ SYGNAŁÓW NETRUNNERÓW</span>
+              <span class="feed-status pulse-live">LIVE FEED</span>
+            </div>
+            <div class="feed-body" id="cyberNetFeed">
+              <div class="feed-log system"><span class="text-white-50">[SYSTEM]</span> Inicjalizacja podsłuchu Blackwall... OK</div>
+              <div class="feed-log system"><span class="text-white-50">[SYSTEM]</span> Nasłuch portu 3000... Ustanowiono stabilne połączenie.</div>
+            </div>
           </div>
         </div>
 
@@ -1390,13 +1493,21 @@
     let playerInventory = {
       credits: parseInt(localStorage.getItem('ot_credits')) || 50,
       deckLevel: parseInt(localStorage.getItem('ot_deck_level')) || 1,
-      securityLevel: parseInt(localStorage.getItem('ot_sec_level')) || 1
+      securityLevel: parseInt(localStorage.getItem('ot_sec_level')) || 1,
+      droneHits: parseInt(localStorage.getItem('ot_drone_hits')) || 0,
+      drinksShared: parseInt(localStorage.getItem('ot_drinks_shared')) || 0,
+      hacksSucceeded: parseInt(localStorage.getItem('ot_hacks_succeeded')) || 0,
+      achievements: JSON.parse(localStorage.getItem('ot_achievements') || "[]")
     };
 
     function saveEconomyState() {
       localStorage.setItem('ot_credits', playerInventory.credits);
       localStorage.setItem('ot_deck_level', playerInventory.deckLevel);
       localStorage.setItem('ot_sec_level', playerInventory.securityLevel);
+      localStorage.setItem('ot_drone_hits', playerInventory.droneHits);
+      localStorage.setItem('ot_drinks_shared', playerInventory.drinksShared);
+      localStorage.setItem('ot_hacks_succeeded', playerInventory.hacksSucceeded);
+      localStorage.setItem('ot_achievements', JSON.stringify(playerInventory.achievements));
       updateEconomyHUD();
     }
 
@@ -1410,6 +1521,394 @@
       document.getElementById('hudCredits').textContent = `${playerInventory.credits} cr`;
       document.getElementById('hudDeck').textContent = `${deck.name} [Pen: +${deck.penetration}%]`;
       document.getElementById('hudSecurity').textContent = `${sec.name} [Ochr: +${sec.difficulty}%]`;
+    }
+
+    // --- CYBER-IMMERSIVE AUDIO FX (WEB AUDIO SYNTHESIS) ---
+    class CyberSynth {
+      constructor() {
+        this.ctx = null;
+        this.muted = localStorage.getItem('ot_audio_muted') === 'true';
+        this.ambientNode = null;
+        this.ambientOsc1 = null;
+        this.ambientOsc2 = null;
+        this.ambientFilter = null;
+        this.ambientLFO = null;
+      }
+      
+      init() {
+        if (this.ctx) return;
+        try {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch(e) {
+          console.warn("Błąd inicjalizacji Web Audio API:", e);
+        }
+      }
+
+      toggle() {
+        this.muted = !this.muted;
+        localStorage.setItem('ot_audio_muted', this.muted);
+        if (this.muted) {
+          this.stopAmbient();
+        } else {
+          this.init();
+          this.startAmbient();
+        }
+        return this.muted;
+      }
+
+      startAmbient() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+        if (this.ambientNode) return;
+
+        try {
+          this.ambientNode = this.ctx.createGain();
+          this.ambientNode.gain.setValueAtTime(0.04, this.ctx.currentTime);
+
+          this.ambientOsc1 = this.ctx.createOscillator();
+          this.ambientOsc1.type = 'sawtooth';
+          this.ambientOsc1.frequency.setValueAtTime(55, this.ctx.currentTime); // A1
+
+          this.ambientOsc2 = this.ctx.createOscillator();
+          this.ambientOsc2.type = 'sawtooth';
+          this.ambientOsc2.frequency.setValueAtTime(55.3, this.ctx.currentTime); // Detune
+
+          this.ambientFilter = this.ctx.createBiquadFilter();
+          this.ambientFilter.type = 'lowpass';
+          this.ambientFilter.frequency.setValueAtTime(140, this.ctx.currentTime);
+          this.ambientFilter.Q.setValueAtTime(3, this.ctx.currentTime);
+
+          this.ambientLFO = this.ctx.createOscillator();
+          this.ambientLFO.frequency.setValueAtTime(0.15, this.ctx.currentTime); // LFO
+          
+          const lfoGain = this.ctx.createGain();
+          lfoGain.gain.setValueAtTime(50, this.ctx.currentTime);
+
+          this.ambientLFO.connect(lfoGain);
+          lfoGain.connect(this.ambientFilter.frequency);
+
+          this.ambientOsc1.connect(this.ambientFilter);
+          this.ambientOsc2.connect(this.ambientFilter);
+          this.ambientFilter.connect(this.ambientNode);
+          this.ambientNode.connect(this.ctx.destination);
+
+          this.ambientOsc1.start();
+          this.ambientOsc2.start();
+          this.ambientLFO.start();
+        } catch(e) {
+          console.warn("Błąd startu audio ambient:", e);
+        }
+      }
+
+      stopAmbient() {
+        try {
+          if (this.ambientOsc1) this.ambientOsc1.stop();
+          if (this.ambientOsc2) this.ambientOsc2.stop();
+          if (this.ambientLFO) this.ambientLFO.stop();
+        } catch(e) {}
+        this.ambientOsc1 = null;
+        this.ambientOsc2 = null;
+        this.ambientLFO = null;
+        this.ambientNode = null;
+      }
+
+      playBlip() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(950, this.ctx.currentTime);
+
+          gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.08);
+        } catch(e){}
+      }
+
+      playExplosion() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const bufferSize = this.ctx.sampleRate * 0.35;
+          const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = Math.random() * 2 - 1;
+          }
+
+          const noiseNode = this.ctx.createBufferSource();
+          noiseNode.buffer = buffer;
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(600, this.ctx.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(60, this.ctx.currentTime + 0.35);
+
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.35);
+
+          noiseNode.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          noiseNode.start();
+          noiseNode.stop(this.ctx.currentTime + 0.35);
+        } catch(e){}
+      }
+
+      playSuccess() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const t = this.ctx.currentTime;
+          const freqs = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+          
+          freqs.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t + idx * 0.08);
+
+            gain.gain.setValueAtTime(0, t);
+            gain.gain.setValueAtTime(0.08, t + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + idx * 0.08 + 0.18);
+
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+
+            osc.start(t + idx * 0.08);
+            osc.stop(t + idx * 0.08 + 0.18);
+          });
+        } catch(e){}
+      }
+
+      playFail() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(140, this.ctx.currentTime);
+          osc.frequency.linearRampToValueAtTime(35, this.ctx.currentTime + 0.3);
+
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.3);
+
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(180, this.ctx.currentTime);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.3);
+        } catch(e){}
+      }
+
+      playPurchase() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const t = this.ctx.currentTime;
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(987.77, t);
+          osc1.frequency.setValueAtTime(1318.51, t + 0.08);
+
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(1174.66, t);
+          osc2.frequency.setValueAtTime(1567.98, t + 0.08);
+
+          gain.gain.setValueAtTime(0.06, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc1.start();
+          osc2.start();
+          osc1.stop(t + 0.22);
+          osc2.stop(t + 0.22);
+        } catch(e){}
+      }
+    }
+    const cyberSynth = new CyberSynth();
+
+    function toggleAudio() {
+      const isMuted = cyberSynth.toggle();
+      const icon = document.getElementById('audioIcon');
+      const text = document.getElementById('hudAudioStatus');
+      
+      if (isMuted) {
+        icon.className = 'fas fa-volume-mute text-muted';
+        text.textContent = 'WYŁ';
+        addNetLog('[SYSTEM] System audio wyciszony.', 'system');
+      } else {
+        icon.className = 'fas fa-volume-up text-warning';
+        text.textContent = 'WŁ';
+        addNetLog('[SYSTEM] System audio aktywowany. Ambient online.', 'system');
+      }
+    }
+
+    // --- GLOBAL NET LOGGER ---
+    function addNetLog(message, type = 'system') {
+      const feed = document.getElementById('cyberNetFeed');
+      if (!feed) return;
+      
+      const time = new Date().toLocaleTimeString('pl-PL');
+      const log = document.createElement('div');
+      log.className = `feed-log ${type}`;
+      log.innerHTML = `<span class="text-white-50">[${time}]</span> ${message}`;
+      
+      feed.appendChild(log);
+      feed.scrollTop = feed.scrollHeight;
+      
+      while (feed.childNodes.length > 50) {
+        feed.removeChild(feed.firstChild);
+      }
+    }
+
+    function startRandomNetEvents() {
+      const events = [
+        { text: "Wykryto próbę skanowania portów ze strefy zewnętrznej. ICE odpiera skan.", type: "system" },
+        { text: "Protokół Blackwall zgłasza nieznaczne wahania energii w głębokich węzłach.", type: "system" },
+        { text: "Agencja Netwatch rejestruje aktywność na pasmach LFG. Zachowaj maskowanie.", type: "system" },
+        { text: "Dron patrolowy melduje: Sektor Metropolis City pod pełnym nadzorem optycznym.", type: "drone" },
+        { text: "Zoptymalizowano synapsy cyberdecku. Zwiększono przepustowość logiczną o 3.6%.", type: "system" },
+        { text: "Wysłano telemetryczny raport diagnostyczny do chmury głównej.", type: "system" },
+        { text: "Węzły Black Ice wykazują stabilną aktywność prewencyjną.", type: "system" }
+      ];
+      
+      setInterval(() => {
+        const randomEv = events[Math.floor(Math.random() * events.length)];
+        addNetLog(`[SATELLITE] ${randomEv.text}`, randomEv.type);
+      }, 24000);
+    }
+
+    // --- OSIĄGNIĘCIA NETRUNNERA (ACHIEVEMENTS) ---
+    const ACHIEVEMENTS_LIST = [
+      { id: 'blackwall_breaker', name: 'Blackwall Breaker', desc: 'Zhakuj pierwszego podróżnika', icon: 'fa-user-secret', color: 'text-neon-pink' },
+      { id: 'sky_hijacker', name: 'Sky Hijacker', desc: 'Przejmij drona patrolowego 10 razy', icon: 'fa-crosshairs', color: 'text-neon-blue' },
+      { id: 'megacorp_patron', name: 'Megacorp Patron', desc: 'Dokonaj pierwszego zakupu na Czarnym Rynku', icon: 'fa-shopping-bag', color: 'text-neon-green' },
+      { id: 'night_city_legend', name: 'Night City Legend', desc: 'Zgromadź 5000+ kredytów w portfelu', icon: 'fa-crown', color: 'text-warning' },
+      { id: 'cyber_barman', name: 'Cyber-Barman', desc: 'Postaw wirtualnego drinka 5 razy', icon: 'fa-beer', color: 'text-neon-yellow' },
+      { id: 'fully_upgraded', name: 'Fully Upgraded', desc: 'Maksymalnie ulepsz Cyberdeck i ICE Firewall', icon: 'fa-shield-alt', color: 'text-white' }
+    ];
+
+    function checkAndAwardAchievement(achId) {
+      if (playerInventory.achievements.includes(achId)) return;
+      
+      const ach = ACHIEVEMENTS_LIST.find(a => a.id === achId);
+      if (!ach) return;
+      
+      playerInventory.achievements.push(achId);
+      saveEconomyState();
+      
+      addNetLog(`[OSIĄGNIĘCIE ODBLOKOWANE] <strong class="${ach.color}">${ach.name}</strong>: ${ach.desc}`, 'shop');
+      cyberSynth.playSuccess();
+      showAchievementToast(ach);
+    }
+
+    function showAchievementToast(ach) {
+      const toast = document.createElement('div');
+      toast.className = 'achievement-toast font-monospace';
+      toast.innerHTML = `
+        <div class="d-flex align-items-center gap-3">
+          <div class="toast-icon ${ach.color}"><i class="fas ${ach.icon} fa-2x"></i></div>
+          <div>
+            <div class="toast-title text-neon-green" style="font-size:0.75rem; font-weight:bold;">[OSIĄGNIĘCIE ODBLOKOWANE]</div>
+            <div class="toast-name text-white" style="font-weight:bold; margin-top:2px;">${ach.name}</div>
+            <div class="toast-desc text-muted" style="font-size:0.68rem; margin-top:1px;">${ach.desc}</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => toast.classList.add('show'), 50);
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 550);
+      }, 4000);
+    }
+
+    function openMyProfile() {
+      currentSelectedCharacter = null;
+      const drawer = document.getElementById('hackerDrawer');
+      const avatarEl = document.getElementById('modalAvatar');
+      const nameEl = document.getElementById('modalName');
+      const idEl = document.getElementById('modalId');
+      const chanEl = document.getElementById('modalChannel');
+      const cyberwarEl = document.getElementById('modalCyberware');
+      const activityEl = document.getElementById('modalActivity');
+
+      document.getElementById('gameConsole').style.display = 'none';
+      document.getElementById('modalShopPanel').style.display = 'none';
+      hackingState.active = false;
+
+      // Inicjalizacja dźwięków przy interakcji z UI
+      cyberSynth.init();
+
+      avatarEl.style.backgroundImage = "url('https://api.dicebear.com/7.x/bottts/svg?seed=netrunner')";
+      nameEl.textContent = "Profil Netrunnera (Ty)";
+      idEl.textContent = "UID: LOCAL_NETRUNNER_ADDR";
+      chanEl.textContent = "Węzeł domowy 127.0.0.1";
+      
+      const currentDeckIndex = Math.max(0, Math.min(playerInventory.deckLevel - 1, DECK_UPGRADES.length - 1));
+      const currentDeck = DECK_UPGRADES[currentDeckIndex];
+      cyberwarEl.textContent = `${currentDeck.name} [Pen: +${currentDeck.penetration}%]`;
+      
+      let achsHtml = "=== REJESTR OSIĄGNIĘĆ NETRUNNERA ===\n\n";
+      ACHIEVEMENTS_LIST.forEach(ach => {
+        const unlocked = playerInventory.achievements.includes(ach.id);
+        const box = unlocked ? "[X]" : "[ ]";
+        achsHtml += `${box} ${ach.name.padEnd(19)} - ${ach.desc}\n`;
+      });
+      
+      activityEl.textContent = achsHtml;
+
+      document.querySelector('.btn-cyber-info').style.display = 'none';
+      document.querySelector('.btn-cyber-warn').style.display = 'none';
+      document.getElementById('shopToggleBtn').style.display = 'block';
+
+      drawer.classList.add('open');
+      cyberSynth.playBlip();
     }
 
     // --- ANOMALIE SIECIOWE ---
@@ -1580,6 +2079,48 @@
           });
         }
       }
+
+      // Schedule laser drawing after DOM updates render layout positions
+      setTimeout(drawRoomLasers, 100);
+    }
+
+    function drawRoomLasers() {
+      const cards = document.querySelectorAll('.room-card');
+      cards.forEach(card => {
+        const svg = card.querySelector('.room-laser-canvas');
+        if (!svg) return;
+        svg.innerHTML = ''; // Wyczyszczenie starych linii
+        
+        // Rysujemy linie łączące awatary, jeśli rozmawiają (czyli mówią w tym samym czasie)
+        const speakingUsers = card.querySelectorAll('.user-avatar-wrapper.user--speaking');
+        if (speakingUsers.length >= 2) {
+          const cardRect = card.getBoundingClientRect();
+          for (let i = 0; i < speakingUsers.length; i++) {
+            for (let j = i + 1; j < speakingUsers.length; j++) {
+              const rectA = speakingUsers[i].getBoundingClientRect();
+              const rectB = speakingUsers[j].getBoundingClientRect();
+              
+              // Pozycje relatywne względem room-card
+              const x1 = (rectA.left + rectA.width / 2) - cardRect.left;
+              const y1 = (rectA.top + rectA.height / 2) - cardRect.top;
+              const x2 = (rectB.left + rectB.width / 2) - cardRect.left;
+              const y2 = (rectB.top + rectB.height / 2) - cardRect.top;
+
+              const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+              line.setAttribute('x1', x1);
+              line.setAttribute('y1', y1);
+              line.setAttribute('x2', x2);
+              line.setAttribute('y2', y2);
+              line.setAttribute('stroke', '#10b981'); // terminal-green
+              line.setAttribute('stroke-width', '1.5');
+              line.setAttribute('stroke-dasharray', '5 5');
+              line.setAttribute('class', 'laser-link-voice');
+              
+              svg.appendChild(line);
+            }
+          }
+        }
+      });
     }
 
     // Korporacje przypisywane deterministycznie do kanału
@@ -1592,6 +2133,19 @@
 
     function createRoomCard(channel, isTavernStyle) {
       const card = document.createElement('div');
+      card.style.position = 'relative';
+      
+      // Dodaj SVG laser canvas w tle karty
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute('class', 'room-laser-canvas');
+      svg.style.position = 'absolute';
+      svg.style.top = '0';
+      svg.style.left = '0';
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+      svg.style.pointerEvents = 'none';
+      svg.style.zIndex = '0';
+      card.appendChild(svg);
       
       // Klasy strefy
       if (isTavernStyle) {
@@ -1661,6 +2215,7 @@
         // Kliknięcie w awatar otwiera panel diagnostyczny
         wrapper.addEventListener('click', (e) => {
           e.stopPropagation();
+          cyberSynth.playBlip();
           openHackerDrawer(user, channel.type);
         });
 
@@ -1698,10 +2253,19 @@
       const cyberwarEl = document.getElementById('modalCyberware');
       const activityEl = document.getElementById('modalActivity');
 
+      // Przywróć przyciski (mogly byc ukryte przez openMyProfile)
+      document.querySelector('.btn-cyber-info').style.display = 'block';
+      document.querySelector('.btn-cyber-warn').style.display = 'block';
+      document.getElementById('shopToggleBtn').style.display = 'block';
+
       // Reset konsoli i sklepu
       document.getElementById('gameConsole').style.display = 'none';
       document.getElementById('modalShopPanel').style.display = 'none';
       hackingState.active = false;
+
+      // Inicjalizacja audio
+      cyberSynth.init();
+      cyberSynth.playBlip();
 
       // Reset statystyk podróżnika
       document.getElementById('modalActiveChannel').textContent = 'Ładowanie...';
@@ -1717,6 +2281,9 @@
       const channelName = escapeHtml(user.channel_name || 'Ukryty Węzeł');
       const gameName = user.activities && user.activities.length > 0 ? user.activities[0] : null;
       const activityText = `SYS_STATUS_MONITOR:\n${getCyberpunkPhrase(gameName)}`;
+
+      // Log do terminala Net Feed
+      addNetLog(`Rozpoczęto diagnostykę sygnałową podróżnika: ${displayName}`, 'system');
 
       // Generowanie sztucznych cyber-statów
       const idStr = String(user.user_id || '0');
@@ -1829,6 +2396,13 @@
         saveEconomyState();
         updateShopPanelDetails();
         
+        cyberSynth.playPurchase();
+        addNetLog(`Zakupiono ulepszenie Cyberdecku: ${nextDeck.name}`, 'shop');
+        checkAndAwardAchievement('megacorp_patron');
+        if (playerInventory.deckLevel === 5 && playerInventory.securityLevel === 5) {
+          checkAndAwardAchievement('fully_upgraded');
+        }
+        
         const consoleEl = document.getElementById('gameConsole');
         const consoleText = document.getElementById('consoleText');
         consoleEl.style.display = 'block';
@@ -1844,6 +2418,13 @@
         playerInventory.securityLevel++;
         saveEconomyState();
         updateShopPanelDetails();
+
+        cyberSynth.playPurchase();
+        addNetLog(`Zakupiono ulepszenie ICE Firewall: ${nextSec.name}`, 'shop');
+        checkAndAwardAchievement('megacorp_patron');
+        if (playerInventory.deckLevel === 5 && playerInventory.securityLevel === 5) {
+          checkAndAwardAchievement('fully_upgraded');
+        }
 
         const consoleEl = document.getElementById('gameConsole');
         const consoleText = document.getElementById('consoleText');
@@ -1924,6 +2505,9 @@
       consoleEl.style.display = 'block';
       consoleInputArea.style.display = 'none';
 
+      // Odtworzenie dźwięku blip
+      cyberSynth.playBlip();
+
       const drinks = [
         "Syntetyczne piwo Militech Premium",
         "Wściekły Cyber-Pies z tabasco",
@@ -1933,6 +2517,17 @@
       ];
       const randomDrink = drinks[Math.floor(Math.random() * drinks.length)];
       const displayName = escapeHtml(currentSelectedCharacter.display_name || currentSelectedCharacter.username);
+
+      playerInventory.drinksShared++;
+      saveEconomyState();
+
+      // Log do Net Feed
+      addNetLog(`Stawiasz wirtualnego drinka (${randomDrink}) podróżnikowi: ${displayName}`, 'toast');
+
+      // Sprawdź osiągnięcia
+      if (playerInventory.drinksShared >= 5) {
+        checkAndAwardAchievement('cyber_barman');
+      }
 
       consoleText.innerHTML = `<span class="text-warning">[Tawerna] Stawiasz drinka dla: ${displayName}...</span><br>` +
         `<span class="text-success">[LADA] Karczmarz podaje: <strong class="text-white">${randomDrink}</strong> 🍹</span><br>` +
@@ -2002,10 +2597,15 @@
           if (blackwallThreatLevel <= 0) {
             blackwallThreatLevel = 0;
             clearAnomaly();
+            // Sukces stabilizacji Blackwall
+            cyberSynth.playSuccess();
+            addNetLog(`Zapora Blackwalla ocalona! Systemy obronne przywrócone.`, 'system');
+            
             playerInventory.credits += 250;
             saveEconomyState();
             consoleText.innerHTML += `<br><span class="text-success" style="font-weight:bold;">[PROTOKÓŁ UKOŃCZONY] Zapora Blackwalla ocalona! Bonus +250 cr! 🎉</span>`;
           } else {
+            cyberSynth.playBlip();
             document.getElementById('blackwallPct').textContent = blackwallThreatLevel;
             consoleText.innerHTML += `<br><span class="text-info">[DEKODER] Klucz stabilizacyjny zaakceptowany. Zagrożenie spada o -${dec}%. Aktualnie: ${blackwallThreatLevel}%</span>`;
           }
@@ -2016,7 +2616,18 @@
         if (hackingState.active) {
           if (inputVal === hackingState.code) {
             playerInventory.credits += hackingState.reward;
+            playerInventory.hacksSucceeded++;
             saveEconomyState();
+            
+            cyberSynth.playSuccess();
+            addNetLog(`[UDANY BREACH] Infiltracja zakończona sukcesem. Pobrane dane z ${escapeHtml(currentSelectedCharacter.display_name || currentSelectedCharacter.username)} (+${hackingState.reward} cr)`, 'hack');
+            
+            // Osiągnięcia
+            checkAndAwardAchievement('blackwall_breaker');
+            if (playerInventory.credits >= 5000) {
+              checkAndAwardAchievement('night_city_legend');
+            }
+
             consoleText.innerHTML += `<br><span class="text-success" style="font-weight:bold;">[SUKCES] Deszyfracja udana! Kredyty (+${hackingState.reward} cr) pobrane na Twój cyberdeck. Masz: ${playerInventory.credits} cr.</span>`;
             hackingState.active = false;
             consoleInputArea.style.display = 'none';
@@ -2025,15 +2636,18 @@
           } else {
             hackingState.tries--;
             if (hackingState.tries > 0) {
+              cyberSynth.playFail();
               consoleText.innerHTML += `<br><span class="text-danger">[BŁĄD] Wektor odrzucony. Pozostało prób: ${hackingState.tries}</span>`;
             } else {
+              cyberSynth.playFail();
+              addNetLog(`[INTRUSION ERROR] Spalenie portu podczas hakowania. Pobrano opłatę karną (-25 cr)`, 'hack');
+              
               consoleText.innerHTML += `<br><span class="text-danger" style="font-weight:bold;">[SPALENIE PORTU] Próby wyczerpane! Zapora przeciwnika spaliła Twój transfer (-25 cr).</span>`;
               playerInventory.credits = Math.max(0, playerInventory.credits - 25);
               saveEconomyState();
               hackingState.active = false;
               consoleInputArea.style.display = 'none';
-
-              showSpeechBubbleOnAvatar(currentSelectedCharacter.user_id, "Systemy obronne ICE spaliły netrunnera!", '#ef4444');
+              showSpeechBubbleOnAvatar(currentSelectedCharacter.user_id, "Systemy ICE aktywne. Intruz wyeliminowany. 🛡️⚡", '#06b6d4');
             }
           }
         } else {
@@ -2156,6 +2770,9 @@
       drone.addEventListener('click', (e) => {
         const rect = drone.getBoundingClientRect();
         
+        // Dźwięk eksplozji syntezowanej
+        cyberSynth.playExplosion();
+
         // Animacja błysku hakowania
         const fx = document.createElement('div');
         fx.className = 'drone-hacked-fx';
@@ -2167,7 +2784,19 @@
         // Kredyty bonusowe
         const reward = Math.round(Math.random() * 25 + 15);
         playerInventory.credits += reward;
+        playerInventory.droneHits++;
         saveEconomyState();
+
+        // Log do Net Feed
+        addNetLog(`[HACK DRONA] Skaner patrolowy wyłączony. Przechwycono dane (+${reward} cr)`, 'drone');
+
+        // Sprawdź osiągnięcia
+        if (playerInventory.droneHits >= 10) {
+          checkAndAwardAchievement('sky_hijacker');
+        }
+        if (playerInventory.credits >= 5000) {
+          checkAndAwardAchievement('night_city_legend');
+        }
 
         // Informacja w konsoli, jeśli jest otwarta
         const consoleEl = document.getElementById('gameConsole');
@@ -2189,6 +2818,26 @@
     // Uruchomienie systemów
     updateEconomyHUD();
     initializeDroneSystem();
+    startRandomNetEvents();
+    
+    // Inicjalizacja stanu audio w HUD na podstawie zapisu w localStorage
+    const savedAudioMuted = localStorage.getItem('ot_audio_muted') === 'true';
+    const icon = document.getElementById('audioIcon');
+    const text = document.getElementById('hudAudioStatus');
+    if (savedAudioMuted) {
+      icon.className = 'fas fa-volume-mute text-muted';
+      text.textContent = 'WYŁ';
+    } else {
+      icon.className = 'fas fa-volume-up text-warning';
+      text.textContent = 'WŁ';
+    }
+    
+    // Odtwórz ambient po pierwszym kliknięciu na stronę (obejście blokady przeglądarek)
+    document.addEventListener('click', function startAudioOnFirstClick() {
+      cyberSynth.startAmbient();
+      document.removeEventListener('click', startAudioOnFirstClick);
+    }, { once: true });
+
     setTimeout(tickEngine, 200);
     setInterval(tickEngine, 10000);
 
