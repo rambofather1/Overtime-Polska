@@ -76,7 +76,7 @@ async function getUserCount() {
       console.warn("Błąd aggregacji synergii (prawdopodobnie brak jeszcze danych):", e.message);
     }
 
-    // Pobranie rekordów najdłuższych sesji (największych biesiadników serwera)
+    // Pobranie rekordów najdłuższych sesji (największych podróżników serwera)
     let topGamers = [];
     try {
       topGamers = await collection.aggregate([

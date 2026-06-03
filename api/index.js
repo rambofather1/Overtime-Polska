@@ -62,6 +62,36 @@ app.get(['/api/usercount', '/usercount'], async (req, res) => {
   }
 });
 
+// Endpoint do pobierania statystyk pojedynczego użytkownika
+app.get('/api/userstats', async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+
+  try {
+    const apiKey = req.headers['x-api-key'];
+    if (process.env.API_KEY && apiKey !== process.env.API_KEY) {
+      return res.status(401).json({ error: 'Nieprawidłowy klucz API' });
+    }
+
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(400).json({ error: 'Brak parametru userId' });
+    }
+
+    const { getUserStats } = require('./db');
+    const data = await getUserStats(userId);
+    res.json(data);
+  } catch (error) {
+    console.error('Błąd podczas pobierania statystyk:', error);
+    res.status(500).json({ 
+      error: 'Wystąpił błąd podczas pobierania danych',
+      message: error.message 
+    });
+  }
+});
+
 // Obsługa nieznanych ścieżek
 app.use((req, res) => {
   res.status(404).json({ error: 'Nie znaleziono zasobu' });

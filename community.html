@@ -326,7 +326,7 @@
       color: var(--neon-blue);
     }
 
-    /* Lista biesiadników w pokoju */
+    /* Lista podróżników w pokoju */
     .room-users {
       display: flex;
       flex-wrap: wrap;
@@ -1082,8 +1082,8 @@
           <i class="fas fa-gamepad" style="color: var(--secondary-color);"></i> Overtime Multiverse
         </div>
         <div class="game-hud">
-          <div class="hud-stat" title="Wszyscy aktywni członkowie na kanałach głosowych">
-            <i class="fas fa-users text-neon-blue"></i> LICZBA GRACZY: <span id="hudVoiceUsers" class="text-white">-</span>
+          <div class="hud-stat" title="Wszyscy aktywni podróżnicy na kanałach głosowych">
+            <i class="fas fa-users text-neon-blue"></i> PODRÓŻNICY: <span id="hudVoiceUsers" class="text-white">-</span>
           </div>
           <div class="hud-stat" title="Aktualne tętno i ruch serwera">
             <i class="fas fa-heartbeat text-danger"></i> PULS: <span id="hudPulse" class="text-danger">-</span>
@@ -1185,7 +1185,7 @@
           <!-- TOP GAMERS -->
           <div class="analytics-card">
             <div class="analytics-title text-warning">
-              <i class="fas fa-crown me-2"></i>TOP 5 BIESIADNIKÓW
+              <i class="fas fa-crown me-2"></i>TOP 5 PODRÓŻNIKÓW
             </div>
             <div class="analytics-subtitle font-monospace">Rekordziści czasu trwania sesji</div>
             <ul class="analytics-list" id="gamersList">
@@ -1215,7 +1215,7 @@
       <div class="diagnostic-profile mb-4">
         <div class="diagnostic-avatar" id="modalAvatar"></div>
         <div>
-          <div class="profile-name text-white" id="modalName">Obywatel</div>
+          <div class="profile-name text-white" id="modalName">Podróżnik</div>
           <div class="profile-uid font-monospace" id="modalId">UID: -</div>
         </div>
       </div>
@@ -1232,6 +1232,22 @@
           <div class="stat-card">
             <div class="stat-label">CYBER-WSZCZEP</div>
             <div class="stat-value text-neon-pink" id="modalCyberware">Brak</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statystyki Podróżnika -->
+      <div class="row g-2 mb-4 font-monospace">
+        <div class="col-6">
+          <div class="stat-card">
+            <div class="stat-label">NAJAKTYWNIEJSZY KANAŁ</div>
+            <div class="stat-value text-neon-blue" id="modalActiveChannel">Ładowanie...</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="stat-card">
+            <div class="stat-label">WYSŁANE WIADOMOŚCI</div>
+            <div class="stat-value text-terminal-green" id="modalMessageCount">Ładowanie...</div>
           </div>
         </div>
       </div>
@@ -1619,7 +1635,7 @@
         if (isSpeaking) wrapper.classList.add('user--speaking');
 
         const avatar = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
-        const displayName = escapeHtml(user.display_name || user.username || 'Biesiadnik');
+        const displayName = escapeHtml(user.display_name || user.username || 'Podróżnik');
         const gameName = user.activities && user.activities.length > 0 ? user.activities[0] : null;
 
         // Tworzenie HTML
@@ -1687,7 +1703,16 @@
       document.getElementById('modalShopPanel').style.display = 'none';
       hackingState.active = false;
 
-      const displayName = escapeHtml(user.display_name || user.username || 'Mieszkaniec');
+      // Reset statystyk podróżnika
+      document.getElementById('modalActiveChannel').textContent = 'Ładowanie...';
+      document.getElementById('modalMessageCount').textContent = 'Ładowanie...';
+
+      // Asynchroniczne pobranie statystyk podróżnika
+      if (user.user_id) {
+        fetchUserStats(user.user_id);
+      }
+
+      const displayName = escapeHtml(user.display_name || user.username || 'Podróżnik');
       const avatar = user.avatar_url || `https://api.dicebear.com/7.x/pixel-art/svg?seed=${user.user_id}`;
       const channelName = escapeHtml(user.channel_name || 'Ukryty Węzeł');
       const gameName = user.activities && user.activities.length > 0 ? user.activities[0] : null;
@@ -1713,6 +1738,32 @@
       activityEl.textContent = activityText;
 
       drawer.classList.add('open');
+    }
+
+    async function fetchUserStats(userId) {
+      try {
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const apiUrl = isLocalhost ? `http://localhost:3000/api/userstats?userId=${userId}` : `/api/userstats?userId=${userId}`;
+        
+        const res = await fetch(apiUrl, {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'x-api-key': '67553d23c8f8817ead5d0606'
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById('modalActiveChannel').textContent = data.activeChannel || 'Brak danych';
+          document.getElementById('modalMessageCount').textContent = data.messageCount !== undefined ? data.messageCount.toLocaleString() : '0';
+        } else {
+          document.getElementById('modalActiveChannel').textContent = 'Brak danych';
+          document.getElementById('modalMessageCount').textContent = '0';
+        }
+      } catch (err) {
+        console.error("Błąd pobierania statystyk podróżnika:", err);
+        document.getElementById('modalActiveChannel').textContent = 'Błąd sieci';
+        document.getElementById('modalMessageCount').textContent = 'N/A';
+      }
     }
 
     function closeDrawer() {
@@ -1986,7 +2037,7 @@
             }
           }
         } else {
-          consoleText.innerHTML += `<br><span class="text-muted">[SYSTEM] Nie rozpoznano polecenia. Hakuj biesiadników lub użyj Czarnrgo Rynku.</span>`;
+          consoleText.innerHTML += `<br><span class="text-muted">[SYSTEM] Nie rozpoznano polecenia. Hakuj podróżników lub użyj Czarnego Rynku.</span>`;
         }
       }
     }
@@ -2046,7 +2097,7 @@
       const gamList = document.getElementById('gamersList');
       gamList.innerHTML = '';
       if (gamers.length === 0) {
-        gamList.innerHTML = '<li class="list-placeholder">Nikt jeszcze nie biesiadował w tym tygodniu</li>';
+        gamList.innerHTML = '<li class="list-placeholder">Nikt jeszcze nie podróżował w tym tygodniu</li>';
       } else {
         gamers.slice(0, 5).forEach((g, idx) => {
           const item = document.createElement('li');

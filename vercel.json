@@ -20,12 +20,20 @@
     {
       "src": "api/usercount.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/userstats.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/usercount",
       "dest": "/api/usercount.js"
+    },
+    {
+      "src": "/api/userstats",
+      "dest": "/api/userstats.js"
     },
     {
       "src": "/(.*)",

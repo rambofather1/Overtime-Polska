@@ -102,4 +102,45 @@ async function getUserCount() {
   }
 }
 
-module.exports = { getUserCount };
+async function getUserStats(userId) {
+  let client = null;
+  try {
+    client = new MongoClient(MONGO_URI);
+    await client.connect();
+    
+    const db = client.db(DATABASE);
+    const collection = db.collection('activity_events');
+    
+    // 1. Zliczanie wiadomości wysłanych przez użytkownika
+    const messageCount = await collection.countDocuments({
+      user_id: userId,
+      category: 'message',
+      event_type: 'MESSAGE_CREATE'
+    });
+
+    // 2. Najbardziej aktywny kanał (zarówno tekstowy jak i głosowy)
+    const activeChannelResult = await collection.aggregate([
+      { $match: { user_id: userId, channel_name: { $ne: null } } },
+      { $group: { _id: "$channel_name", count: { $sum: 1 } } },
+      { $sort: { count: -1 } },
+      { $limit: 1 }
+    ]).toArray();
+
+    const activeChannel = activeChannelResult.length > 0 ? activeChannelResult[0]._id : "Brak danych";
+
+    return {
+      userId,
+      messageCount,
+      activeChannel
+    };
+  } catch (error) {
+    console.error('Błąd podczas pobierania statystyk z MongoDB:', error);
+    throw error;
+  } finally {
+    if (client) {
+      await client.close();
+    }
+  }
+}
+
+module.exports = { getUserCount, getUserStats };
