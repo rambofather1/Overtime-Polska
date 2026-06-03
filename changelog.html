@@ -3,148 +3,274 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Changelog - system zabezpieczeń Ojciec - Overtime Polska</title>
-  <meta name="description" content="Pełna historia aktualizacji i changelog zaawansowanego bota Ojciec wspierającego sieć Overtime Polska.">
+  <title>Dokumentacja i Changelog - System Zabezpieczeń Ojciec</title>
+  <meta name="description" content="Pełna dynamiczna historia aktualizacji, masterplan oraz dokumentacja zaawansowanego bota Ojciec.">
   <link rel="stylesheet" href="styles.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Amboy&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;950&family=Share+Tech+Mono&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
-    /* Elastyczne i nowoczesne style przewijania */
     html, body {
+      background-color: #05050a;
+      color: #dfdfe0;
+      font-family: 'Inter', sans-serif;
       overflow-y: auto !important;
       height: auto !important;
       min-height: 100vh;
       display: block !important;
     }
     
-    .changelog-container {
+    #particles-js {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .doc-container {
       position: relative;
       z-index: 2;
-      max-width: 850px;
+      max-width: 1200px;
       margin: 40px auto;
       padding: 0 20px;
     }
 
-    .changelog-card {
-      background: rgba(255, 255, 255, 0.02) !important;
-      border: 1px solid rgba(255, 255, 255, 0.06) !important;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+    .doc-card {
+      background: rgba(13, 14, 25, 0.65) !important;
+      border: 1px solid rgba(168, 85, 247, 0.2) !important;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
       border-radius: 20px;
       padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      transition: border-color 0.3s ease;
+    }
+
+    .doc-card:hover {
+      border-color: rgba(168, 85, 247, 0.45) !important;
+    }
+
+    /* Tabs design */
+    .cyber-tabs {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
       margin-bottom: 30px;
-      text-align: left;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-wrap: wrap;
     }
 
-    .changelog-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(29, 185, 84, 0.4) !important;
-      background: rgba(255, 255, 255, 0.03) !important;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-    /* Oznaczenie wersji Extreme */
-    .changelog-card--extreme {
-      border: 1px solid rgba(239, 68, 68, 0.2) !important;
-      background: linear-gradient(180deg, rgba(239, 68, 68, 0.03), rgba(0, 0, 0, 0)) !important;
-    }
-
-    .changelog-card--extreme:hover {
-      border-color: rgba(239, 68, 68, 0.6) !important;
-    }
-
-    .version-tag {
-      font-size: 1rem;
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #dfdfe0;
+      font-family: 'Orbitron', sans-serif;
       font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-
-    .date-tag {
       font-size: 0.85rem;
-      color: rgba(255,255,255,0.5);
-      font-family: inherit;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 1px;
     }
 
-    .change-category {
-      font-weight: 700;
+    .tab-btn:hover {
+      background: rgba(168, 85, 247, 0.1);
+      border-color: rgba(168, 85, 247, 0.3);
+      color: #fff;
+    }
+
+    .tab-btn.active {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: var(--primary-color, #a855f7);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+    }
+
+    /* Side menu for development files */
+    .dev-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 991px) {
+      .dev-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .dev-menu {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 15px;
+      max-height: 550px;
+      overflow-y: auto;
+    }
+
+    .dev-menu-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.8rem;
       text-transform: uppercase;
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      margin-top: 20px;
-      margin-bottom: 8px;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 15px;
+      padding-left: 8px;
+      border-left: 2px solid var(--primary-color, #a855f7);
+    }
+
+    .dev-item-btn {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.65);
+      text-align: left;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .added { color: #1db954; }
-    .changed { color: #38bdf8; }
-    .fixed { color: #f87171; }
-    .removed { color: #a1a1aa; }
-    .highlight { color: #eab308; }
-
-    .change-list {
-      list-style-type: none;
-      padding-left: 0;
-      margin-bottom: 20px;
-    }
-
-    .change-list li {
-      position: relative;
-      padding-left: 20px;
-      margin-bottom: 10px;
-      font-size: 0.92rem;
-      color: #dfdfe0;
-      line-height: 1.5;
-    }
-
-    .change-list li::before {
-      content: "•";
-      position: absolute;
-      left: 5px;
-      color: rgba(255,255,255,0.3);
-    }
-
-    .change-list li code {
-      background: rgba(255,255,255,0.08);
+    .dev-item-btn:hover {
+      background: rgba(255, 255, 255, 0.04);
       color: #fff;
+    }
+
+    .dev-item-btn.active {
+      background: rgba(6, 182, 212, 0.12);
+      color: #06b6d4;
+      font-weight: 500;
+      border-left: 3px solid #06b6d4;
+      padding-left: 9px;
+    }
+
+    /* Markdown styling */
+    .markdown-body {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+
+    .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: #fff;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .markdown-body h1 {
+      font-size: 1.8rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 8px;
+    }
+
+    .markdown-body h2 {
+      font-size: 1.4rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 6px;
+    }
+
+    .markdown-body h3 {
+      font-size: 1.15rem;
+    }
+
+    .markdown-body p {
+      margin-bottom: 16px;
+    }
+
+    .markdown-body ul, .markdown-body ol {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    .markdown-body li {
+      margin-bottom: 8px;
+    }
+
+    .markdown-body code {
+      background: rgba(255,255,255,0.08);
+      color: #f87171;
       padding: 2px 6px;
       border-radius: 4px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.88rem;
+    }
+
+    .markdown-body pre {
+      background: rgba(5, 5, 10, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+
+    .markdown-body pre code {
+      background: transparent;
+      color: #38bdf8;
+      padding: 0;
       font-size: 0.85rem;
     }
 
-    /* stylizacja dla podsekcji szczegółowych */
-    .changelog-card h4 {
-      font-size: 0.95rem;
+    .markdown-body blockquote {
+      border-left: 4px solid #a855f7;
+      background: rgba(168, 85, 247, 0.04);
+      padding: 12px 20px;
+      margin-bottom: 16px;
+      border-radius: 0 8px 8px 0;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .markdown-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .markdown-body th, .markdown-body td {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 12px;
+    }
+
+    .markdown-body th {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .markdown-body strong {
       color: #fff;
-      margin-top: 15px;
-      margin-bottom: 6px;
-      font-weight: 600;
     }
 
-    /* custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
+    .markdown-body a {
+      color: #06b6d4;
+      text-decoration: none;
+      transition: color 0.2s ease;
     }
 
-    ::-webkit-scrollbar-track {
-      background: #000;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #222;
-      border-radius: 999px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #1db954;
+    .markdown-body a:hover {
+      color: #22d3ee;
+      text-decoration: underline;
     }
 
     .back-btn {
       transition: all 0.3s ease;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
     }
 
     .back-btn:hover {
@@ -155,296 +281,308 @@
 
     .lead-text {
       color: rgba(255, 255, 255, 0.6);
-      font-size: 1.1rem;
+      font-size: 1.05rem;
     }
 
-    /* Stylizacja sekcji technicznych details */
-    .tech-details {
-      margin-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding-top: 15px;
+    .loader-container {
+      text-align: center;
+      padding: 50px 0;
     }
 
-    .tech-details summary {
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      font-weight: 750;
-      font-size: 0.8rem;
-      color: #1db954;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      user-select: none;
-      transition: color 0.2s ease;
+    .cyber-loader {
+      width: 45px;
+      height: 45px;
+      border: 3px solid rgba(168, 85, 247, 0.1);
+      border-top-color: #a855f7;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin 1s infinite linear;
     }
 
-    .tech-details summary:hover {
-      color: #1ed760;
-    }
-
-    .tech-details summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .tech-details summary::after {
-      content: "\f078";
-      font-family: "Font Awesome 6 Free";
-      font-weight: 900;
-      transition: transform 0.3s ease;
-    }
-
-    .tech-details[open] summary::after {
-      transform: rotate(180deg);
-    }
-
-    .tech-content {
-      margin-top: 15px;
-      padding: 15px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      border-left: 3px solid #1db954;
-    }
-    
-    .tech-details-extreme summary {
-      color: #ef4444 !important;
-    }
-    .tech-details-extreme summary:hover {
-      color: #f87171 !important;
-    }
-    .tech-details-extreme .tech-content {
-      border-left: 3px solid #ef4444 !important;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <div id="particles-js"></div>
 
-  <div class="changelog-container text-center">
+  <div class="doc-container">
     <!-- Przycisk powrotu -->
     <div class="text-start mb-4">
-      <a href="index.html" class="btn btn-outline-light back-btn rounded-pill px-4"><i class="fas fa-arrow-left me-2"></i>Powrót do strony głównej</a>
+      <a href="index.html" class="btn btn-outline-light back-btn rounded-pill px-4"><i class="fas fa-arrow-left me-2"></i>Powrót do portalu</a>
     </div>
 
-    <div class="logo-container d-flex justify-content-center align-items-center mb-4">
-      <img src="logo.png" alt="Logo" class="logo" style="max-width: 150px;">
+    <div class="text-center mb-5">
+      <div class="logo-container d-flex justify-content-center align-items-center mb-4">
+        <img src="logo.png" alt="Logo" class="logo" style="max-width: 140px; filter: drop-shadow(0 0 10px rgba(168,85,247,0.3));">
+      </div>
+      <h1 class="display-5 mb-2 font-monospace" style="font-family:'Orbitron', sans-serif; font-weight:950; letter-spacing:2px;">OJCIEC CENTRAL INTELLIGENCE</h1>
+      <p class="lead-text">Zunifikowany Strumień Dokumentacji, Dzienników Zmian i Specyfikacji Systemu</p>
     </div>
 
-    <h1 class="display-5 mb-2">Ojciec - System Ochrony Sieci Overtime</h1>
-    <p class="lead-text mb-5">Dziennik zmian, ewolucji systemu oraz poprawek bezpieczeństwa sieci Overtime</p>
-
-    <!-- KARTA v4.0 EXTREME -->
-    <div class="changelog-card changelog-card--extreme">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <span class="badge bg-danger px-3 py-2 version-tag"><i class="fas fa-fire me-2"></i>v4.0 EXTREME - Era Commandless, Telemetria & Auto-healing</span>
-        <span class="date-tag">21 Maja 2026</span>
+    <div class="doc-card">
+      <!-- Zakładki systemowe -->
+      <div class="cyber-tabs">
+        <button class="tab-btn active" onclick="switchTab('changelog')">
+          <i class="fas fa-scroll"></i> Dziennik Zmian (CHANGELOG)
+        </button>
+        <button class="tab-btn" onclick="switchTab('status')">
+          <i class="fas fa-chart-line"></i> Status Wdrożenia (STATUS)
+        </button>
+        <button class="tab-btn" onclick="switchTab('system')">
+          <i class="fas fa-book"></i> Dokumentacja Systemowa (docs)
+        </button>
+        <button class="tab-btn" onclick="switchTab('development')">
+          <i class="fas fa-folder-open"></i> Dokumentacja Rozwojowa
+        </button>
       </div>
-      <p class="text-white-50">Przełomowa, potężna epoka w rozwoju systemu chroniącego sieć społecznościową Overtime Polska. Przejście na w pełni zintegrowany model <strong>Commandless & Interaction-First</strong>, zaawansowaną telemetrykę zachowań, redundantne mechanizmy przeżywalności usług oraz głęboką de-hardkodyfikację wszystkich modułów operacyjnych.</p>
-      
-      <div class="change-category highlight">
-        <i class="fas fa-chart-line"></i> Centralny Strumień Telemetrii i Social Graph
-      </div>
-      <ul class="change-list">
-        <li><strong>Strukturalna Telemetria Aktywności</strong> (<code>activity_service.py</code>) — Wprowadzenie centralnego systemu <code>activity_events</code> zapisującego zdarzenia z wiadomości (tekst, edycje, usunięcia, attachmenty), bezpośrednich interakcji, ról, administracji (<code>GUILD_UPDATE</code>, <code>CHANNEL/THREAD_CREATE</code> itp.) oraz surowych reakcji (<code>REACTION_ADD/REMOVE</code>) najlepiej-staralnie do MongoDB i plików JSONL.</li>
-        <li><strong>API Analityczne & Social Graph Engine</strong> (<code>activity_analytics.py</code>) — Wdrożenie warstwy mapującej overlapping sesji głosowych do analityki relacji (Top 5 współobecnych osób) oraz automatycznej detekcji kandydatów na watchlistę operacyjną.</li>
-        <li><strong>Strukturalne logi procesowe BOT_LOG</strong> (<code>core/logger.py</code>) — Każde zdarzenie z loggera aplikacji jest mirrorowane jako strukturalny event systemowy, eliminując potrzebę parsowania tekstowych logów przez dashboard.</li>
-        <li><strong>Polityka Prawna i Retencja</strong> — Wprowadzenie okresowego auto-sweepu czyszczącego z Mongo stare logi, sanitaryzacji wzorców wrażliwych oraz restrykcyjnego maskowania w strumieniu telemetrii.</li>
-      </ul>
 
-      <div class="change-category added">
-        <i class="fas fa-robot"></i> Daddy Voice's: Samoleczenie i Pełna Redundancja
+      <!-- Wskaźnik synchronizacji -->
+      <div id="syncBanner" class="font-monospace small text-center mb-3" style="display: none; color: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; padding: 6px 12px; background: rgba(0,0,0,0.2);">
+        <i class="fas fa-sync-alt me-1"></i> OSTATNIA SYNCHRONIZACJA Z BOTEM: <span id="syncTimestamp" class="text-white-50">—</span>
       </div>
-      <ul class="change-list">
-        <li><strong>Restart-Safe Reconcile Loop</strong> (<code>cogs/temp_vc/events.py</code>) — Zaawansowany demon sprawdzania spójności odpytuje serwer Discorda i bazę Mongo, bezbłędnie usuwając puste pokoje po restartach bota i odzyskując osierocone kanały bez dublowania, z uwzględnieniem bezpiecznej listy <code>safe_channel_ids</code>.</li>
-        <li><strong>Automatyczna Polityka Nieobecności</strong> — System automatycznie deleguje własność pokoju (na użytkownika o najdłuższym stażu) przy odejściu właściciela lub usuwa kanał po upłynięciu ustalonego czasu karencji (<code>owner_absence_grace_seconds</code>).</li>
-        <li><strong>Blokada Lobby i Zarządzanie Bitrate</strong> — Kanały typu lobby i voting są bezwarunkowo wymuszane jako publiczne, a właściciel dostał precyzyjne sterowanie bitrate w locie rejestrujące eventy audytowe.</li>
-      </ul>
 
-      <div class="change-category highlight">
-        <i class="fas fa-shield-alt"></i> Redukcja Decyzyjna: Dossier i Godmode Cockpit
+      <!-- Stan ładowania -->
+      <div id="loader" class="loader-container">
+        <div class="cyber-loader"></div>
+        <div class="mt-3 font-monospace text-neon-blue">POBIERANIE PAKIETÓW DOKUMENTACJI Z MONGO ATLAS...</div>
       </div>
-      <ul class="change-list">
-        <li><strong>Restart-Safe Dossier Przyciski</strong> (<code>ui/views/operator_dossier_view.py</code>) — Przyciski na kartach raportowych zmieniono na dynamiczne komponenty <code>DynamicItem</code> połączone trwałym custom_id, dzięki czemu działają natychmiast po rebootach bez zależności od stanu RAM procesu.</li>
-        <li><strong>Zarządowe Zabezpieczenia (Board Guardrails)</strong> (<code>utils/permissions.py</code>) — Wdrożenie globalnej klasy ochronnej zabezpieczającej administrację i konta zarządu (w tym <code>BOARD_EQUIVALENT_USER_IDS</code>) przed banami lub blokadami ze strony innych moderatorów.</li>
-        <li><strong>Prywatny Cockpit Godmode</strong> (<code>ui/views/godmode_view.py</code>) — Scentralizowany panel administratorski owner-only, eliminujący dziesiątki przestarzałych komend tekstowych na rzecz bezpiecznego modal-flow z wbudowanym eksportem banów i mass_ban previews.</li>
-        <li><strong>Dwufazowy Potwierdzenia i Bezpieczeństwo Dostarczeń</strong> — Ciężkie akcje (Ban, Unban, Przerwa) przechodzą przez jawny krok potrwierdzeń z podglądem przewidywanych ubytków. System gwarantuje dostarczenie powiadomienia DM do zbanowanego użytkownika przed fizycznym nałożeniem blokady na serwerach sieci.</li>
-      </ul>
 
-      <div class="change-category changed">
-        <i class="fas fa-cookie-bite"></i> Fortune Cookie: Przejście do Modułu Runtime
-      </div>
-      <ul class="change-list">
-        <li><strong>Odhardkodowanie i Dziedziczenie Konfiguracji</strong> (<code>services/guild_settings_service.py</code>) — Wróżby (komenda <code>wr</code>) łączą bazowy profil globalny z lokalnymi nadpisami serwerów (pula, dozwolone kanały rytuału, dedykowany cooldown, exempt roles).</li>
-        <li><strong>Ślad Audytowy claims</strong> — Każde pomyślne losowanie rejestruje ustrukturyzowany event telemetryczny <code>EVT_FORTUNE_CLAIM</code> do celów statystycznych.</li>
-      </ul>
-
-      <div class="change-category fixed">
-        <i class="fas fa-tools"></i> Techniczne Twardnienie (Interaction Hardening)
-      </div>
-      <ul class="change-list">
-        <li><strong>Zunifikowane Response API</strong> (<code>core/interaction_responses.py</code>) — Wszystkie moduły (w tym Admin, Fortune, Stats i LFM) korzystają centralnie z helpera <code>send_interaction_response</code> z obsługą followupów, eliminując błędy typu <code>404 Unknown interaction</code>.</li>
-        <li><strong>Przebudowa Setupu i Paneli LFG/LFM/Info</strong> — Konfigurator Setup stał się dynamicznym cockpit-widokiem z podpanelami wyboru ról z natywnej platformy Discorda (takeover_role_ids) i obsługą predefiniowanych gier z aliasami i bannerami w LFG.</li>
-      </ul>
-
-      <!-- Sekcja rozwijana - Szczegóły techniczne -->
-      <details class="tech-details tech-details-extreme">
-        <summary>Pokaż szczegóły implementacyjne kodu (v4.0)</summary>
-        <div class="tech-content text-white-50">
-          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
-          <ul class="change-list">
-            <li><strong>Refaktoryzacja pętli osieroconych VC:</strong> Demon <code>reconcile_loop</code> w <code>events.py</code> wykorzystuje bezpieczne pętle asynchroniczne <code>tasks.Loop</code> (częstotliwość 10-15 sekund) i pobiera anomalie metodą <code>fetch_channel()</code> z handlingiem wyjątków <code>NotFound</code>, zapobiegając błędnemu kasowaniu poprawnych, istniejących kanałów stałych.</li>
-            <li><strong>Zabezpieczenie przed wyścigami w limiterze:</strong> Wprowadzono pełną synchronizację współbieżnych odpytań sieciowych w <code>core/rate_limiter.py</code> przy użyciu instancji <code>asyncio.Lock</code> w metodzie <code>acquire()</code>, eliminując bursty przepuszczane przez globalny limiter.</li>
-            <li><strong>Asynchroniczny Bufor Telemetrii (Batching):</strong> Wdrożono grupowanie zdarzeń telemetrycznych w kolekcji w pamięci podręcznej RAM (paczki co 15 sekund) z asynchronicznym zapisem poprzez MongoClient, co eliminuje mikro-przycięcia głównej pętli zdarzeń bota przy gwałtownych ruchach społeczności serwerowej.</li>
-            <li><strong>Kompozytowe Indeksy pod Overlapping sesji:</strong> Baza danych MongoDB Atlas otrzymała zoptymalizowane pod dynamiczne zapytania dashboardu indeksy: <code>channel_id + start_time</code> oraz <code>guild_id + user_id + end_time</code>, redukując narzut analizatora social-graphu i nakładających się czasowo obecności na voice.</li>
-            <li><strong>Zapewnienie spójności czasu:</strong> Normalizacja sygnatur czasowych operacji i banów w MongoDB do strefy UTC w <code>services/moderation_guard_service.py</code> przed jakimkolwiek sprawdzaniem dynamicznych okien czasowych, zabezpieczając system przed błędami rzutowania naiwnych (naive) i świadomych (aware) obiektów <code>datetime</code>.</li>
-            <li><strong>Rotacja i czyszczenie logów JSONL:</strong> Skrypt <code>retention_policy.py</code> automatycznie kompresuje przestarzałe logi systemowe bezpośrednio do archiwów GZIP z potokiem oczyszczania starych rekordów Mongo powyżej granicy retencji (90 dni).</li>
-          </ul>
+      <!-- Widoki -->
+      <div id="docContent" style="display: none;">
+        
+        <!-- Changelog View -->
+        <div id="viewChangelog" class="markdown-body">
+          <!-- Wstrzykiwany Markdown -->
         </div>
-      </details>
-    </div>
 
-    <!-- KARTA v2.7.1 -->
-    <div class="changelog-card">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <span class="badge bg-success px-3 py-2 version-tag"><i class="fab fa-discord me-2"></i>v2.7.1 - Nowy Standard UI</span>
-        <span class="date-tag">21 Maja 2026</span>
-      </div>
-      <p class="text-white-50">Przełomowa optymalizacja i gruntowna restrukturyzacja całego systemu operacyjnego pod bibliotekę <code>discord.py 2.7.1</code>. Wprowadzenie założeń "interaction-first / commandless".</p>
-      
-      <div class="change-category added">
-        <i class="fas fa-plus"></i> Dodano
-      </div>
-      <ul class="change-list">
-        <li>Nowe systemy konfiguracyjne bazujące na rozwijanych menu, przyciskach i bezpośrednich modalach.</li>
-        <li>System ciasteczek z wróżbą (fortune cookie) przeniesiony z twardych stałych do elastycznej konfiguracji bazodanowej z poziomami uprawnień per-serwer.</li>
-        <li>Konfigurator <code>/setup</code> dający operatorom pełne zarządzanie kategoriami i limitami z poziomu GUI.</li>
-      </ul>
-
-      <!-- Sekcja rozwijana - Szczegóły techniczne -->
-      <details class="tech-details">
-        <summary>Pokaż szczegóły implementacyjne kodu (v2.7.1)</summary>
-        <div class="tech-content text-white-50">
-          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
-          <ul class="change-list">
-            <li>Całkowita migracja bota na <code>discord.app_commands.CommandTree</code> — Usunięto przestarzały paradygmat parsowania wiadomości tekstowych <code>on_message</code> na rzecz pełnej synchronizacji komend ukośnikowych (slash commands).</li>
-            <li>Wykorzystanie modalnych interfejsów <code>discord.ui.Modal</code> do konfiguracji bota — Pozwala to na eliminację błędnych danych wejściowych bezpośrednio po stronie Discorda, zabezpieczając API przed zagnieżdżonymi atakami RegEx Injection.</li>
-            <li>System unieważniania lokalnej pamięci podręcznej — Poprawna synchronizacja ciasteczek z wróżbą poprzez nasłuchiwanie webhooków bazy MongoDB, co aktualizuje lokalne instancje w pamięci RAM bez konieczności restartu całego bota.</li>
-          </ul>
+        <!-- Status View -->
+        <div id="viewStatus" class="markdown-body" style="display: none;">
+          <!-- Wstrzykiwany Markdown -->
         </div>
-      </details>
-    </div>
 
-    <!-- KARTA v1.17 -->
-    <div class="changelog-card">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <span class="badge bg-secondary px-3 py-2 version-tag">v1.17 - System Warnów i Logowania</span>
-        <span class="date-tag">20 Lipca 2024</span>
-      </div>
-      <p class="text-white-50">Rozszerzenie pakietu moderacyjnego o bezpieczne, ustrukturyzowane ostrzeżenia powiązane z bazą danych.</p>
-
-      <div class="change-category added">
-        <i class="fas fa-plus"></i> Dodano
-      </div>
-      <ul class="change-list">
-        <li>Komenda <code>&warn</code> (aliasy: <code>&note</code>, <code>&upomnij</code>) zapisująca ostrzeżenia bezpośrednio w bazie z cyklem autoretencji 30 dni.</li>
-        <li>Powiadomienia w formie bogato zdobionych formularzy embed (osadzonych) wysyłanych bezpośrednio na prywatne wiadomości ukaranego użytkownika.</li>
-        <li>Komendy czyszczenia ustrukturyzowanego <code>&edit_warn</code>, <code>&delete_warn</code> oraz <code>&mass_remove_warn</code> dla administratora głównego.</li>
-        <li>Zliczanie w czasie rzeczywistym ogólnej liczby użytkowników i monitoring kanałów głosowych dystrybuowany do głównego serwera API.</li>
-      </ul>
-
-      <!-- Sekcja rozwijana - Szczegóły techniczne -->
-      <details class="tech-details">
-        <summary>Pokaż szczegóły implementacyjne kodu (v1.17)</summary>
-        <div class="tech-content text-white-50">
-          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
-          <ul class="change-list">
-            <li>Stworzenie zdefiniowanego schematu bazy danych (Warn Schema) w zbiorach MongoClient — <code>{ "user_id": int64, "guild_id": int64, "reason": str, "operator_id": int64, "timestamp": datetime, "active": bool }</code>.</li>
-            <li>Wdrożenie asynchronicznego tła systemowego <code>clean_expired_warns_loops</code> — Demon odpytuje bazę raz na dobę i automatycznie flaguje przeterminowane wpisy (active: false), redukując narzut odpytywania uprawnień przy starcie sesji użytkownika.</li>
-            <li>Agregowanie udziałów sieciowych — Użycie potoków <code>$group</code> oraz <code>$sum</code> w MongoDB Atlas w celu zbierania live-statystyk obecności na kanałach do komunikacji ze stronią główną portalu.</li>
-          </ul>
+        <!-- System Docs View -->
+        <div id="viewSystem" style="display: none;">
+          <div class="dev-layout">
+            <!-- Pasek boczny z plikami systemowymi -->
+            <div class="dev-menu" id="sysFilesMenu">
+              <div class="dev-menu-title">Pliki systemowe</div>
+              <!-- Generowane dynamicznie przyciski -->
+            </div>
+            <!-- Treść wybranego pliku -->
+            <div class="markdown-body" id="sysFileContent">
+              <div class="text-muted font-monospace text-center py-5">
+                <i class="fas fa-arrow-left me-2"></i> Wybierz plik systemowy z listy po lewej stronie, aby załadować treść.
+              </div>
+            </div>
+          </div>
         </div>
-      </details>
-    </div>
 
-    <!-- KARTA v1.10 -->
-    <div class="changelog-card">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <span class="badge bg-secondary px-3 py-2 version-tag">v1.10 - Wieloserwerowość i Timeouty</span>
-        <span class="date-tag">3 Czerwca 2024</span>
-      </div>
-      <p class="text-white-50">Unifikacja sistema nakładania przerw i moderacji trans-serwerowej w obrębie całej sieci Overtime.</p>
-
-      <div class="change-category added">
-        <i class="fas fa-plus"></i> Dodano
-      </div>
-      <ul class="change-list">
-        <li>Komenda <code>&przerwa</code> (aliasy: <code>&p</code>, <code>&break</code>, <code>&roblox</code>, <code>&fortnite</code>) dająca operatorom możliwość precyzyjnego ograniczenia dostępu (timeout) na wszystkich stowarzyszonych serwerach w ułamku sekundy.</li>
-        <li>Podpory dla logów technicznych segregowanych w katalogu <code>logs/</code> bezpośrednio na serwery.</li>
-        <li>Automatyczny system zarządzania mediami (tworzenie dedykowanych wątków i dopasowanie reakcji na kanałach self-media / selfie).</li>
-      </ul>
-
-      <!-- Sekcja rozwijana - Szczegóły techniczne -->
-      <details class="tech-details">
-        <summary>Pokaż szczegóły implementacyjne kodu (v1.10)</summary>
-        <div class="tech-content text-white-50">
-          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
-          <ul class="change-list">
-            <li>Nienakładający się narzut sieciowy HTTP — Całkowicie wycofano synchroniczną bibliotekę <code>requests</code> na rzecz asynchronicznych sesji <code>aiohttp.ClientSession</code> do komunikacji z serwerem API Overtime Polska.</li>
-            <li>Parser dynamicznych interwałów delta — Dodano autorski parser czasu obsługujący formaty <code>1d</code>, <code>12h</code>, <code>30m</code> i prawidłowo mapujący je na jednostki <code>datetime.timedelta</code> przekazywane bezpośrednio do natywnej metody <code>discord.Member.timeout()</code>.</li>
-            <li>Architektura auto-wątków w mediach — Moduł <code>autothread_handler.py</code> automatycznie śledzi obrazy w strumieniu i bez opóźnień tworzy podwątek o nazwie "Komentarze" poprzez <code>message.create_thread</code>.</li>
-          </ul>
+        <!-- Development View -->
+        <div id="viewDevelopment" style="display: none;">
+          <div class="dev-layout">
+            <!-- Pasek boczny z plikami -->
+            <div class="dev-menu" id="devFilesMenu">
+              <div class="dev-menu-title">Wątki projektowe</div>
+              <!-- Generowane dynamicznie przyciski -->
+            </div>
+            <!-- Treść wybranego pliku -->
+            <div class="markdown-body" id="devFileContent">
+              <div class="text-muted font-monospace text-center py-5">
+                <i class="fas fa-arrow-left me-2"></i> Wybierz wątek projektowy z listy po lewej stronie, aby załadować treść.
+              </div>
+            </div>
+          </div>
         </div>
-      </details>
-    </div>
 
-    <!-- KARTA v1.07 -->
-    <div class="changelog-card">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <span class="badge bg-secondary px-3 py-2 version-tag">v1.07 - System Logów Technicznych</span>
-        <span class="date-tag">6 Sierpnia 2023</span>
       </div>
-      <p class="text-white-50">Stworzenie pierwszych zaawansowanych logów serwerowych odpornych na błędy.</p>
-
-      <!-- Sekcja rozwijana - Szczegóły techniczne -->
-      <details class="tech-details">
-        <summary>Pokaż szczegóły implementacyjne kodu (v1.07)</summary>
-        <div class="tech-content text-white-50">
-          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
-          <ul class="change-list">
-            <li>Niezależne rejestrowanie wyjątków — Wdrożono moduł <code>error_logger.py</code> asynchronicznie zapisujący ślady stosu (Stacktrace) do rotacyjnych plików płaskich <code>logs/bot_errors.log</code> (z limitem rozmiaru 10MB per plik).</li>
-            <li>Zabezpieczenie przed limitami zapytań — Globalne przechwytywanie wyjątków <code>discord.errors.HTTPException</code> chroniące bota przed zatorami w przypadku przekroczenia limitu zapytań API (Muted State 429).</li>
-          </ul>
-        </div>
-      </details>
-    </div>
-
-    <!-- KARTA v1.01 -->
-    <div class="changelog-card">
-      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <span class="badge bg-secondary px-3 py-2 version-tag">v1.01 - Notyfikacje unban-deliv</span>
-        <span class="date-tag">16 Lipca 2023</span>
-      </div>
-      <p class="text-white-50">Inicjalne wdrożenie powiadomień na prywatne wiadomości z potwierdzeniem zdjęcia blokady.</p>
-
-      <!-- Sekcja rozwijana - Szczegóły techniczne -->
-      <details class="tech-details">
-        <summary>Pokaż szczegóły implementacyjne kodu (v1.01)</summary>
-        <div class="tech-content text-white-50">
-          <h4 class="text-white"><i class="fas fa-code me-2"></i>Zmiany niskopoziomowe w repozytorium bota:</h4>
-          <ul class="change-list">
-            <li>Niezawodna wysyłka powiadomień prywatnych — Dodanie bezpiecznego bloku <code>try...except discord.Forbidden</code> przy unbanowaniu, chroniącego pętlę roboczą przed przerwaniem działania w sytuacji, gdy usunięty użytkownik zablokował otrzymywanie wiadomości od bota.</li>
-          </ul>
-        </div>
-      </details>
     </div>
 
     <!-- Stopka -->
-    <p class="text-muted small mt-5 pb-5">© 2026 <a href="https://linktr.ee/overtimepolska" target="_blank" class="text-secondary text-decoration-none">Overtime Polska</a>. Wszelkie prawa zastrzeżone.</p>
+    <p class="text-muted text-center small mt-5 pb-5">© 2026 <a href="https://linktr.ee/overtimepolska" target="_blank" class="text-secondary text-decoration-none">Overtime Polska</a>. System monitorowania floty Ojciec 4.0.0.</p>
   </div>
 
   <!-- Skrypty -->
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="app.js"></script>
+  
+  <script>
+    let changelogsData = null;
+    let activeTab = 'changelog';
+    let activeDevFileIndex = null;
+
+    // Konfiguracja marked do interpretacji bezpiecznej
+    marked.setOptions({
+      gfm: true,
+      breaks: true,
+      headerIds: false,
+      mangle: false
+    });
+
+    async function loadChangelogs() {
+      const loader = document.getElementById('loader');
+      const content = document.getElementById('docContent');
+
+      try {
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const apiUrl = isLocalhost ? 'http://localhost:3000/api/changelogs' : '/api/changelogs';
+        
+        const response = await fetch(apiUrl, {
+          headers: { 'Cache-Control': 'no-cache' }
+        });
+        
+        if (response.ok) {
+          changelogsData = await response.json();
+          renderContent();
+        } else {
+          throw new Error(`HTTP Error: ${response.status}`);
+        }
+      } catch (err) {
+        console.error("Błąd pobierania changelogów:", err);
+        showFallbackContent();
+      } finally {
+        loader.style.display = 'none';
+        content.style.display = 'block';
+      }
+    }
+
+    function renderContent() {
+      if (!changelogsData || !changelogsData.docs) {
+        showFallbackContent();
+        return;
+      }
+
+      // Wyświetl czas synchronizacji
+      if (changelogsData.last_updated) {
+        const syncDate = new Date(changelogsData.last_updated);
+        const formatted = syncDate.toLocaleString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        document.getElementById('syncTimestamp').textContent = formatted;
+        document.getElementById('syncBanner').style.display = 'block';
+      }
+
+      // 1. Renderuj Changelog
+      const changelogHtml = marked.parse(changelogsData.docs.changelog_content || "# Brak danych\nNie znaleziono zawartości pliku CHANGELOG.md.");
+      document.getElementById('viewChangelog').innerHTML = changelogHtml;
+
+      // 2. Renderuj Status
+      const statusHtml = marked.parse(changelogsData.docs.status_content || "# Brak danych\nNie znaleziono zawartości pliku STATUS.md.");
+      document.getElementById('viewStatus').innerHTML = statusHtml;
+
+      // 3. Renderuj listę plików w zakładce System (docs)
+      const sysFiles = changelogsData.docs.files || [];
+      const sysMenu = document.getElementById('sysFilesMenu');
+      
+      const sysTitle = sysMenu.querySelector('.dev-menu-title');
+      sysMenu.innerHTML = '';
+      sysMenu.appendChild(sysTitle);
+
+      if (sysFiles.length === 0) {
+        sysMenu.innerHTML += '<div class="text-muted small font-monospace p-2">Brak plików systemowych w bazie.</div>';
+      } else {
+        sysFiles.forEach((file, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'sys-item-btn dev-item-btn';
+          btn.innerHTML = `<i class="far fa-file-alt"></i> <span>${file.name}</span>`;
+          btn.onclick = () => selectSysFile(idx);
+          sysMenu.appendChild(btn);
+        });
+        
+        // Zaznacz pierwszy plik domyślnie
+        selectSysFile(0);
+      }
+
+      // 4. Renderuj listę plików w zakładce Rozwój
+      const devFiles = changelogsData.rozwój || [];
+      const menu = document.getElementById('devFilesMenu');
+      
+      const title = menu.querySelector('.dev-menu-title');
+      menu.innerHTML = '';
+      menu.appendChild(title);
+
+      if (devFiles.length === 0) {
+        menu.innerHTML += '<div class="text-muted small font-monospace p-2">Brak plików rozwoju w bazie.</div>';
+      } else {
+        devFiles.forEach((file, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'dev-item-btn';
+          btn.innerHTML = `<i class="far fa-file-alt"></i> <span>${file.name}</span>`;
+          btn.onclick = () => selectDevFile(idx);
+          menu.appendChild(btn);
+        });
+        
+        // Zaznacz pierwszy plik domyślnie
+        selectDevFile(0);
+      }
+    }
+
+    function selectSysFile(index) {
+      if (!changelogsData || !changelogsData.docs || !changelogsData.docs.files || !changelogsData.docs.files[index]) return;
+      
+      const file = changelogsData.docs.files[index];
+      
+      // Styl przycisków w menu systemowym
+      const buttons = document.querySelectorAll('.sys-item-btn');
+      buttons.forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === index);
+      });
+
+      // Renderowanie zawartości
+      const contentEl = document.getElementById('sysFileContent');
+      contentEl.innerHTML = marked.parse(file.content || "# Pusty plik");
+    }
+
+    function selectDevFile(index) {
+      if (!changelogsData || !changelogsData.rozwój || !changelogsData.rozwój[index]) return;
+      
+      const file = changelogsData.rozwój[index];
+      
+      // Styl przycisków w menu
+      const buttons = document.querySelectorAll('.dev-item-btn');
+      buttons.forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === index);
+      });
+
+      // Renderowanie zawartości
+      const contentEl = document.getElementById('devFileContent');
+      contentEl.innerHTML = marked.parse(file.content || "# Pusty plik");
+    }
+
+    function showFallbackContent() {
+      const fallbackMsg = `
+        <h1><i class="fas fa-wifi-slash me-2 text-danger"></i> Brak Połączenia z Mainframem</h1>
+        <p class="text-muted font-monospace">Nie udało się nawiązać połączenia z bazą danych MongoDB Atlas telemetrycznego zapisu changelogów Ojca.</p>
+        <blockquote>
+          <strong>Uwaga:</strong> Telemetria changelogów wymaga aktywnego bota, który przesyła pliki Markdown bezpośrednio do bazy. Sprawdź, czy bot działa na Twoim serwerze oraz czy zmienna <code>ATLAS_MONGO_URI</code> jest poprawnie skonfigurowana.
+        </blockquote>
+      `;
+      document.getElementById('viewChangelog').innerHTML = fallbackMsg;
+      document.getElementById('viewStatus').innerHTML = fallbackMsg;
+      document.getElementById('sysFileContent').innerHTML = fallbackMsg;
+      document.getElementById('devFileContent').innerHTML = fallbackMsg;
+    }
+
+    function switchTab(tabId) {
+      activeTab = tabId;
+      
+      // Aktywacja przycisków
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => {
+        const isTarget = btn.getAttribute('onclick').includes(tabId);
+        btn.classList.toggle('active', isTarget);
+      });
+
+      // Przełączanie widoków
+      document.getElementById('viewChangelog').style.display = tabId === 'changelog' ? 'block' : 'none';
+      document.getElementById('viewStatus').style.display = tabId === 'status' ? 'block' : 'none';
+      document.getElementById('viewSystem').style.display = tabId === 'system' ? 'block' : 'none';
+      document.getElementById('viewDevelopment').style.display = tabId === 'development' ? 'block' : 'none';
+    }
+
+    // Inicjalizacja ładowania
+    document.addEventListener('DOMContentLoaded', loadChangelogs);
+  </script>
 </body>
 </html>

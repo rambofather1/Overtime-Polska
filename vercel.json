@@ -24,6 +24,10 @@
     {
       "src": "api/userstats.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/changelogs.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -34,6 +38,10 @@
     {
       "src": "/api/userstats",
       "dest": "/api/userstats.js"
+    },
+    {
+      "src": "/api/changelogs",
+      "dest": "/api/changelogs.js"
     },
     {
       "src": "/(.*)",

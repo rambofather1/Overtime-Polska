@@ -143,4 +143,25 @@ async function getUserStats(userId) {
   }
 }
 
-module.exports = { getUserCount, getUserStats };
+async function getChangelogs() {
+  let client = null;
+  try {
+    client = new MongoClient(MONGO_URI);
+    await client.connect();
+    
+    const db = client.db(DATABASE);
+    const collection = db.collection(COLLECTION);
+    
+    const result = await collection.findOne({ _id: "changelogs" });
+    return result;
+  } catch (error) {
+    console.error('Błąd podczas pobierania changelogów z MongoDB:', error);
+    throw error;
+  } finally {
+    if (client) {
+      await client.close();
+    }
+  }
+}
+
+module.exports = { getUserCount, getUserStats, getChangelogs };

@@ -219,6 +219,43 @@
       margin-top: 10px;
     }
 
+    /* Grupowanie serwerów w osobnym świecie */
+    .server-group-container {
+      background: rgba(13, 14, 25, 0.45);
+      border: 1px solid rgba(6, 182, 212, 0.15);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 25px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .server-group-container:hover {
+      border-color: rgba(6, 182, 212, 0.35);
+      box-shadow: 0 8px 32px rgba(6, 182, 212, 0.1);
+    }
+
+    .server-group-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 1px solid rgba(6, 182, 212, 0.1);
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+
+    .server-group-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     /* Karta pokoju (Voice Room Card) */
     .room-card {
       background: var(--card-bg);
@@ -1054,7 +1091,12 @@
       border-radius: 50%;
       background: #ef4444;
       display: inline-block;
-      animation: alertTextPulse 0.5s infinite alternate;
+      animation: liveDotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes liveDotPulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 4px rgba(239, 68, 68, 0.6); }
+      50% { opacity: 0.3; box-shadow: 0 0 0px rgba(239, 68, 68, 0); }
     }
 
     /* Anomalie Emergency effects */
@@ -1150,17 +1192,43 @@
       50% { opacity: 0.9; }
       100% { stroke-dashoffset: -20; opacity: 0.6; }
     }
+
+    /* Floating Crown for room leader */
+    .user-owner-crown {
+      position: absolute;
+      top: -12px;
+      left: -10px;
+      font-size: 1.25rem;
+      filter: drop-shadow(0 0 4px rgba(250, 204, 21, 0.9));
+      z-index: 10;
+      animation: crownFloat 2.2s infinite alternate ease-in-out;
+      pointer-events: none;
+      user-select: none;
+    }
+    @keyframes crownFloat {
+      0% { transform: translateY(0) rotate(-6deg); }
+      100% { transform: translateY(-4px) rotate(6deg); }
+    }
+
+    /* Matrix Rain overlay */
+    #matrixCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.16;
+      display: none;
+      border-radius: 14px;
+    }
   </style>
 </head>
 <body>
   <div id="particles-js"></div>
 
   <div class="container py-4" style="position: relative; z-index: 2;">
-    <!-- Top Return Bar -->
-    <div class="mb-3 d-flex justify-content-between align-items-center">
-      <a href="index.html" class="btn btn-cyber-sm"><i class="fas fa-arrow-left me-2"></i>Powrót do Portalu</a>
-      <span class="badge badge-cyber-live"><span class="live-dot"></span>LIVE SYSTEM CONNECTED</span>
-    </div>
 
     <!-- Main Game Window -->
     <div class="game-window">
@@ -1173,8 +1241,9 @@
           <div class="hud-stat" title="Wszyscy aktywni podróżnicy na kanałach głosowych">
             <i class="fas fa-users text-neon-blue"></i> PODRÓŻNICY: <span id="hudVoiceUsers" class="text-white">-</span>
           </div>
-          <div class="hud-stat" title="Aktualne tętno i ruch serwera">
+          <div class="hud-stat" title="Aktualne tętno i ruch serwera" style="position: relative; overflow: hidden; display: flex; align-items: center; gap: 8px;">
             <i class="fas fa-heartbeat text-danger"></i> PULS: <span id="hudPulse" class="text-danger">-</span>
+            <canvas id="pulseCanvas" width="60" height="20" style="vertical-align: middle; border-bottom: 1px solid rgba(239, 68, 68, 0.25);"></canvas>
           </div>
           <div class="hud-stat" title="Latencja sieciowa do serwerów Discord">
             <i class="fas fa-wifi text-info"></i> PING: <span id="hudPing" class="text-info">-</span>
@@ -1215,16 +1284,44 @@
             <button class="location-btn" id="btnLocTavern" onclick="switchLocation('tavern')">
               <i class="fas fa-beer"></i> Gospoda Pod Złotym Kuflem
             </button>
+            <button class="location-btn" id="btnLocActiveServers" onclick="switchLocation('active_servers')">
+              <i class="fas fa-globe"></i> Świat Serwerów (Aktywni)
+            </button>
+            <button class="location-btn" id="btnLocServers" onclick="switchLocation('servers')">
+              <i class="fas fa-server"></i> Strefa Sieciowa Serwerów (Węzły)
+            </button>
+          </div>
+
+          <!-- GLOBAL CYBER-NET FEED -->
+          <div class="cyber-net-feed mb-4 mt-0 font-monospace">
+            <div class="feed-header text-neon-blue d-flex justify-content-between align-items-center">
+              <span><i class="fas fa-terminal me-2"></i>GLOBALNY STRUMIEŃ SYGNAŁÓW NETRUNNERÓW</span>
+              <span class="feed-status pulse-live">LIVE FEED</span>
+            </div>
+            <div class="feed-body" id="cyberNetFeed">
+              <div class="feed-log system"><span class="text-white-50">[SYSTEM]</span> Inicjalizacja podsłuchu Blackwall... OK</div>
+              <div class="feed-log system"><span class="text-white-50">[SYSTEM]</span> Nasłuch portu 3000... Ustanowiono stabilne połączenie.</div>
+            </div>
           </div>
 
           <!-- Sekcja zawartości -->
           <div class="viewport-content">
             
             <!-- Metropolis Viewport -->
-            <div id="locMetropolis" style="display: block;">
+            <div id="locMetropolis" style="display: block; position: relative;">
+              <!-- Matrix Rain Canvas -->
+              <canvas id="matrixCanvas"></canvas>
+
               <div class="text-muted font-monospace small mb-3">
                 <i class="fas fa-info-circle me-1"></i> PODGLĄD AKTYWNYCH STREF GŁOSOWYCH. KLIKNIJ NA AWATAR UŻYTKOWNIKA, ABY ROZPOCZĄĆ INFILTRACJĘ.
               </div>
+
+              <!-- Server Filter Banner -->
+              <div id="serverFilterBanner" class="alert alert-info bg-dark border-info text-info font-monospace d-flex justify-content-between align-items-center mb-3" style="display: none; border-radius: 8px;">
+                <span><i class="fas fa-filter me-2"></i>AKTYWNY FILTR WĘZŁA: <strong id="filterServerName" class="text-white">-</strong></span>
+                <button class="btn btn-sm btn-outline-info rounded-pill" onclick="clearServerFilter()" style="font-size: 0.65rem; padding: 2px 10px;">WYCZYŚĆ FILTR <i class="fas fa-times ms-1"></i></button>
+              </div>
+
               <div id="metropolisGrid" class="rooms-grid">
                 <!-- Pokoje generowane dynamicznie -->
               </div>
@@ -1257,20 +1354,37 @@
               </div>
             </div>
 
-          </div>
+            <!-- Active Servers Viewport -->
+            <div id="locActiveServers" style="display: none;">
+              <div class="text-muted font-monospace small mb-3">
+                <i class="fas fa-info-circle me-1"></i> STRUKTURA SERWERÓW Z AKTYWNYMI PODRÓŻNIKAMI W STREFACH GŁOSOWYCH.
+              </div>
+              <div id="activeServersGrid" class="active-servers-grid">
+                <!-- Grupy serwerów generowane dynamicznie -->
+              </div>
+              <div id="activeServersFallback" class="fallback-status" style="display: none;">
+                <i class="fas fa-users-slash mb-3"></i>
+                <div>BRAK SERWERÓW Z AKTYWNYMI PODRÓŻNIKAMI</div>
+              </div>
+            </div>
 
-          <!-- GLOBAL CYBER-NET FEED -->
-          <div class="cyber-net-feed mt-4 font-monospace">
-            <div class="feed-header text-neon-blue d-flex justify-content-between align-items-center">
-              <span><i class="fas fa-terminal me-2"></i>GLOBALNY STRUMIEŃ SYGNAŁÓW NETRUNNERÓW</span>
-              <span class="feed-status pulse-live">LIVE FEED</span>
+            <!-- Servers Viewport -->
+            <div id="locServers" style="display: none;">
+              <div class="text-muted font-monospace small mb-3">
+                <i class="fas fa-info-circle me-1"></i> AKTYWNE WĘZŁY SIECIOWE DISCORD. KLIKNIJ NA SERWER, ABY PRZEFILTROWAĆ POKOJE W METROPOLIS.
+              </div>
+              <div id="serversGrid" class="rooms-grid">
+                <!-- Serwery generowane dynamicznie -->
+              </div>
+              <div id="serversFallback" class="fallback-status" style="display: none;">
+                <i class="fas fa-network-wired mb-3"></i>
+                <div>BRAK POŁĄCZONYCH WĘZŁÓW SIECIOWYCH</div>
+              </div>
             </div>
-            <div class="feed-body" id="cyberNetFeed">
-              <div class="feed-log system"><span class="text-white-50">[SYSTEM]</span> Inicjalizacja podsłuchu Blackwall... OK</div>
-              <div class="feed-log system"><span class="text-white-50">[SYSTEM]</span> Nasłuch portu 3000... Ustanowiono stabilne połączenie.</div>
-            </div>
+
           </div>
         </div>
+
 
         <!-- Sidebar z Leaderboardami -->
         <div class="sidebar-section">
@@ -1298,6 +1412,12 @@
         </div>
 
       </div>
+    </div>
+
+    <!-- Bottom Return Bar -->
+    <div class="mt-4 d-flex justify-content-between align-items-center">
+      <a href="index.html" class="btn btn-cyber-sm"><i class="fas fa-arrow-left me-2"></i>Powrót do Portalu</a>
+      <span class="badge badge-cyber-live"><span class="live-dot"></span>LIVE SYSTEM CONNECTED</span>
     </div>
   </div>
 
@@ -1351,6 +1471,22 @@
           <div class="stat-card">
             <div class="stat-label">WYSŁANE WIADOMOŚCI</div>
             <div class="stat-value text-terminal-green" id="modalMessageCount">Ładowanie...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statystyki Czasowe VC -->
+      <div class="row g-2 mb-4 font-monospace" id="modalVcStatsRow">
+        <div class="col-6">
+          <div class="stat-card">
+            <div class="stat-label">CZAS W SESJI VC</div>
+            <div class="stat-value text-warning" id="modalSessionDuration">0 min</div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="stat-card">
+            <div class="stat-label">UPTIME POKOJU</div>
+            <div class="stat-value text-neon-blue" id="modalRoomUptime">Stały kanał</div>
           </div>
         </div>
       </div>
@@ -1768,6 +1904,72 @@
           osc2.stop(t + 0.22);
         } catch(e){}
       }
+
+      playJoinSound() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+          const t = this.ctx.currentTime;
+          
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          
+          osc1.type = 'triangle';
+          osc1.frequency.setValueAtTime(659.25, t); // E5
+          osc1.frequency.setValueAtTime(880.00, t + 0.1); // A5
+          
+          osc2.type = 'sine';
+          osc2.frequency.setValueAtTime(1318.51, t); // E6 Detuned
+          osc2.frequency.setValueAtTime(1760.00, t + 0.1); // A6
+          
+          gain.gain.setValueAtTime(0, t);
+          gain.gain.linearRampToValueAtTime(0.04, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+          
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(this.ctx.destination);
+          
+          osc1.start();
+          osc2.start();
+          osc1.stop(t + 0.35);
+          osc2.stop(t + 0.35);
+        } catch(e){}
+      }
+
+      playLeaveSound() {
+        if (this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+          const t = this.ctx.currentTime;
+          
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(440.00, t); // A4
+          osc.frequency.linearRampToValueAtTime(220.00, t + 0.25); // Down to A3
+          
+          const filter = this.ctx.createBiquadFilter();
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(300, t);
+          
+          gain.gain.setValueAtTime(0.06, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+          
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.ctx.destination);
+          
+          osc.start();
+          osc.stop(t + 0.25);
+        } catch(e){}
+      }
     }
     const cyberSynth = new CyberSynth();
 
@@ -1880,6 +2082,7 @@
 
       document.getElementById('gameConsole').style.display = 'none';
       document.getElementById('modalShopPanel').style.display = 'none';
+      document.getElementById('modalVcStatsRow').style.display = 'none';
       hackingState.active = false;
 
       // Inicjalizacja dźwięków przy interakcji z UI
@@ -1911,6 +2114,67 @@
       cyberSynth.playBlip();
     }
 
+    // --- MATRIX RAIN ANIMATION FOR BLACKWALL ---
+    let matrixCanvas = null;
+    let matrixCtx = null;
+    let matrixInterval = null;
+    let matrixColumns = [];
+
+    function startMatrixRain() {
+      matrixCanvas = document.getElementById('matrixCanvas');
+      if (!matrixCanvas) return;
+      matrixCtx = matrixCanvas.getContext('2d');
+      if (!matrixCtx) return;
+
+      matrixCanvas.style.display = 'block';
+      const parent = matrixCanvas.parentElement;
+      matrixCanvas.width = parent.clientWidth || window.innerWidth;
+      matrixCanvas.height = parent.clientHeight || 500;
+
+      const fontSize = 11;
+      const columnsCount = Math.floor(matrixCanvas.width / fontSize) + 1;
+      matrixColumns = Array(columnsCount).fill(0).map(() => Math.floor(Math.random() * -100));
+
+      if (matrixInterval) clearInterval(matrixInterval);
+
+      matrixInterval = setInterval(() => {
+        matrixCtx.fillStyle = 'rgba(11, 2, 2, 0.08)'; // Deep red blur trail
+        matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+        matrixCtx.fillStyle = '#ef4444'; // Bright red neon characters
+        matrixCtx.font = fontSize + 'px monospace';
+
+        matrixColumns.forEach((y, x) => {
+          const text = String.fromCharCode(0x30A0 + Math.random() * 96);
+          const xPos = x * fontSize;
+          const yPos = y * fontSize;
+
+          matrixCtx.fillText(text, xPos, yPos);
+
+          if (yPos > matrixCanvas.height && Math.random() > 0.975) {
+            matrixColumns[x] = 0;
+          } else {
+            matrixColumns[x] = y + 1;
+          }
+        });
+      }, 35);
+    }
+
+    function stopMatrixRain() {
+      if (matrixInterval) {
+        clearInterval(matrixInterval);
+        matrixInterval = null;
+      }
+      matrixCanvas = document.getElementById('matrixCanvas');
+      if (matrixCanvas) {
+        matrixCanvas.style.display = 'none';
+        matrixCtx = matrixCanvas.getContext('2d');
+        if (matrixCtx) {
+          matrixCtx.clearRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+        }
+      }
+    }
+
     // --- ANOMALIE SIECIOWE ---
     let activeAnomaly = null;
     let blackwallThreatLevel = 100;
@@ -1927,6 +2191,8 @@
         blackwallThreatLevel = 100;
         document.getElementById('blackwallPct').textContent = blackwallThreatLevel;
 
+        startMatrixRain();
+
         if (window.pJSDom && window.pJSDom[0]) {
           window.pJSDom[0].pJS.particles.color.value = '#ef4444';
           window.pJSDom[0].pJS.particles.line_linked.color = '#ef4444';
@@ -1936,6 +2202,7 @@
         document.body.classList.remove('emergency-network-grid');
         document.getElementById('netwatchBanner').style.display = 'inline-block';
         document.getElementById('blackwallBanner').style.display = 'none';
+        stopMatrixRain();
 
         if (window.pJSDom && window.pJSDom[0]) {
           window.pJSDom[0].pJS.particles.color.value = '#06b6d4';
@@ -1950,6 +2217,8 @@
       document.getElementById('blackwallBanner').style.display = 'none';
       document.getElementById('netwatchBanner').style.display = 'none';
       document.body.classList.remove('emergency-network-grid');
+
+      stopMatrixRain();
 
       if (window.pJSDom && window.pJSDom[0]) {
         window.pJSDom[0].pJS.particles.color.value = '#a855f7';
@@ -2010,21 +2279,33 @@
       return `Generowanie sygnatury aktywności: [GRA: ${activityName}]. Wszczepy obciążone na 42%`;
     }
 
-    // --- ZARZĄDZANIE WIDOKAMI (METROPOLIS / TAVERNA) ---
+    // --- ZARZĄDZANIE WIDOKAMI (METROPOLIS / TAVERNA / SERWERY) ---
     let activeLocation = 'metropolis';
     let currentVoiceUsers = [];
     let longestSessionsList = [];
+    let lastCachedServers = [];
+    let activeServerFilter = null;
 
     function switchLocation(loc) {
       activeLocation = loc;
       
       document.getElementById('btnLocMetropolis').classList.toggle('active', loc === 'metropolis');
       document.getElementById('btnLocTavern').classList.toggle('active', loc === 'tavern');
+      document.getElementById('btnLocServers').classList.toggle('active', loc === 'servers');
+      document.getElementById('btnLocActiveServers').classList.toggle('active', loc === 'active_servers');
 
       document.getElementById('locMetropolis').style.display = loc === 'metropolis' ? 'block' : 'none';
       document.getElementById('locTavern').style.display = loc === 'tavern' ? 'block' : 'none';
+      document.getElementById('locServers').style.display = loc === 'servers' ? 'block' : 'none';
+      document.getElementById('locActiveServers').style.display = loc === 'active_servers' ? 'block' : 'none';
 
-      renderAll(currentVoiceUsers);
+      if (loc === 'servers') {
+        renderServers(lastCachedServers);
+      } else if (loc === 'active_servers') {
+        renderActiveServers(currentVoiceUsers, lastCachedServers);
+      } else {
+        renderAll(currentVoiceUsers);
+      }
     }
 
     // --- MECHANIZM DYNAMICZNEGO RENDEROWANIA POKOI ---
@@ -2036,6 +2317,12 @@
       const groupedChannels = {};
       users.forEach(u => {
         const cId = u.channel_id || "default";
+        
+        // Zastosowanie filtra serwera
+        if (activeServerFilter && String(u.guild_id) !== String(activeServerFilter)) {
+          return;
+        }
+
         if (!groupedChannels[cId]) {
           groupedChannels[cId] = {
             id: cId,
@@ -2063,7 +2350,7 @@
             grid.appendChild(card);
           });
         }
-      } else {
+      } else if (activeLocation === 'tavern') {
         // Tavern Mode
         const grid = document.getElementById('tavernGrid');
         const fallback = document.getElementById('tavernFallback');
@@ -2081,6 +2368,212 @@
       }
 
       // Schedule laser drawing after DOM updates render layout positions
+      setTimeout(drawRoomLasers, 100);
+    }
+
+    // --- RENDERING SERWERÓW (TRZECI ŚWIAT) ---
+    function renderServers(servers) {
+      const grid = document.getElementById('serversGrid');
+      const fallback = document.getElementById('serversFallback');
+      grid.innerHTML = '';
+      
+      if (!servers || servers.length === 0) {
+        fallback.style.display = 'block';
+        return;
+      }
+      
+      fallback.style.display = 'none';
+      
+      servers.forEach(server => {
+        const card = createServerCard(server);
+        grid.appendChild(card);
+      });
+    }
+
+    function createServerCard(server) {
+      const card = document.createElement('div');
+      card.className = 'room-card room--general';
+      card.style.borderLeftColor = 'var(--neon-blue)';
+      card.style.position = 'relative';
+      
+      let iconHtml = '';
+      if (server.icon) {
+        iconHtml = `<div class="user-avatar" style="background-image: url('${server.icon}'); border-radius: 8px; width: 52px; height: 52px; border: 2px solid var(--neon-blue); box-shadow: 0 0 10px rgba(6, 182, 212, 0.3); background-size: cover; background-position: center;"></div>`;
+      } else {
+        const initials = server.name.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase();
+        iconHtml = `<div class="user-avatar d-flex align-items-center justify-content-center bg-black font-monospace text-neon-blue font-weight-bold" style="border-radius: 8px; width: 52px; height: 52px; border: 2px solid var(--neon-blue); font-size: 1.1rem; box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);">${initials}</div>`;
+      }
+      
+      let badgesHtml = '';
+      if (server.is_verified) {
+        badgesHtml += `<span class="badge text-black font-monospace me-1" style="font-size:0.55rem; background: var(--neon-blue);"><i class="fas fa-check-circle"></i> VERIFIED</span>`;
+      }
+      if (server.is_partnered) {
+        badgesHtml += `<span class="badge text-white font-monospace me-1" style="font-size:0.55rem; background:#5865F2;"><i class="fas fa-handshake"></i> PARTNER</span>`;
+      }
+      if (server.boost_tier > 0) {
+        badgesHtml += `<span class="badge text-white font-monospace" style="font-size:0.55rem; background:var(--neon-pink);"><i class="fas fa-gem"></i> TIER ${server.boost_tier}</span>`;
+      }
+      
+      card.innerHTML = `
+        <div class="room-header" style="z-index: 2; position: relative;">
+          <div class="room-name" style="font-size: 0.9rem;">
+            <i class="fas fa-server text-neon-blue"></i> <span>${escapeHtml(server.name)}</span>
+          </div>
+          <span class="room-badge" style="border-color: rgba(6, 182, 212, 0.3); color: var(--neon-blue);">WĘZEŁ</span>
+        </div>
+        <div class="d-flex align-items-center gap-3 mb-3" style="z-index: 2; position: relative;">
+          ${iconHtml}
+          <div class="flex-grow-1 font-monospace" style="font-size: 0.72rem;">
+            <div class="text-white-50">POPULACJA: <span class="text-white">${server.members.toLocaleString()}</span></div>
+            <div class="text-white-50">AKTYWNI W VC: <span class="text-terminal-green font-weight-bold">${server.active_voice}</span></div>
+            <div class="mt-1">${badgesHtml}</div>
+          </div>
+        </div>
+        <div class="d-flex gap-2" style="z-index: 2; position: relative;">
+          <button class="btn btn-cyber-sm w-100" onclick="filterByServer('${server.id}', '${escapeHtml(server.name)}')">
+            <i class="fas fa-sign-in-alt me-1"></i> INFILTRUJ POKOJE
+          </button>
+        </div>
+        <div class="room-corp-footer" style="z-index: 2; position: relative;">
+          <span>BOOSTY: ${server.boosts}</span>
+          <span>VANITY: ${server.vanity_code ? '/' + server.vanity_code : 'brak'}</span>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    function filterByServer(serverId, serverName) {
+      cyberSynth.playBlip();
+      activeServerFilter = serverId;
+      
+      document.getElementById('filterServerName').textContent = serverName;
+      document.getElementById('serverFilterBanner').style.display = 'flex';
+      
+      addNetLog(`[SATELLITE] Przefiltrowano strefy głosowe dla węzła: ${serverName}`, 'system');
+      switchLocation('metropolis');
+    }
+
+    function clearServerFilter() {
+      cyberSynth.playBlip();
+      activeServerFilter = null;
+      document.getElementById('serverFilterBanner').style.display = 'none';
+      addNetLog(`[SATELLITE] Wyczyszczono filtr węzła sieciowego.`, 'system');
+      renderAll(currentVoiceUsers);
+    }
+
+    function renderActiveServers(users, servers) {
+      if (!users) users = [];
+      if (!servers) servers = [];
+      
+      const grid = document.getElementById('activeServersGrid');
+      const fallback = document.getElementById('activeServersFallback');
+      grid.innerHTML = '';
+      
+      // 1. Group active users by channel_id
+      const groupedChannels = {};
+      users.forEach(u => {
+        const cId = u.channel_id || "default";
+        if (!groupedChannels[cId]) {
+          groupedChannels[cId] = {
+            id: cId,
+            name: u.channel_name || "Nieznany kanał",
+            type: u.channel_type || "general",
+            guild_id: u.guild_id,
+            guild_name: u.guild_name,
+            users: []
+          };
+        }
+        groupedChannels[cId].users.push(u);
+      });
+      
+      const activeChannels = Object.values(groupedChannels);
+      
+      // 2. Group these active channels by guild_id
+      const serversWithChannels = {};
+      activeChannels.forEach(channel => {
+        const gId = channel.guild_id || "unknown";
+        if (!serversWithChannels[gId]) {
+          const sMeta = servers.find(s => String(s.id) === String(gId)) || {
+            name: channel.guild_name || "Serwer Zewnętrzny",
+            icon: null,
+            members: 0,
+            active_voice: 0
+          };
+          serversWithChannels[gId] = {
+            id: gId,
+            name: sMeta.name,
+            icon: sMeta.icon,
+            members: sMeta.member_count || sMeta.members || 0,
+            active_voice: sMeta.active_voice || 0,
+            boost_tier: sMeta.boost_tier || 0,
+            is_verified: sMeta.is_verified || false,
+            is_partnered: sMeta.is_partnered || false,
+            channels: []
+          };
+        }
+        serversWithChannels[gId].channels.push(channel);
+      });
+      
+      const activeServerList = Object.values(serversWithChannels);
+      
+      if (activeServerList.length === 0) {
+        fallback.style.display = 'block';
+        return;
+      }
+      
+      fallback.style.display = 'none';
+      
+      activeServerList.forEach(srv => {
+        const srvContainer = document.createElement('div');
+        srvContainer.className = 'server-group-container';
+        
+        let iconHtml = '';
+        if (srv.icon) {
+          iconHtml = `<div class="user-avatar" style="background-image: url('${srv.icon}'); border-radius: 8px; width: 42px; height: 42px; border: 2px solid var(--neon-blue); box-shadow: 0 0 10px rgba(6, 182, 212, 0.3); background-size: cover; background-position: center;"></div>`;
+        } else {
+          const initials = srv.name.split(' ').map(w => w[0]).join('').substring(0, 3).toUpperCase();
+          iconHtml = `<div class="user-avatar d-flex align-items-center justify-content-center bg-black font-monospace text-neon-blue font-weight-bold" style="border-radius: 8px; width: 42px; height: 42px; border: 2px solid var(--neon-blue); font-size: 0.95rem; box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);">${initials}</div>`;
+        }
+        
+        let badgesHtml = '';
+        if (srv.is_verified) {
+          badgesHtml += `<span class="badge text-black font-monospace me-1" style="font-size:0.55rem; background: var(--neon-blue);"><i class="fas fa-check-circle"></i> VERIFIED</span>`;
+        }
+        if (srv.is_partnered) {
+          badgesHtml += `<span class="badge text-white font-monospace me-1" style="font-size:0.55rem; background:#5865F2;"><i class="fas fa-handshake"></i> PARTNER</span>`;
+        }
+        if (srv.boost_tier > 0) {
+          badgesHtml += `<span class="badge text-white font-monospace" style="font-size:0.55rem; background:var(--neon-pink);"><i class="fas fa-gem"></i> TIER ${srv.boost_tier}</span>`;
+        }
+        
+        srvContainer.innerHTML = `
+          <div class="server-group-header">
+            ${iconHtml}
+            <div class="flex-grow-1">
+              <div class="server-group-title">
+                <i class="fas fa-server text-neon-blue"></i> <span>${escapeHtml(srv.name)}</span>
+              </div>
+              <div class="font-monospace text-white-50" style="font-size: 0.72rem; margin-top: 2px;">
+                POPULACJA: <span class="text-white">${srv.members.toLocaleString()}</span> | 
+                STREFY GŁOSOWE: <span class="text-terminal-green font-weight-bold">${srv.channels.length}</span>
+                ${badgesHtml ? ' | ' + badgesHtml : ''}
+              </div>
+            </div>
+          </div>
+          <div class="rooms-grid" id="srvGrid-${srv.id}"></div>
+        `;
+        
+        grid.appendChild(srvContainer);
+        
+        const srvRoomsGrid = srvContainer.querySelector(`#srvGrid-${srv.id}`);
+        srv.channels.forEach(channel => {
+          const card = createRoomCard(channel, false);
+          srvRoomsGrid.appendChild(card);
+        });
+      });
+      
       setTimeout(drawRoomLasers, 100);
     }
 
@@ -2154,6 +2647,33 @@
         card.className = `room-card room--${channel.type}`;
       }
 
+      // Metadata z użytkowników pokoju
+      let roomUptimeText = "Stały kanał";
+      let roomCreatedAt = null;
+      let roomOwnerId = null;
+
+      for (const u of channel.users) {
+        if (u.room_created_at) {
+          roomCreatedAt = u.room_created_at;
+        }
+        if (u.room_owner_id) {
+          roomOwnerId = u.room_owner_id;
+        }
+      }
+
+      if (roomCreatedAt) {
+        const createdTime = new Date(roomCreatedAt);
+        const diffMs = new Date() - createdTime;
+        const diffMins = Math.floor(diffMs / 60000);
+        if (diffMins >= 60) {
+          const hrs = Math.floor(diffMins / 60);
+          const mins = diffMins % 60;
+          roomUptimeText = `${hrs}h ${mins}m`;
+        } else {
+          roomUptimeText = `${Math.max(1, diffMins)}m`;
+        }
+      }
+
       // Nagłówek pokoju
       const header = document.createElement('div');
       header.className = 'room-header';
@@ -2192,8 +2712,14 @@
         const displayName = escapeHtml(user.display_name || user.username || 'Podróżnik');
         const gameName = user.activities && user.activities.length > 0 ? user.activities[0] : null;
 
+        const isOwner = roomOwnerId && String(user.user_id) === String(roomOwnerId);
+        
         // Tworzenie HTML
-        let html = `<div class="user-avatar" style="background-image: url('${avatar}')" title="${displayName} ${gameName ? ' | Gra w: ' + gameName : ''}"></div>`;
+        let html = `<div class="user-avatar" style="background-image: url('${avatar}')" title="${displayName} ${gameName ? ' | Gra w: ' + gameName : ''}">`;
+        if (isOwner) {
+          html += `<span class="user-owner-crown" title="Właściciel pokoju (Lider)">👑</span>`;
+        }
+        html += `</div>`;
         
         // Zabezpieczenie na wypadek braku pól w telemetrii
         const isMute = user.self_mute === true;
@@ -2230,8 +2756,11 @@
 
       const footer = document.createElement('div');
       footer.className = 'room-corp-footer';
+      let uptimeHtml = roomCreatedAt ? `<span>UPTIME: <strong class="text-warning">${roomUptimeText}</strong></span>` : `<span>KANAŁ STAŁY</span>`;
+      
       footer.innerHTML = `
         <span>KONTROLA: <strong class="${corp.class}">${corp.name}</strong></span>
+        ${uptimeHtml}
         <span>ID: ${channel.id.substring(0, 6)}...</span>
       `;
       card.appendChild(footer);
@@ -2303,6 +2832,33 @@
       chanEl.textContent = channelName;
       cyberwarEl.textContent = `${selectedImplant} [${cyberPercent}%]`;
       activityEl.textContent = activityText;
+
+      // Pokazanie sekcji statystyk czasowych VC
+      document.getElementById('modalVcStatsRow').style.display = 'flex';
+      
+      const durationMins = user.session_duration_mins || 0;
+      let durationText = `${durationMins} min`;
+      if (durationMins >= 60) {
+        const hrs = Math.floor(durationMins / 60);
+        const mins = durationMins % 60;
+        durationText = `${hrs}h ${mins}m`;
+      }
+      document.getElementById('modalSessionDuration').textContent = durationText;
+      
+      let roomUptimeText = "Stały kanał";
+      if (user.room_created_at) {
+        const createdTime = new Date(user.room_created_at);
+        const diffMs = new Date() - createdTime;
+        const diffMins = Math.floor(diffMs / 60000);
+        if (diffMins >= 60) {
+          const hrs = Math.floor(diffMins / 60);
+          const mins = diffMins % 60;
+          roomUptimeText = `${hrs}h ${mins}m`;
+        } else {
+          roomUptimeText = `${Math.max(1, diffMins)}m`;
+        }
+      }
+      document.getElementById('modalRoomUptime').textContent = roomUptimeText;
 
       drawer.classList.add('open');
     }
@@ -2657,6 +3213,8 @@
     }
 
     // --- LEADERBOARDS & TELEMETRY LIVE LOOP ---
+    let previousVoiceUserIds = [];
+
     async function tickEngine() {
       try {
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -2672,6 +3230,7 @@
           const data = await res.json();
           currentVoiceUsers = data.voice_users_detailed || [];
           longestSessionsList = data.top_gamers || [];
+          lastCachedServers = data.servers || [];
           
           const voiceCount = data.voiceUsers || data.voice_count || data.voice_users || 0;
           document.getElementById('hudVoiceUsers').textContent = voiceCount;
@@ -2680,8 +3239,36 @@
           const latency = Math.round(data.latencyMs || data.latency_ms || 0);
           document.getElementById('hudPing').textContent = latency > 0 ? `${latency} ms` : 'N/A';
 
-          // Rysowanie dynamicznego gridu stref pokoi
-          renderAll(currentVoiceUsers);
+          // Dźwięki wejścia/wyjścia VC (Connection Alerts)
+          const currentIds = currentVoiceUsers.map(u => String(u.user_id));
+          if (previousVoiceUserIds.length > 0) {
+            const joined = currentIds.filter(id => !previousVoiceUserIds.includes(id));
+            const left = previousVoiceUserIds.filter(id => !currentIds.includes(id));
+            
+            if (joined.length > 0) {
+              cyberSynth.playJoinSound();
+              joined.forEach(id => {
+                const u = currentVoiceUsers.find(user => String(user.user_id) === id);
+                if (u) {
+                  addNetLog(`[SATELLITE] Podróżnik <strong class="text-white">${escapeHtml(u.display_name || u.username)}</strong> dołączył do kanału <strong class="text-neon-blue">${escapeHtml(u.channel_name)}</strong>.`, 'system');
+                }
+              });
+            }
+            if (left.length > 0) {
+              cyberSynth.playLeaveSound();
+              addNetLog(`[SATELLITE] Wykryto rozłączenie podróżnika z strefy VC.`, 'system');
+            }
+          }
+          previousVoiceUserIds = currentIds;
+
+          // Rysowanie dynamicznego gridu stref pokoi lub serwerów
+          if (activeLocation === 'servers') {
+            renderServers(lastCachedServers);
+          } else if (activeLocation === 'active_servers') {
+            renderActiveServers(currentVoiceUsers, lastCachedServers);
+          } else {
+            renderAll(currentVoiceUsers);
+          }
 
           // Rysowanie liderów i synergii w sidebarze
           renderAnalytics(data.top_synergies || [], data.top_gamers || []);
@@ -2815,10 +3402,58 @@
       });
     }
 
+    // --- PULSE WAVE CANVASES ---
+    let pulseX = 0;
+    function drawPulseWave() {
+      const canvas = document.getElementById('pulseCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Shift image left by 1 pixel
+      const imgData = ctx.getImageData(1, 0, canvas.width - 1, canvas.height);
+      ctx.putImageData(imgData, 0, 0);
+
+      // Clear rightmost pixel column
+      ctx.fillStyle = 'rgba(10, 10, 18, 0.2)'; // match hud-stat bg opacity/glow
+      ctx.fillRect(canvas.width - 1, 0, 1, canvas.height);
+
+      const voiceCount = currentVoiceUsers.length || 0;
+      const speedMod = 0.05 + Math.min(0.2, voiceCount * 0.015);
+      const ampMod = 5 + Math.min(8, voiceCount * 0.35);
+
+      pulseX += speedMod;
+      let y = canvas.height / 2;
+
+      // Heartbeat pulse cycle
+      const cycle = pulseX % (Math.PI * 2);
+      if (cycle < 0.6) {
+        y += Math.sin(cycle * (Math.PI / 0.6)) * -ampMod;
+      } else if (cycle >= 0.6 && cycle < 1.0) {
+        y += Math.sin((cycle - 0.6) * (Math.PI / 0.4)) * (ampMod * 0.4);
+      } else if (cycle >= 1.2 && cycle < 1.8) {
+        y += Math.sin((cycle - 1.2) * (Math.PI / 0.6)) * -(ampMod * 0.2);
+      }
+
+      ctx.strokeStyle = '#ef4444'; // neon pulse red
+      ctx.lineWidth = 1.5;
+      ctx.shadowBlur = 3;
+      ctx.shadowColor = '#ef4444';
+
+      ctx.beginPath();
+      ctx.moveTo(canvas.width - 2, canvas.lastY || (canvas.height / 2));
+      ctx.lineTo(canvas.width - 1, y);
+      ctx.stroke();
+
+      canvas.lastY = y;
+      requestAnimationFrame(drawPulseWave);
+    }
+
     // Uruchomienie systemów
     updateEconomyHUD();
     initializeDroneSystem();
     startRandomNetEvents();
+    drawPulseWave();
     
     // Inicjalizacja stanu audio w HUD na podstawie zapisu w localStorage
     const savedAudioMuted = localStorage.getItem('ot_audio_muted') === 'true';

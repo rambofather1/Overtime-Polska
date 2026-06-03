@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
 const express = require('express');
 const cors = require('cors');
 const { getUserCount } = require('./db');
@@ -88,6 +88,26 @@ app.get('/api/userstats', async (req, res) => {
     res.status(500).json({ 
       error: 'Wystąpił błąd podczas pobierania danych',
       message: error.message 
+    });
+  }
+});
+
+// Endpoint do pobierania changelogów
+app.get('/api/changelogs', async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+
+  try {
+    const { getChangelogs } = require('./db');
+    const data = await getChangelogs();
+    res.json(data || {});
+  } catch (error) {
+    console.error('Błąd podczas pobierania changelogów:', error);
+    res.status(500).json({
+      error: 'Wystąpił błąd podczas pobierania danych changelogów',
+      message: error.message
     });
   }
 });
