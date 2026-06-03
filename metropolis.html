@@ -1319,7 +1319,12 @@
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const apiUrl = isLocalhost ? 'http://localhost:3000/api/usercount' : '/api/usercount';
         
-        const res = await fetch(apiUrl, { headers: { 'Cache-Control': 'no-cache' } });
+        const res = await fetch(apiUrl, {
+          headers: {
+            'Cache-Control': 'no-cache',
+            'x-api-key': '67553d23c8f8817ead5d0606'
+          }
+        });
         if (res.ok) {
           const data = await res.json();
           
