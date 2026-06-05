@@ -1251,6 +1251,10 @@
           <div class="hud-stat cursor-pointer" onclick="toggleAudio()" title="Włącz/Wycisz dźwięk i retro synth" style="user-select: none;">
             <i class="fas fa-volume-up text-warning" id="audioIcon"></i> DŹWIĘK: <span id="hudAudioStatus" class="text-white">WŁ</span>
           </div>
+          <div class="hud-stat cursor-pointer" id="hudAuthSection" onclick="handleAuthClick()" title="Zaloguj się przez Discord" style="user-select: none; display: flex; align-items: center; gap: 6px;">
+            <img id="hudAuthAvatar" src="" style="width: 16px; height: 16px; border-radius: 50%; display: none;" />
+            <i class="fab fa-discord text-neon-blue" id="hudAuthIcon"></i> <span id="hudAuthStatus" class="text-white">ZALOGUJ</span>
+          </div>
         </div>
       </div>
 
@@ -1636,7 +1640,104 @@
       achievements: JSON.parse(localStorage.getItem('ot_achievements') || "[]")
     };
 
-    function saveEconomyState() {
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const MATKA_API_BASE = isLocalhost ? 'http://localhost:8000/api/matka' : '/api/matka';
+    let userLoggedIn = false;
+
+    function getApiHeaders() {
+      const token = localStorage.getItem('matka_token');
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      return headers;
+    }
+
+    function handleAuthClick() {
+      if (userLoggedIn) {
+        localStorage.removeItem('matka_token');
+        userLoggedIn = false;
+        document.getElementById('hudAuthAvatar').style.display = 'none';
+        document.getElementById('hudAuthIcon').style.display = 'inline-block';
+        document.getElementById('hudAuthIcon').className = 'fab fa-discord text-neon-blue';
+        document.getElementById('hudAuthStatus').textContent = 'ZALOGUJ';
+        document.getElementById('hudAuthStatus').className = 'text-white';
+        addNetLog('[SYSTEM] Wylogowano z profilu Discord.', 'system');
+        
+        playerInventory = {
+          credits: parseInt(localStorage.getItem('ot_credits')) || 50,
+          deckLevel: parseInt(localStorage.getItem('ot_deck_level')) || 1,
+          securityLevel: parseInt(localStorage.getItem('ot_sec_level')) || 1,
+          droneHits: parseInt(localStorage.getItem('ot_drone_hits')) || 0,
+          drinksShared: parseInt(localStorage.getItem('ot_drinks_shared')) || 0,
+          hacksSucceeded: parseInt(localStorage.getItem('ot_hacks_succeeded')) || 0,
+          achievements: JSON.parse(localStorage.getItem('ot_achievements') || "[]")
+        };
+        updateEconomyHUD();
+      } else {
+        const currentUrl = window.location.href.split('?')[0];
+        const loginUrl = `${MATKA_API_BASE}/auth/login?redirect_to=${encodeURIComponent(currentUrl)}`;
+        addNetLog('[SYSTEM] Nawiązywanie autoryzacji z systemem Discord...', 'system');
+        window.location.href = loginUrl;
+      }
+    }
+
+    async function checkAuthAndLoadProfile() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+      if (urlToken) {
+        localStorage.setItem('matka_token', urlToken);
+        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+      }
+
+      const token = localStorage.getItem('matka_token');
+      if (token) {
+        try {
+          const res = await fetch(`${MATKA_API_BASE}/profile`, {
+            headers: getApiHeaders()
+          });
+          if (res.ok) {
+            const data = await res.json();
+            userLoggedIn = true;
+            
+            playerInventory.credits = data.credits;
+            playerInventory.deckLevel = data.deckLevel;
+            playerInventory.securityLevel = data.securityLevel;
+            playerInventory.droneHits = data.droneHits;
+            playerInventory.drinksShared = data.drinksShared;
+            playerInventory.hacksSucceeded = data.hacksSucceeded;
+            playerInventory.achievements = data.achievements;
+            
+            document.getElementById('hudAuthIcon').style.display = 'none';
+            const avatarEl = document.getElementById('hudAuthAvatar');
+            if (data.avatar) {
+              avatarEl.src = `https://cdn.discordapp.com/avatars/${data.user_id}/${data.avatar}.png`;
+            } else {
+              avatarEl.src = "https://cdn.discordapp.com/embed/avatars/0.png";
+            }
+            avatarEl.style.display = 'inline-block';
+            
+            const statusEl = document.getElementById('hudAuthStatus');
+            statusEl.textContent = data.username.toUpperCase();
+            statusEl.className = 'text-success';
+            
+            addNetLog(`[SYSTEM] Zalogowano jako ${data.username}. Zsynchronizowano profil.`, 'system');
+            updateEconomyHUD();
+            return;
+          } else {
+            localStorage.removeItem('matka_token');
+          }
+        } catch (err) {
+          console.error("Błąd pobierania profilu z API:", err);
+          addNetLog('[SYSTEM] Błąd połączenia z API profilu. Działanie w trybie offline.', 'system');
+        }
+      }
+      
+      updateEconomyHUD();
+    }
+
+    async function saveEconomyState() {
       localStorage.setItem('ot_credits', playerInventory.credits);
       localStorage.setItem('ot_deck_level', playerInventory.deckLevel);
       localStorage.setItem('ot_sec_level', playerInventory.securityLevel);
@@ -1644,7 +1745,31 @@
       localStorage.setItem('ot_drinks_shared', playerInventory.drinksShared);
       localStorage.setItem('ot_hacks_succeeded', playerInventory.hacksSucceeded);
       localStorage.setItem('ot_achievements', JSON.stringify(playerInventory.achievements));
+      
       updateEconomyHUD();
+
+      if (userLoggedIn) {
+        try {
+          const res = await fetch(`${MATKA_API_BASE}/profile`, {
+            method: 'PUT',
+            headers: getApiHeaders(),
+            body: JSON.stringify({
+              credits: playerInventory.credits,
+              deckLevel: playerInventory.deckLevel,
+              securityLevel: playerInventory.securityLevel,
+              droneHits: playerInventory.droneHits,
+              drinksShared: playerInventory.drinksShared,
+              hacksSucceeded: playerInventory.hacksSucceeded,
+              achievements: playerInventory.achievements
+            })
+          });
+          if (!res.ok) {
+            console.warn("Błąd zapisu stanu ekonomii na serwerze:", res.status);
+          }
+        } catch (err) {
+          console.error("Błąd sieci podczas zapisu profilu:", err);
+        }
+      }
     }
 
     function updateEconomyHUD() {
@@ -3450,7 +3575,7 @@
     }
 
     // Uruchomienie systemów
-    updateEconomyHUD();
+    checkAuthAndLoadProfile();
     initializeDroneSystem();
     startRandomNetEvents();
     drawPulseWave();
