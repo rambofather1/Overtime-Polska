@@ -26,11 +26,11 @@ Bieżący układ maszyn w klastrze Proxmox dla całego systemu:
 
 ## 📈 Statusy Podsystemów
 
-### 1. Bot MATKA (v1.0.0)
+### 1. Bot MATKA (v1.1.0)
 * **Status:** [PRIORYTET OPERACYJNY] Uruchomiony produkcyjnie na Proxmox Fleet (CT 117 i CT 118). Zintegrowany z API na CT 111.
-* **Technologia:** Python 3.12/3.14, `discord.py 2.6.4`, MongoDB, Redis Streams, ARQ.
-* **Kluczowe mechaniki:** Dwuwarstwowa ekonomia (Overcoins + lokalne waluty), dynamiczna giełda serwerów, hybrid shop, questy, reputacja (social credit) & voice gating.
-* **Integracja API:** Zintegrowany endpoint profilu hakerskiego (`GET/PUT /api/matka/profile`), panelu sklepu (`GET /api/matka/shops/{guild_id}`) oraz zakupów (`POST /api/matka/shops/{guild_id}/buy`).
+* **Technologia:** Python 3.12/3.14, `discord.py 2.6.4`, MongoDB, Redis Streams / PubSub, ARQ.
+* **Kluczowe mechaniki:** Dwuwarstwowa ekonomia (Overcoins + lokalne waluty), dynamiczna giełda serwerów, hybrid shop, questy, reputacja (social credit) & voice gating. Nowość: reakcja bota w czasie rzeczywistym (Pub/Sub) na akcje z portalu (Cyber-Drinks & ICE Breach) na kanale głosowym (VC Chat) oraz globalnym feedzie.
+* **Integracja API:** Zintegrowany endpoint profilu hakerskiego (`GET/PUT /api/matka/profile`), panelu sklepu (`GET /api/matka/shops/{guild_id}`), zakupów (`POST /api/matka/shops/{guild_id}/buy`) oraz akcji (`POST /api/matka/profile/cyber-drink` i `POST /api/matka/profile/ice-breach`).
 * **Postęp:** `100%` (Zintegrowany z bazą danych i zsynchronizowany, bot zalogowany pomyślnie, 194 testy przechodzą pomyślnie).
 
 ### 2. Bot OJCIEC (v5.7.02)
@@ -39,7 +39,7 @@ Bieżący układ maszyn w klastrze Proxmox dla całego systemu:
 * **Kluczowe mechaniki:** Dossier 360, Temp VC, LFG, system sporów MMR (Glicko-2), REST Executor, centralne sterowanie flotą (`fleet_control.sh`).
 * **Postęp:** `100%` (Zero runtime crashes w klastrze, 40 zautomatyzowanych testów regresyjnych przechodzi pomyślnie).
 
-### 3. PORTAL WWW OT POLSKA (v1.5.5)
+### 3. PORTAL WWW OT POLSKA (v1.5.6)
 * **Status:** Wdrożony produkcyjnie / Serwowany bezpośrednio przez FastAPI z kontenera `api-cockpit` (CT 111) oraz zsynchronizowany z lokalnym portem deweloperskim `8000`.
 * **Technologia:** HTML5, CSS3 (Vanilla / Custom styling), JavaScript.
 * **Kluczowe mechaniki:** Landing page, Metropolis Live (Spatial Clustering, 3D Canvas Pan/Zoom), Tactical HUD, logowanie SSO (Discord OAuth2), integracja z profilami i sklepem live (FastAPI + Mongo).
@@ -57,3 +57,4 @@ Bieżący układ maszyn w klastrze Proxmox dla całego systemu:
 - `[x]` Faza 6: Integracja Portalu z Centralnym API (SSO i Ekonomia Live)
 - `[x]` Faza 7: Serwowanie Portalu z Kontenera API (Uproszczenie Hostingu & SSO)
 - `[x]` Faza 8: Konsolidacja dokumentacji i synchronizacja portów localhost (3000 -> 8000)
+- `[x]` Faza 9: Integracja Reakcji Bota na Akcje z Portalu (Cyber-Drinks & ICE Breach)

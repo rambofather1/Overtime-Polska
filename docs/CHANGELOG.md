@@ -4,6 +4,18 @@ Wszystkie istotne zmiany i wydania w ramach ekosystemu **Overtime Multiverse** s
 
 ---
 
+## [1.1.6] - 2026-06-06 (Portal Interactive Discord Reactions)
+### Dodano
+* **Magistrala zdarzeń Redis Pub/Sub:** Zaimplementowano metodę `publish_pubsub` w klasie `RedisEventBus` w celu przesyłania powiadomień w czasie rzeczywistym z API do bota Discord.
+* **Reakcje bota na akcje z Portalu:**
+  - W FastAPI (CT 111) zintegrowano endpointy `POST /profile/cyber-drink` oraz `POST /profile/ice-breach` zabezpieczone JWT, wysyłające zdarzenia na kanał Pub/Sub `matka:discord_reactions`.
+  - W bramce bota Matka (CT 117) dodano asynchroniczny nasłuch Pub/Sub w tle. Bot wysyła powiadomienia o postawieniu drinka i udanym włamaniu ICE globalnie na dedykowany kanał tekstowy oraz lokalnie bezpośrednio do czatu tekstowego kanału głosowego (Voice Channel Chat), w którym przebywa cel.
+  - Zintegrowano przyciski "Postaw Drinka" (Cyber-Drinks) i logikę hakowania (ICE Infiltration) w `community.html` z nowymi endpointami API.
+### Zsynchronizowano
+* **Synchronizacja Workspace & Monorepo:** Pomyślnie zsynchronizowano pełną strukturę bota Matka w workspace `/home/rf/Dokumenty/00. PS- Matka` z katalogiem `/home/rf/Dokumenty/Overtime-Infrastructure/matka` oraz pliki `community.html` w workspace portalu i monorepo, a następnie wypchnięto zmiany na zdalne repozytoria GitHub.
+
+---
+
 ## [1.1.5] - 2026-06-06 (Request-URI Too Large & JWT Optimization)
 ### Naprawiono
 * **Optymalizacja Payloadu JWT:** Przefiltrowano listę serwerów w tokenie logowania OAuth2 (w `auth_routes.py`), zachowując wyłącznie te, na których użytkownik posiada uprawnienia administratora, zarządcy lub jest właścicielem (`owner`). Zapobiega to generowaniu gigantycznych tokenów JWT (powyżej 10 KB) dla użytkowników należących do wielu gildii.
