@@ -1643,6 +1643,7 @@
     const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const MATKA_API_BASE = isLocalhost ? 'http://localhost:8000/api/matka' : '/api/matka';
     let userLoggedIn = false;
+    let loggedInUser = null;
 
     function getApiHeaders() {
       const token = localStorage.getItem('matka_token');
@@ -1657,6 +1658,7 @@
       if (userLoggedIn) {
         localStorage.removeItem('matka_token');
         userLoggedIn = false;
+        loggedInUser = null;
         document.getElementById('hudAuthAvatar').style.display = 'none';
         document.getElementById('hudAuthIcon').style.display = 'inline-block';
         document.getElementById('hudAuthIcon').className = 'fab fa-discord text-neon-blue';
@@ -1675,7 +1677,7 @@
         };
         updateEconomyHUD();
       } else {
-        const currentUrl = window.location.href.split('?')[0];
+        const currentUrl = window.location.href;
         const loginUrl = `${MATKA_API_BASE}/auth/login?redirect_to=${encodeURIComponent(currentUrl)}`;
         addNetLog('[SYSTEM] Nawiązywanie autoryzacji z systemem Discord...', 'system');
         window.location.href = loginUrl;
@@ -1700,6 +1702,7 @@
           if (res.ok) {
             const data = await res.json();
             userLoggedIn = true;
+            loggedInUser = { id: data.user_id, username: data.username };
             
             playerInventory.credits = data.credits;
             playerInventory.deckLevel = data.deckLevel;
@@ -3202,6 +3205,20 @@
       playerInventory.drinksShared++;
       saveEconomyState();
 
+      // Reakcja bota Discord przez API
+      if (userLoggedIn && currentSelectedCharacter) {
+        fetch(`${MATKA_API_BASE}/profile/cyber-drink`, {
+          method: 'POST',
+          headers: getApiHeaders(),
+          body: JSON.stringify({
+            target_user_id: parseInt(currentSelectedCharacter.user_id),
+            drink_name: randomDrink,
+            guild_id: parseInt(currentSelectedCharacter.guild_id),
+            channel_id: currentSelectedCharacter.channel_id ? parseInt(currentSelectedCharacter.channel_id) : null
+          })
+        }).catch(err => console.error("Error triggering bot drink reaction:", err));
+      }
+
       // Log do Net Feed
       addNetLog(`Stawiasz wirtualnego drinka (${randomDrink}) podróżnikowi: ${displayName}`, 'toast');
 
@@ -3299,6 +3316,20 @@
             playerInventory.credits += hackingState.reward;
             playerInventory.hacksSucceeded++;
             saveEconomyState();
+
+            // Reakcja bota Discord przez API
+            if (userLoggedIn && currentSelectedCharacter) {
+              fetch(`${MATKA_API_BASE}/profile/ice-breach`, {
+                method: 'POST',
+                headers: getApiHeaders(),
+                body: JSON.stringify({
+                  target_user_id: parseInt(currentSelectedCharacter.user_id),
+                  reward: parseInt(hackingState.reward),
+                  guild_id: parseInt(currentSelectedCharacter.guild_id),
+                  channel_id: currentSelectedCharacter.channel_id ? parseInt(currentSelectedCharacter.channel_id) : null
+                })
+              }).catch(err => console.error("Error triggering bot hack reaction:", err));
+            }
             
             cyberSynth.playSuccess();
             addNetLog(`[UDANY BREACH] Infiltracja zakończona sukcesem. Pobrane dane z ${escapeHtml(currentSelectedCharacter.display_name || currentSelectedCharacter.username)} (+${hackingState.reward} cr)`, 'hack');
