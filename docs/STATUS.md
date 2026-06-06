@@ -1,36 +1,59 @@
-# Status Projektu - Overtime Polska
+# Zbiorczy Status Prac: Overtime Multiverse
 
-Bieżący podgląd stanu prac i integracji systemu portalu.
+Ten dokument śledzi status wdrożenia, checklistę postępu oraz wskaźniki gotowości operacyjnej dla całej sieci botów i usług Overtime.
 
-## Podsumowanie stanu
+---
 
-- **Postęp prac:** 100% (Projekt po pełnym audycie bezpieczeństwa, implementacji systemów World Interaction, eliminacji błędów składniowych i optymalizacji obronnej. Wszystkie cele zaawansowanej gamifikacji, cyber-ekonomii oraz dynamicznej telemetrii sieciowej działają całkowicie bezbłędnie.)
-- **Szacowane pozostałe roboczogodziny:** 0h (Zero długów technicznych, stabilne wykonanie)
+## 🛰️ Architektura Sieci Proxmox (LXC Fleet)
 
-## Aktualne Funkcje
+Bieżący układ maszyn w klastrze Proxmox dla całego systemu:
+* **VM 117 (`rf-gw-matka`)** — [PRIORYTET] Gateway bota Matka (ekonomia i social UX) [Status: `running` (zalogowany Matka#3189)]
+* **VM 118 (`rf-wrk-matka`)** — [PRIORYTET] Worker asynchroniczny bota Matka (Arq / ekonomia) [Status: `running`]
+* **VM 101 (`rf-mongodb`)** — Centralna baza danych MongoDB [Status: `running`]
+* **VM 102 (`rf-redis`)** — Centralny broker eventów i pamięć podręczna Redis [Status: `running`]
+* **VM 103 (`rf-rabbitmq`)** — Broker kolejkowy AMQP RabbitMQ dla Ojca [Status: `running`]
+* **VM 104 (`rf-nginx`)** — Główny serwer Reverse Proxy (zarządzanie ruchem i SSL) [Status: `running`]
+* **VM 106 (`rf-gw-ojciec`)** — Gateway / Sensor bota Ojciec (GATEWAY_ONLY) [Status: `running`]
+* **VM 107 (`rf-exec-discord`)** — Discord Outbound REST Executor (Ojciec) [Status: `running`]
+* **VM 108 (`rf-wrk-admin`)** — Worker administracyjny Ojca [Status: `running`]
+* **VM 109 (`rf-wrk-voice`)** — Worker głosowy (voice tracker) Ojca [Status: `running`]
+* **VM 110 (`rf-wrk-match`)** — Worker dopasowywania graczy LFG [Status: `running`]
+* **VM 111 (`rf-api-cockpit`)** — Zunifikowane FastAPI & Web Dashboard (Ojciec + Matka) [Status: `running`]
+* **VM 112 (`rf-jobs-ops`)** — Ops/Backup/Cykliczny Scheduler (Matka + Ojciec) [Status: `running` (Sanity Check OK)]
+* **VM 115 (`rf-gitea-bunker`)** — Prywatny Gitea do przechowywania wrażliwych plików `.env` [Status: `running`]
 
-1. **Licznik LIVE & Zaawansowana Telemetria (100%):** API odpytuje bazę danych bezpośrednio i przekazuje bogate dane: sumaryczną liczbę użytkowników, aktywnych głosowo, liczbę serwerów, shardów oraz ping sieciowy bota w czasie rzeczywistym.
-2. **Karty Serwerów Premium (100%):** Dynamiczne, interaktywne karty serwerów z diamentowymi odznakami boostów, ikonami venty/partnerstwa i unikalnymi linkami dołączenia.
-3. **Design i Frontend (100%):** Dostosowany landing-page z animacją tła particles.js, wsparciem dla urządzeń mobilnych, czytelnym UI i rankingową prezentacją największych serwerów.
-4. **Podstrona Changelog (100%):** Nowoczesna sekcja dziennika zmian bota Ojciec z pełnym spisem wydań od v1.01 do v4.0 EXTREME oraz najnowszymi wersjami Extreme 2.0.
-5. **Wieloobszarowa Cyberpunkowa Gospoda & Metropolis ([community.html](community.html)) (100%):** Zunifikowana plansza gry Multiverse zsynchronizowana w 100% na żywo z MongoDB, generująca prawdziwe postacie użytkowników z ich avatarami na Discordzie, nazwami oraz aktualnymi grami w chmurkach dialogowych. Rozmieszczenie postaci na mapach koresponduje z typem kanału, na którym siedzą.
-6. **Cyberpunkowy System Profilu & Mini-Grafika Hakerska (100%):** Dodanie interaktywnych kart profilu postaci, hakowania terminalowego ICE mini-gry w czasie rzeczywistym oraz akcji stawiania cyber-drinka biesiadnikom z natychmiastowym wizualnym sprzężeniem zwrotnym dymków dialogowych.
-7. **Żywy Ekosystem "Extreme Level 2.0 Living Simulation" (100%):**
-   - **Smart Update & Płynny Patrol**: System synchronizacji stanu DOM zapobiega niszczeniu i ponownemu tworzeniu elementów. Postacie spacerują płynnie wokół swoich pierwotnych orbit w interwałach czasowych, kołysząc się fizycznie (`.actor--walking` z animacją `pixelBob`) i zmieniając kierunek twarzy.
-   - **Wojskowe Drony Patrolowe**: Latające, bezzałogowe drony chroniące terytorium Metropolis oraz Gospody, skanujące przestrzeń dynamicznie za pomocą ruchomych gradientowych promieni laserowych.
-   - **Pozycjonowanie Orbitowo-Kolizyjne**: Inteligentne rozpraszanie aktorów trygonometrią i jitterem wokół stolików/dzielnic, chroniące przed nakładaniem postaci na siebie ("kanapki").
-   - **Dominacja Geopolityczna Korporacji**: Dynamiczne obliczanie dominacji (Arasaka, Militech, Biotech, Network LLC) nad dzielnicami na bazie telemetrycznej wagi serwerów.
-   - **System Ekonomiczno-Hakerski Czarnego Rynku**: Kredyty (Creds) zapisywane w localStorage, konsolowy sklep `/shop`, uaktualnienia filtrów ICE oraz ulepszenia cyberdecków penetracyjnych.
-   - **Polowania HVT (High-Value Target)**: Wyznaczanie celów hakerskich na podstawie czasu biesiady, pozwalające zbierać mnożniki credsów z graczy o najdłuższych sesjach.
-   - **Awarie Systemu "Protokół Architekta"**: System losowych anomalii (Blackwall / Netwatch) z czerwonymi syrenami/alertami glitch, dynamiczną natychmiastową repaletyzacją particles.js i trybem ratunkowym deszyfracji sieciowej.
-   - **Macierz Nastrojów (Mood Matrix)**: Filtry stanów voice mute/deaf/streaming oraz terytorialne, immersyjne dymki dialogowe oparte o cyberpunkowy słownik.
-   - **Nawigacja Kamerowa**: Obsługa gładkiego przeciągania mapy i skalowania (Drag & Zoom z obsługą wielodotyku touch/swipe i badgem statusowym zoomu).
-   - **Dynamiczne Grupowanie na Stoły (Spatial Clustering)**: Automatyczne grupowanie połączonych użytkowników na fizyczne wirtualne stoły na canvasie na podstawie unikalnych nazw kanałów głosowych Discorda, na których siedzą. Stoły rozkładają się automatycznie trygonometrycznie na siatce, zabezpieczając system przed nakładaniem się lokacji, a wokół stołów krążą prawdziwi zalogowani użytkownicy z ich rzeczywistymi awatarami i dymkami gier (Import Profilu live).
-8. **Kampania Commandless UI & Optymalizacja Mobile-First (100%):**
-   - **Bezkomendowy Czarny Rynek i Hex Keypad**: Wprowadzenie w pełni wizualnego modułu zakupów ekwipunku bez wpisywania `/shop` oraz klikalnej matrycy dekodera Hex-Keypad ułatwiającej mobilne hakowanie ICE jednym palcem.
-   - **Siatka Responsywna Sub-HUD**: Dynamiczne dostosowanie układu paska statystyk bazy i podglądu biesiadnika do ekranów smartfonów (grid-to-flex vertical stack).
-   - **Neonowe Szkło Społecznościowe (Premium Cyber-Buttons)**: Transformacja tradycyjnych przycisków w responsywną siatkę zintegrowanych neonowych łączników o dedykowanych marżach poświatowych dla YouTube, Discord, Linktree oraz przycisku Multiverse Gry Live.
-9. **Wektorowy Cyber-Ruch i Zaawansowana Interaktywność (v1.5.5 - 100%):**
-   - **Dynamiczne Światłowody (Laser Connection Lines)**: Integracja nakładki SVG i silnika generowania kabli laserowych z dynamiczną animacją ruchu pakietów w czasie rzeczywistym (dashOffset).
-   - **Inwigilacyjne Drony Patrolowe**: Latające, interaktywne drony chroniące sieć Metropolis ze skanującymi stożkami UV, nagradzające gracza kredytami po kliknięciu.
-   - **Hacker Deck Side-drawer**: Wysuwany terminal boczny decku netrunnerskiego, prezentujący skład i parametry każdego pokoju głosowego oddzielnie po kliknięciu w locie we wskazany punkt. Podwójna funkcjonalność dynamicznej infiltracji barier ochronnych (ICE Breach) oraz zautomatyzowanego napełniania kielichów wirtualnych spacerowiczów (Deploy Cyber-drinks). Customowy system unoszących się logów, efektów bonusowych i dynamicznych dymków dialogowych.
+---
+
+## 📈 Statusy Podsystemów
+
+### 1. Bot MATKA (v1.0.0)
+* **Status:** [PRIORYTET OPERACYJNY] Uruchomiony produkcyjnie na Proxmox Fleet (CT 117 i CT 118). Zintegrowany z API na CT 111.
+* **Technologia:** Python 3.12/3.14, `discord.py 2.6.4`, MongoDB, Redis Streams, ARQ.
+* **Kluczowe mechaniki:** Dwuwarstwowa ekonomia (Overcoins + lokalne waluty), dynamiczna giełda serwerów, hybrid shop, questy, reputacja (social credit) & voice gating.
+* **Integracja API:** Zintegrowany endpoint profilu hakerskiego (`GET/PUT /api/matka/profile`), panelu sklepu (`GET /api/matka/shops/{guild_id}`) oraz zakupów (`POST /api/matka/shops/{guild_id}/buy`).
+* **Postęp:** `100%` (Zintegrowany z bazą danych i zsynchronizowany, bot zalogowany pomyślnie, 194 testy przechodzą pomyślnie).
+
+### 2. Bot OJCIEC (v5.7.02)
+* **Status:** Stabilny / Wdrożony na Proxmox Fleet (6 kontenerów LXC + 3 kontenery baz danych).
+* **Technologia:** Python 3.12, `discord.py 2.7.1`, RabbitMQ (`aio-pika`), MongoDB (`motor`), Redis (`aioredis`).
+* **Kluczowe mechaniki:** Dossier 360, Temp VC, LFG, system sporów MMR (Glicko-2), REST Executor, centralne sterowanie flotą (`fleet_control.sh`).
+* **Postęp:** `100%` (Zero runtime crashes w klastrze, 40 zautomatyzowanych testów regresyjnych przechodzi pomyślnie).
+
+### 3. PORTAL WWW OT POLSKA (v1.5.5)
+* **Status:** Wdrożony produkcyjnie / Serwowany bezpośrednio przez FastAPI z kontenera `api-cockpit` (CT 111) oraz zsynchronizowany z lokalnym portem deweloperskim `8000`.
+* **Technologia:** HTML5, CSS3 (Vanilla / Custom styling), JavaScript.
+* **Kluczowe mechaniki:** Landing page, Metropolis Live (Spatial Clustering, 3D Canvas Pan/Zoom), Tactical HUD, logowanie SSO (Discord OAuth2), integracja z profilami i sklepem live (FastAPI + Mongo).
+* **Postęp:** `100%` (W pełni połączony z centralną infrastrukturą i bazą MongoDB).
+
+---
+
+## 📝 Checklista Integracyjna (Multiverse v1.0)
+
+- `[x]` Faza 1: Przygotowanie monorepo i migracja projektów w jedno miejsce
+- `[x]` Faza 2: Unifikacja i reorganizacja dokumentacji (Status, Changelog, Readme)
+- `[x]` Faza 3: Fuzja serwerów FastAPI w jeden proces na VM 111
+- `[x]` Faza 4: Integracja zdarzeniowa (Ojciec jako sensor telemetrii -> Redis Stream -> Matka)
+- `[x]` Faza 5: Uruchomienie, testy i walidacja zunifikowanej floty
+- `[x]` Faza 6: Integracja Portalu z Centralnym API (SSO i Ekonomia Live)
+- `[x]` Faza 7: Serwowanie Portalu z Kontenera API (Uproszczenie Hostingu & SSO)
+- `[x]` Faza 8: Konsolidacja dokumentacji i synchronizacja portów localhost (3000 -> 8000)

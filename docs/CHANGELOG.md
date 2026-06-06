@@ -1,132 +1,146 @@
-# Changelog - Overtime Polska Portal & API
+# Chronologiczny Changelog: Overtime Infrastructure
 
-Główny rejestr zmian wprowadzanych w portalu internetowym oraz API dla sieci społecznościowej Overtime Polska.
-
-## [Wersja 1.5.5] - 2026-05-30
-
-### Dodano i Udoskonalono (High-Tech Laser Cables, Military Patrolling Drones & Interactive Hacker Deck)
-
-- **Centralny Maszt Metropolis (Central Mainframe Tower)**: Dodano monumentalny wektorowy punkt centralny na mapie Metropolis — „PRIMARY MAINFRAME”. Pełni on rolę serwera-rutera spajającego cały ruch i dynamicznie kalkulującego statusy linków.
-- **Dynamiczne Światłowody Neonowe (Glowing SVG Laser Links)**: Wdrożono nakładkę wektorową SVG (`canvasSvgLines`) rysującą w czasie rzeczywistym zakrzywione światłowody (krzywe Beziera) łączące strefy biesiadne z centralnym mainframem. Kable posiadają dynamicznie płynący strumień świetlny (`stroke-dasharray` z animacją `dashMove` na 60 FPS), wizualizujący aktywność poszczególnych kanałów głosowych w czasie rzeczywistym.
-- **Opancerzone Drony Patrolowe (Military Laser-scanning Drones)**: Wprowadzono do ekosystemu dwa automatycznie krążące drony wojskowe, przemieszczające się po skomplikowanych trajektoriach orbitalnych. Drony rzucają ruchomy stożek laserowy skanujący teren (`drone-laser` z animacją `laserScan`). Kliknięcie drona umożliwia "przejęcie jego pakietów" i nagradza gracza kredytami, wywołując urocze latające bonusy i logi w konsoli.
-- **Boczna Konsola Infiltracji Hakerskiej (Hacker Deck Side-Terminal Drawer)**: Stworzono w pełni interaktywny boczny panel operacyjny `cyberTerminalSide` dla Netrunnerów. Kliknięcie dowolnej dzielnicy w locie wysuwa terminal deszyfrujący, prezentujący szczegółową listę obecnych tam biesiadników, ich gry oraz statusy.
-- **Operacje Decku (Infiltrate ICE & Cyber-Drinks)**:
-  - Opcja **Infiltrate (Hack ICE!)** odpala dynamiczną, wieloetapową procedurę łamania firewallu z paskiem postępu % i konsolą logującą procesy. Zwieńczona jest przyznaniem kredytów i pływającym efektem "+cr" w miejscu węzła.
-  - Opcja **Deploy Cyber-Drinks** rozsyła wirtualne drinki do wszystkich biesiadników na wskazanym kanale głosowym Discorda. Mieszkańcy wokół stołu momentalnie reagują dymkami dialogowymi na żywo („🍺 Na zdrowie, Netrunnerzy! 🚀”) oraz toastem.
-- **Wyeliminowanie Błędu Usuwania Mainframe'u**: Zoptymalizowano usuwanie starych nodów przy pollingu, chroniąc centralny maszt przed usunięciem przy użyciu strukturalnego filtra selektora CSS `:not(.pulsing-core)`.
-
-## [Wersja 1.5.4] - 2026-05-30
-
-### Dodano i Udoskonalono (Real-Time Dynamic Spatial Clustering)
-
-- **Mechanizm Dynamicznych Stołów Kanałowych (Dynamic Spatial Clustering Engine)**: Zastąpiono statyczne, sztywno zdefiniowane 5 dzielnic w [metropolis.html](metropolis.html) systemem adaptacyjnego tworzenia wirtualnych stołów/płytek operacyjnych w czasie rzeczywistym. Algorytm grupuje użytkowników znajdujących się w danej chwili na tych samych kanałach głosowych Discorda i automatycznie generuje dla nich fizyczne stoliki na planie Infinite Canvas.
-- **Orbity Przeciwkolizyjne i Trasy Trygonometryczne**: Stoły są rozstawiane w locie na płótnie mapy przy użyciu rygorystycznego algorytmu trygonometrycznego (promieniście, ze zmiennymi promieniami orbit i krokami kątowymi wokół punktu środkowego `x: 1000, y: 750`), co w 100% gwarantuje, że nowo pozycjonowane pokoje nigdy nie będą się nakładać ani zlewać.
-- **Rzeczywista Wizualizacja Biesiadników (Discord Profile Importer)**: Usunięto generowanie fikcyjnych avatarów i losowych identyfikatorów oznaczonych jako `NetUser_999`. Obecnie wokół stołów spacerują i krążą autentyczni użytkownicy pobrani z telemetrii bazy danych z ich oryginalnymi nickami Discorda oraz avatarami.
-- **Płynna Prezentacja Aktywności (Dynamic Conversation Bubbles)**: Każdy mieszkaniec ma teraz spersonalizowany, dynamiczny dymek po kliknięciu. Jeżeli użytkownik aktualnie w coś gra (co rejestruje API na jego koncie Discord), to mieszkaniec dumnie zakomunikuje: „Gram w: [Nazwa Gry]! 🎮”, wzmacniając immersję cyfrowej cyber-karuzeli grawitacyjnej.
-- **Optymalizacja Czasu Ładowania (Instant-loading v2.0)**: Całkowicie wyłączono sztuczny sleep `setTimeout` trwający 1.2 sekundy przy otwieraniu strony, dzięki czemu Metropolis ładuje się natychmiast po pobraniu danych sieciowych (redukcja opóźnienia startowego do 0ms). Dodatkowo, polling telemetryczny został skrócony co do częstotwa z 8 sekund do 3.5 sekundy, dając błyskawiczny efekt synchronizacji zmian na kanałach.
-
-## [Wersja 1.5.3] - 2026-05-30
-
-### Dodano i Udoskonalono (Interaction-First & Mobile Modernization)
-
-- **Interaktywny Panel Czarnego Rynku i Decoupling Komend (Commandless Cyber-Shop)**: Przebudowano modal podglądu biesiadnika w [community.html](community.html) wprowadzając w pełni dotykowy, wizualny sklep Czarnego Rynku zintegrowany bezpośrednio z kartą ekwipunku. Użytkownicy mobilni i desktopowi mogą teraz błyskawicznie modernizować swoje Cyberdecki oraz pakiety ochronne ICE za pomocą dedykowanych przycisków akcji, bez konieczności wpisywania tekstowych poleceń i zasłaniania ekranu klawiaturą systemową.
-- **Klikalna Neonowa Matryca Decyzyjna (Hex-Keypad Decoder)**: Wprowadzono retro-futurystyczny panel numeryczno-szesnastkowy Hex-Keypad bezpośrednio pod konsolą łamania zabezpieczeń ICE. Umożliwia on dotykową infiltrację i deszyfrowanie wektorów wejściowych jednym kliknięciem za pomocą klikalnych płytek matrycy, idealnie symulując manualne łamanie kodu BIOS z kultowych gier RPG i chroniąc wrażliwy viewport smartfonów przed wysuwaniem się klawiatury systemowej.
-- **Rewolucyjny Remake Metropolis City (Infinite Canvas & Adaptive Grid)**: Całkowicie przebudowano i zoptymalizowano moduł [metropolis.html](metropolis.html) dla osiągnięcia najwyższego poziomu estetyki Netrunner Deck. Zaimplementowano Infinite Canvas Engine o wydajności 60 FPS oparte na sprzętowej akceleracji 3D CSS do płynnego przesuwania (Pan) i skalowania (Zoom). Na urządzeniach mobilnych system automatycznie przechodzi w płynną responsywną siatkę i dotykową karuzelę (Swipe Layout).
-- **Militarne Cięcia i Mikro-Interakcje**: Wdrożono stylizowane przyciski o ostrych ścięciach `clip-path` z fizycznym stroboskopowym przygasaniem w stanie `:active`. Statyczny licznik kredytów zastąpiono płynną animacją narastania wartości docelowej, a sekcje "Top 5" wyposażono w mobilny system harmonijkowy (Accordion) oszczędzający miejsce pionowe, dynamiczne szkielety (Skeleton Loaders) i inteligentne fallbacki awarii sieci z czerwonymi filtrami zakłóceń szumu statycznego.
-- **Pełne Przeorientowanie Responsywne (Mobile-First Hub Layout)**: Całkowicie przeprojektowano strukturę sekcji paska postępu bazy biesiadników, sub-HUD oraz karty podglądu, wprowadzając elastyczne punkty przełamań `@media (max-width: 991px)` i `@media (max-width: 768px)`. Sub-HUD i interfejsy operacyjne automatycznie przechodzą w pionowy, kafelkowy układ, co wyeliminowało błędy ściskania elementów i nakładania się kolumn na ekranach smartfonów.
-- **Neonowa Modernizacja Przyjaciół Sieciowych (Premium Cyber-Social Buttons)**: Zmodernizowano siatkę przycisków społecznościowych w [styles.css](styles.css) oraz [index.html](index.html). Standardowe przyciski Bootstrap zastąpiono ultra-nowoczesnymi, szklanymi przyciskami (cyber-glass neon buttons) z unikalnymi, pulsującymi poświatami dopasowanymi pod kątem identyfikacji wizualnej danej platformy (YouTube, Discord, Linktree). Na smartfonach główny przycisk akcji "Wejdź do Gry Live (Multiverse)" dynamicznie rozciąga się na pełną szerokość gridu i pulsuje neonowym podświetleniem dla maksymalizacji konwersji i immersji (glowing micro-interactionss).
-
-## [Wersja 1.5.2] - 2026-05-29
-
-### Naprawiono i Udoskonalono
-
-- **Przywrócenie Sprawności Map Multiverse (`calculateOrbit`)**: Naprawiono błąd braku definicji funkcji `calculateOrbit` w pliku [community.html](community.html). Brak ten wywoływał błąd `ReferenceError` w konsoli i całkowicie paraliżował silnik renderowania postaci oraz telemetrycznych biesiadników na mapach Metropolis i Tawerny. Postacie pojawiają się teraz poprawnie i stabilnie wokół swoich stref.
-- **Ultra-Innowacyjna Wydajność Przeciągania (Buttery Smooth Drag & Drop)**: Zoptymalizowano reakcję interfejsu na ruch myszą i gesty dotykowe. Narzut silnika tranzycji CSS (`transition: transform 0.1s ease;` na elemencie `#mapCanvas`) został dynamicznie wyłączony na czas trwania operacji przeciągania (drag) i włączony z powrotem przy zwolnieniu kursora/palca. Dzięki temu usunięto denerwujące lagowanie i opóźnienia mapy, nadając jej niespotykaną płynność charakterystyczną dla profesjonalnych silników gier.
-
-## [Wersja 1.5.1] - 2026-05-21
-
-### Naprawiono i Zabezpieczono
-
-- **Krytyczny Błąd Składniowy w [community.html](community.html)**: Usunięto martwy, osierocony fragment kodu (`charObj.addEventListener`) w globalnej sekcji skryptu, który wywoływał błąd parsera JavaScript w przeglądarkach u klientów i całkowicie paraliżował działanie mapy cyberpunkowej.
-- **Zabezpieczenie Inicjalizacji Ekonmicznej (Defensive Programming)**:
-  - Przeniesiono stałe konfiguracyjne czarnego rynku (`DECK_UPGRADES` oraz `SECURITY_UPGRADES`) powyżej inicjalizacji zmiennej `playerInventory`, zapobiegając błędom referencji (ReferenceError) podczas pierwszego ładowania stanu.
-  - Wprowadzono rygorystyczne walidacje i sanityzację danych wczytywanych z `localStorage` (`parsedCredits`, `parsedDeck`, `parsedSec`) chroniące przed wartościami `NaN` lub uszkodzeniem struktur zapisu przez użytkownika.
-  - Zastosowano mechanizm clampowania indeksów (funkcje `Math.max`/`Math.min`) w funkcji `updateEconomyHUD()`, eliminując potencjalne błędy typu `TypeError: Cannot read properties of undefined` przy odpytywaniu właściwości z ulepszeń poziomu cyberdecku i zabezpieczeń ICE.
-
-## [Wersja 1.5.0] - 2026-05-21
-
-### Dodano
-
-- **Silnik Żyjącej Symulacji Ekosystemu ("Extreme Level 2.0 Living Simulation")**:
-  - **Rejestr Aktorów i Wykluczenie Flickerowania DOM**: Całkowicie zrezygnowano z destrukcji i ponownej kreacji węzłów DOM przy dynamicznej telemetrycznej synchronizacji. Wprowadzono pamięciowy rejestr `actorsRegistry = {}`, w którym istniejące postacie są płynnie aktualizowane, a ich położenie podlega gładkiej interpolacji CSS.
-  - **Wandering Patrol State Engine (Płynny Spacer)**: Zaaimplementowano autonomiczny algorytm spacerowania. Co 4.5 sekundy losowe 35% postaci wychodzi na mały dynamiczny spacer wokół swoich terytorialnych stref biesiadnych. Podczas ruchu postacie kołyszą się fizycznie (`.actor--walking` powiązany z animacją `pixelBob`) i zmieniają kierunek zwrotu twarzy (flip horyzontalny po wektorze chodu).
-  - **Skanujące Bezzałogowe Drony Patrolowe**: Metropolis i Gospoda otrzymały autonomiczne drony patrolowe (`.cyber-drone`) ze stałą rotacją wektorów lotu. Drony przemieszczają się bezgłośnie nad mapami, emitując pulsujący gradient błękitno-neonowego lasera skanera podsieciowego i symulując military-grade nadzór Netwatch.
-  - **Dynamiczne Rozproszone Pozycjonowanie Orbitowe**: Stworzono fizycznie wierny algorytm orbitowania orbitalnego zoptymalizowany pod kątem eliminacji nakładania się mieszkańców ("kanapki"). Każdy mieszkaniec Metropolis i biesiadnik Tawerny jest rozpraszany wektorowo za pomocą funkcji trygonometrycznych w polarnej siatce współrzędnych i unikalnego jitteru wokół centralnych punktów stref.
-  - **Geopolityczna Dominacja Megakorporacji**: Zaimplementowano dynamiczny system dominacji megakorporacji (Arasaka, Militech, Biotech Pharma, Network Syndicate) kontrolujących dzielnice handlowe, rozrywkowe i muzyczne na mapie. Podział terytorium odbywa się w czasie rzeczywistym na podstawie współczynnika aktywności telemetrycznej, boostów oraz wielkości serwerów w bazie danych, dynamicznie zmieniając branding wizualny i neonowe barwy dzielnic.
-  - **Głęboka Cyber-Ekonomia i Sklep Czarnego Rynku**: Wprowadzono systemową walutę (Kredyty) zapisywaną lokalnie na urządzeniu gracza. Stworzono zintegrowany z konsolą CLI sklep z ulepszeniami (Cyberdecki zwiększające penetrację ICE oraz zapory ICE zwiększające poziom obrony przed potencjalnymi hakami intruzów).
-  - **Zbrojne Polowanie na Grube Ryby (HVT Hunt)**: Użytkownicy o najdłuższym czasie aktywnej sesji głosowej są automatycznie oznaczani flagą systemu krytycznego ("HIGH-VALUE TARGET"), umożliwiając przejęcie bazy danych o wartości kilkukrotnie większej od standardowej.
-  - **System Globalnych Anomalii Architekta (Blackwall Breach / Netwatch Raids)**: Wprowadzono losowy system incydentów sieciowych zmieniający globalny styl wizualny (czerwone syreny alarmowe, glitche, dynamiczna modyfikacja koloru cząsteczek particles.js na krwisty czerwony lub jaskrawy błękit). Anomalie wymuszają interwencję deszyfrującą całej społeczności poprzez CLI terminalu komendą `/DECODE` / `/STABILIZE` obniżającą skażenie sieci, nagradzaną potężnymi funduszami.
-  - **Sensoryczna Macierz Nastrojów (Mood Matrix) & Cyber-Statusy**: Przetłumaczono statusy Discord (self-mute, self-deaf, streaming) na cyberpunkowe odpowiedniki (Neural Mute Active, Neural Deaf, Matrix Stream Online, Overloaded Central) połączone z dynamicznymi filtrami na awatarach postaci. Zaimplementowano słownik fraz neonowych tłumaczący gry w profilach na rasowe, klimatyczne cyber-monologi i losowo generowane dymki z matrixa na mapie.
-  - **Kontrola Kamery Drag & Zoom**: Pełnoekranowe wsparcie przeciągania mapy oraz skalowania (Drag & Zoom myszką i touch/swipe dla urządzeń mobilnych) z dokładnym badgem zoomu chroniącym przed anomaliami ekranu mobilnego.
-
-## [Wersja 1.4.0] - 2026-05-21
-
-### Dodano
-
-- **Głęboka Cyberpunkowa Interaktywność Wyglądu ("Interaction-First" / RPG Game Mechanics)**:
-  - Wdrożono dedykowany, zaawansowany modal cyberpunkowego profilu postaci ([community.html](community.html)) wywoływany kliknięciem na dowolnego obywatela Metropolis lub biesiadnika w Gospodzie.
-  - Wyświetlanie precyzyjnych szczegółów profilu: powiększony cyberpunkowy awatar z dynamiczną poświatą neonową, prawdziwym identyfikatorem NET (UID Discorda), bieżącą lokalizacją głosową oraz autentycznym statusem Discord (aktywności lub tryb czuwania sensorycznego).
-  - **Mechanizm Cyber-Wszczepów**: Generator deterministycznych ulepszeń technologicznych (np. *Korteks Synaptyczny*, *Optyka Kiroshi MK4*, *Moduł Hakowania Satori*) wraz z poziomem integracji (39% - 99%) wyliczany na podstawie statycznego skrótu identyfikatora użytkownika.
-  - **Retro Mini-Gra Hackerska**: Wbudowana gra tekstowa CLI (Retro Terminal v4.0.9). Gracz podejmuje próbę infiltracji cyberware mieszkańca przez łamanie trójbarierowej zapory ICE. System generuje klucz obejściowy, który gracz musi poprawnie wprowadzić do konsoli. Sukces lub porażka wywołują autentyczną dynamiczną reakcję postaci w postaci unoszących się dymków dialogowych w czasie rzeczywistym nad awatarem na mapie!
-  - **Interaktywny System Toastów / Stawiania Drinków**: Opcjonalna cyberpunkowa akcja pozwalająca postawić mieszkańcowi jeden z klasycznych cyber-trunków (np. *Johnny Hand*, *Wściekły Cyber-Pies*, *Sake Arasaka Special*). Postacie natychmiastowo dziękują, wznosząc wirtualny toast zintegrowany z interfejsem dymków na globalnej planszy.
-  - Ujednolicony i usprawniony mechanizm nasłuchu zdarzeń we frontendzie z zabezpieczeniami zapobiegającymi propagacji bąbelkowej kliknięć.
-
-## [Wersja 1.3.0] - 2026-05-21
-
-### Dodano
-
-- **Prawdziwa wieloobszarowa telemetria postaci na żywo**:
-  - Podstrona Tawerny Live ([tavern.html](tavern.html)) oraz Miasta Metropolis Live ([metropolis.html](metropolis.html)) zostały w pełni zintegrowane z tablicą `voice_users_detailed` z bazy MongoDB Atlas.
-  - Zamiast statycznych, fikcyjnych postaci i losowych awataryzacji, portal generuje teraz **realnie przebywających na kanałach Discorda użytkowników**.
-  - Każda postać otrzymuje swój **prawdziwy avatar Discorda**, poprawną nazwę wyświetlaną (`display_name`) oraz dynamicznie generowany dymek dialogowy lub toast opisujący grę, w którą aktualnie gra na bazie tablicy `user.activities`.
-  - Przypisywanie biesiadników do konkretnych stołów w Tawernie oraz dzielnic w Metropolis ("gaming" -> Cyber Arena, "chill" -> Neon Lounge, "general" -> Central Plaza) odbywa się teraz w pełni dynamicznie na podstawie sklasyfikowanego przez bota typu kanału głosowego (`channel_type`).
-  - Dodano bezpieczne funkcje escapowania kodu HTML (`escapeHtml`) w skryptach frontendu, zapobiegając atakom typu XSS przy renderowaniu metadanych użytkowników Discorda.
-- **Analityka i Synergia Głosowa (Retention & Connection Analytics)**:
-  - Zaimplementowano w pełni nieblokujący asynchroniczny moduł akumulowania i zapisu statystyk sesji (`voice_analytics`) u bota.
-  - Wdrożono agregację statystyk **TOP 5 najlepszych synergii partnerskich** (`synergy_couples`), która bada wspólny czas spędzany na kanałach (z unikalnym alfabetycznym grupowaniem par użytkowników), oraz **TOP 5 rekordowych czasów sesji** (`all_time_longest_sessions`).
-  - Zaktualizowano punkty dostępowe API (`api/usercount.js` oraz `api/db.js`) o precyzyjne potężne potoki agregacji MongoDB Atlas w celu udostępnienia tych statystyk dla całego systemu.
-
-## [Wersja 1.2.0] - 2026-05-21
-
-### Dodano
-
-- Dynamiczne wskaźniki techniczne na żywo bezpośrednio z MongoDB bota:
-  - **Liczba połączonych serwerów** (`connected_servers`).
-  - **Liczba aktywnych shardów** (`shard_count`).
-  - **Opóźnienie sieciowe bota (Ping API)** (`latency_ms`).
-- Nowe atrybuty serwerów w sekcji "Największe serwery Overtime" na stronie głównej:
-  - **Złote/fioletowe diamentowe odznaki boostów** (`boosts`, `boost_tier`) dla serwerów posiadających ulepszenia.
-  - **Ikony weryfikacji i partnerstwa** (`is_verified` oraz `is_partnered`) przy nazwach serwerów.
-  - **Dynamiczne linki szybkiego dołączenia** do serwerów wykorzystujące własny vanity URL (`vanity_code`).
-- Mapowanie zaawansowanych właściwości statystycznych serwerów w API Express (`api/db.js`) i Vercel Function (`api/usercount.js`) z kompletnym, bezpiecznym zestawem fallbacków chroniących przed brakiem danych w starszych wpisach bazodanowych.
-
-## [Wersja 1.1.0] - 2026-05-21
-
-### Dodano
-
-- Nową, w pełni interaktywną podstronę dedykowaną dziennikowi zmian bota Ojciec: `changelog.html`. Podstrona została wzbogacona o kompletną historię zmian od wersji 1.01 aż do rewolucyjnej, extreme odsłony 4.0.0.
-- Nowy przycisk nawigacyjny "Changelog Bota" w menu głównym portalu `index.html`.
-- Wyłączenie cache w przeglądarkach oraz po stronie silnika Vercel (nagłówki `Cache-Control` i `Surrogate-Control` w API serverless) dla zapewnienia stałego odświeżania na żywo.
-
-### Zmieniono
-
-- Podkręcono responsywność pobierania danych użytkowników live.
-- Usunięto przestarzały, długoterminowy cache odpowiedzi w wątkach backendu PM2 (`api/db.js`) i Vercel API (`api/usercount.js`), który serwował nieaktualne statystyki użytkowników w przypadku spowolnienia bazy danych. API odpytuje teraz bezpośrednio MongoDB przy każdym zapytaniu, co gwarantuje 100% autentyczność stanu live licznika.
-- Przebudowano sekcję największych serwerów na stronie głównej: zamiast prostych badge'y pojawił się czytelny, pionowo przewijany ranking topki (scroll box) z numeracją, paskami udziału i lepszą prezentacją nazw oraz liczby członków. Usunięto limit 8 serwerów – obecnie wyświetlana jest cała lista serwerów z bazy danych, dynamicznie dostosowując się do wysokości scroll boxa bez rozciągania layoutu.
-- Naprawiono responsywność całej strony głównej (onepage): usunięto globalne blokowanie przewijania strony (`overflow: hidden`), zmieniono pozycjonowanie tła particles.js na `fixed`, wdrożono mobilny układ siatki kafli (sub-grid 2x2) dla przycisków społecznościowych oraz zachowano horyzontalny układ meta-informacji serwerów na małych rozdzielczościach, eliminując zniekształcenia widoku.
-- Rozbudowano podstronę `changelog.html` o sekcje "Extreme 4.0.0" ze szczegółowym wyróżnieniem wizualnym (gradienty, efekty hover, ikony) dedykowaną potężnym zmianom w architekturze bota, nowym modułom telemetrycznym (Moderation Cockpit & Telemetry Backbone), auto-healingowi systemu kanałów głosowych (Daddy Voice's) oraz wzmocnionym zabezpieczeniom administratorskim (Board Guardrails).
-- Wprowadzono system interaktywnych, rozwijanych szczegółów technicznych (przy użyciu nowoczesnych elementów `<details>` i `<summary>` oraz Font Awesome) dla każdej aktualizacji. Opisano tam realne niskopoziomowe zmiany w kodzie (np. asynchroniczny batching MongoDB, klasę uprawnień `VoicePermissionGuard`, parser interwałów timedelta, rotacyjny moduł logowania błędów `error_logger.py` oraz asynchroniczne pętle `tasks.Loop`).
+Wszystkie istotne zmiany i wydania w ramach ekosystemu **Overtime Multiverse** są dokumentowane w tym pliku.
 
 ---
 
-*Rejestr prowadzony zgodnie z wymaganiami technicznymi i standardami jakości zespołu Overtime Polska.*
+## [1.1.4] - 2026-06-06 (SSO & Portal Economy Integration)
+### Dodano
+* **Zunifikowane Logowanie SSO:** Zintegrowano Discord OAuth2 (SSO) z backendem FastAPI (CT 111) oraz frontendem portalu (`community.html`), przekazując cel przekierowania przez parametr `state` (`csrf_token|redirect_to`).
+* **Ekonomia Live w Portalu:** Wdrożono pobieranie (`GET /api/matka/profile`) i synchronizację/zapis (`PUT /api/matka/profile`) kredytów, poziomów decku, poziomów zabezpieczeń i statystyk w MongoDB (z fallbackiem na `localStorage` w trybie offline).
+* **Obsługa Zakupów w Sklepie:** Dodano endpoint `POST /shops/{guild_id}/buy` dla zakupów ze sklepu globalnego i lokalnego z integracją z inwentarzem użytkownika.
+* **Serwowanie Portalu przez FastAPI:** Zintegrowano pliki statyczne portalu (HTML, JS, CSS) bezpośrednio z FastAPI w kontenerze `api-cockpit` (CT 111), montując je na root path `/` (odp. `/index.html`, `/community.html` itp.). Pozwala to na pełne logowanie i grę bezpośrednio w sieci lokalnej (przez Nginx na CT 104) bez konieczności zewnętrznego hostingu na Vercelu ani problemów Mixed Content.
+* **Integracja API Portalu z FastAPI:** Przetłumaczono endpointy Node.js Express (`/api/usercount`, `/api/userstats`, `/api/changelogs`) na natywny kod Python/FastAPI w [portal_stats.py](file:///home/rf/Dokumenty/Overtime-Infrastructure/ojciec/api/app/routes/portal_stats.py). Pozwala to portalowi na dynamiczne pobieranie liczby użytkowników, rankingów serwerów (Among Us, DBD, Overwatch itd.), synergii głosowych i changelogów bezpośrednio z lokalnej bazy MongoDB bez uruchamiania oddzielnego procesu Node.js/PM2.
+### Naprawiono
+* **Dockerfile API Pathing Resolution:** Naprawiono kopiowanie pakietu `matka/matka` do `/app/matka/matka` w `Dockerfile.api` w celu poprawnego działania `sys.path`.
+* **Przeniesienie docs w Dockerfile:** Poprawiono ścieżkę kopiowania folderu `docs` ze starego `ojciec/docs` na zunifikowany nadrzędny folder `docs/`.
+* **Zależności Pythona w API:** Dodano brakujące zależności bota Matka (`arq`, `apscheduler`, `python-json-logger`, `python-jose`, `PyNaCl`) do obrazu Docker API w celu uniknięcia `ImportError` przy ładowaniu tras Matki.
+
+---
+
+## [1.1.3] - 2026-06-05 (Godmode Profile & Space Recovery)
+### Dodano
+* **Włączenie Profilu Produkcyjnego (OVERTIME_PROFILE=prod):** Ustawiono zmienną środowiskową na wszystkich kontenerach Ojca (CT 106–112) w celu umożliwienia poprawnego ładowania MongoDB dla Godmode.
+* **Auto-reload w Godmode Edit Tokens:** Dodano automatyczne rozgłaszanie zdarzenia `config.reload` przez Redis Stream w modalnej edycji tokenów.
+* **Komenda `restart-soft` we Flotowym Control Panelu:** Zaimplementowano polecenie `restart-soft` w `fleet_control.sh`, które wykonuje lekki restart kontenerów w locie (`docker compose restart`) bez czasochłonnego i obciążającego dysk przebudowywania obrazów Docker (`--build`).
+### Naprawiono
+* **CT 117 (matka-gateway) Disk Space Recovery:** Oczyszczono przeciążony cache i obrazy Docker na kontenerze CT 117, odzyskując **1.327 GB** miejsca i umożliwiając poprawny start bramki Matki.
+
+---
+
+## [1.1.2] - 2026-06-05 (Godmode Cockpit Fix)
+### Naprawiono
+* **Godmode View Child Limit:** Rozwiązano błąd `ValueError: maximum number of children exceeded (40)` w `ui/views/godmode_view.py`. Przeniesiono dynamiczne przyciski konfiguracji profili ("Kanały i Serwery", "Tokeny i Prefix", "Flagi i Tryby") do dedykowanego podwidoku `GodmodeProfileSettingsView` w celu obniżenia liczby kontrolek głównego panelu pod dopuszczalny limit discord.py (40 elementów).
+
+---
+
+## [1.1.1] - 2026-06-05 (Fleet Stabilization & Path Fixes)
+### Dodano
+* **Ojciec API Integration Safety:** Dodanie try-except na top-level importach w `ojciec/api/main.py` chroniących API przed awarią przy braku modułu `matka` w obrazie Docker.
+### Naprawiono
+* **Compose File Pathing:** Skrypt `fleet_control.sh` został zaktualizowany o parametr `-f` wskazujący na odpowiednie pliki compose (dla start, stop, status i logs). Zapobiega to błędom "no configuration file provided".
+* **Environment Pathing Resolution:** Rozwiązano niedopasowanie ścieżek `.env`. Skopiowano pliki konfiguracyjne do `/app/ojciec/.env` oraz `/app/matka/.env` na odpowiednich kontenerach.
+* **Fleet Duplication & Orphan Cleanup:** Wyczyszczono zduplikowane, osierocone kontenery na CT 118 i CT 117 w celu zwolnienia miejsca i uniknięcia konfliktów.
+
+---
+
+## [1.1.0] - 2026-06-05 (Multiverse Integration & Orchestration)
+### Dodano
+* **Consolidated Docker Orchestration:** Utworzenie głównego pliku `docker/docker-compose.yml` umożliwiającego lokalny rozruch pełnego ekosystemu (3 bazy danych, boty, workery, api cockpit i frontend).
+* **Dynamic Configuration & Godmode Modals:** Wdrożenie loaderów profilu `OVERTIME_PROFILE` i rozbudowa Godmode Cockpitu o modals do edycji tokenów, kanałów i trybu pasywnego w MongoDB z hot-reloadingiem bez restartu usług.
+* **Event Telemetry Bridge:** Połączenie `activity_service.py` (Ojciec) ze strumieniem Redis `matka:events` i pasywnym workerem (Matka) do naliczania XP/ekonomii.
+* **Proxmox Disk Optimizations:** Dodanie automatycznego wywołania `docker system prune -af` w skrypcie `fleet_control.sh` chroniącego małe dyski (4 GB / 6 GB) przed zapchaniem.
+* **Architecture Documentation:** Utworzenie oficjalnego opisu multiversum w `docs/ARCHITECTURE.md`.
+
+---
+
+## [1.0.0] - 2026-06-05 (Monorepo Inception)
+### Dodano (Monorepo)
+* **Monorepo structure:** Konsolidacja projektów **Ojciec (v5.7.02)**, **Matka (v1.0.0)** i **WWW OT POLSKA** pod wspólnym dachem w `/home/rf/Dokumenty/Overtime-Infrastructure`.
+* **Zunifikowane repozytorium:** Inicjalizacja pojedynczego, nadrzędnego repozytorium Git ułatwiającego synchronizację wydań i współdzielenie kodu.
+* **Unified Documentation:** Połączenie instrukcji, checklist i statusów w centralnym folderze `docs/` monorepo.
+
+---
+
+## [OJCIEC v5.7.02] - 2026-06-03 (Asynchroniczny Logger & Fleet Lockout)
+### Dodano
+* **Asynchroniczny Logger:** Przebudowa [logger.py](ojciec/core/logger.py) na asynchroniczny, nieblokujący zapis I/O za pomocą bezpiecznej kolejki wątkowej `queue.Queue`.
+* **Izolacja Logów:** Logi serwerowe są rozdzielane do katalogów o nazwach opartych na Snowflake `guild_id` (`logs/guilds/{guild_id}/application.log`), zapobiegając kolizjom plików.
+* **Zarządzanie kontami RabbitMQ:** Utworzenie użytkownika administracyjnego `ojciec` na centralnym serwerze RabbitMQ (CT 103) i usunięcie błędów autoryzacji w workerach.
+* **Direct Fallback w interakcjach:** Executor Discord REST (CT 107) otrzymał Direct Fallback w `respond_to_interaction()`, pozwalający na bezpośrednie wywołania HTTP w przypadku awarii sieciowej executora.
+
+---
+
+## [MATKA v1.0.0] - 2025-11-25 (Gamification & Economy 2.0)
+### Dodano
+* **Quest Engine:** System zadań dziennych i tygodniowych generowanych automatycznie przez Schedulera.
+* **Achievement System:** Obsługa odznak globalnych, lokalnych, ukrytych i niemożliwych za aktywność.
+* **Context Menus (Commandless UX):** Kliknięcie prawym przyciskiem myszy na profil pozwala natychmiastowo wywołać akcję *Pokaż Profil* oraz *Daj Reputację (+1)*.
+* **Dwuwarstwowa Ekonomia:** Portfele globalne (Overcoins - OC) oraz portfele lokalne z dynamicznymi kursami wymiany per-serwer.
+* **Giełda Serwerów:** Inwestycje w akcje serwerów oparte o rzeczywistą telemetrię czatu i voice.
+
+---
+
+## [PORTAL v1.5.5] - 2026-05-30
+### Dodano
+* **Centralny Maszt Metropolis:** Wektorowy punkt centralny mapy Metropolis — „PRIMARY MAINFRAME”, spajający cały ruch i dynamicznie kalkulujący statusy linków.
+* **Dynamiczne Światłowody Neonowe:** Nakładka wektorowa SVG rysująca krzywe Beziera łączące strefy biesiadne z centralnym mainframem z animacją strumienia świetlnego na 60 FPS.
+* **Opancerzone Drony Patrolowe:** Dwa automatycznie krążące drony wojskowe ze skanującym laserem; kliknięcie drona nagradza gracza kredytami.
+* **Boczna Konsola Infiltracji Hakerskiej:** Panel operacyjny `cyberTerminalSide` dla Netrunnerów pokazujący listę biesiadników na kanale, umożliwiający hackowanie ICE oraz stawianie drinków.
+### Naprawiono
+* **Błąd Usuwania Mainframe'u:** Zabezpieczono centralny maszt przed usunięciem przy odświeżaniu danych przez selektor `:not(.pulsing-core)`.
+
+## [PORTAL v1.5.4] - 2026-05-30
+### Dodano
+* **Dynamiczne Stoły Kanałowe:** Algorytm grupuje użytkowników na tych samych kanałach i automatycznie generuje stoły na Infinite Canvas.
+* **Trasy Trygonometryczne:** Rozstawianie stołów radialnie w celu wyeliminowania nakładania się pokoi.
+* **Discord Profile Importer:** Import rzeczywistych awatarów i nazw użytkowników Discorda na mapach.
+* **Dymki Aktywności:** Prezentacja aktualnej gry biesiadnika w chmurce dialogowej.
+* **Instant-loading v2.0:** Usunięcie sleepa 1.2s przy starcie i przyspieszenie pollingu do 3.5s.
+
+## [PORTAL v1.5.3] - 2026-05-30
+### Dodano
+* **Commandless Cyber-Shop:** Wizualny sklep Czarnego Rynku zintegrowany z kartą ekwipunku bez wpisywania komend.
+* **Hex-Keypad Decoder:** Klikalna neonowa matryca numeryczno-szesnastkowa do dotykowego hackowania ICE na urządzeniach mobilnych.
+* **Infinite Canvas Engine:** Sprzętowa akceleracja 3D CSS do płynnego Pan & Zoom (dotykowa karuzela na mobile).
+* **Alert Anomalii Sieciowych:** Globalne anomalie (Blackwall Breach, Netwatch Raid) wymuszające interwencję deszyfrującą całej społeczności.
+
+## [PORTAL v1.5.2] - 2026-05-29
+### Naprawiono
+* **Błąd calculateOrbit:** Przywrócono funkcję obliczania orbit biesiadników eliminującą ReferenceError.
+* **Buttery Smooth Drag & Drop:** Dynamiczne wyłączenie tranzycji CSS na czas dragowania mapy w celu eliminacji lagów.
+
+## [PORTAL v1.5.1] - 2026-05-21
+### Naprawiono
+* **Błąd parsera JS:** Usunięto osierocony fragment kodu `charObj.addEventListener`.
+* **Defensive Economy Initialization:** Bezpieczne wczytywanie i sanityzacja danych z localStorage (zapobieganie NaN/TypeError).
+
+## [PORTAL v1.5.0] - 2026-05-21
+### Dodano
+* **Wandering Patrol State Engine:** Płynny spacer 35% postaci z kołysaniem pixelBob i zmianą kierunku zwrotu.
+* **Korporacyjna Dominacja:** Obliczanie dominacji megakorporacji (Arasaka, Militech, Biotech, Network LLC) na podstawie statystyk serwerów.
+* **HVT (High-Value Target):** Oznaczanie graczy z najdłuższą sesją głosową jako cele do hakowania o wyższej nagrodzie.
+
+## [PORTAL v1.4.0] - 2026-05-21
+### Dodano
+* **Cyberpunkowe Profile:** Wyświetlanie szczegółów postaci, statusów i deterministycznie generowanych cyber-wszczepów.
+* **Mini-Gra Hackerska:** Retro terminal CLI do łamania firewalli ICE; sukces generuje toast lub dymek.
+
+## [PORTAL v1.3.0] - 2026-05-21
+### Dodano
+* **Integracja z MongoDB Atlas:** Wczytywanie prawdziwych użytkowników z bazy bezpośrednio do Metropolis i Tawerny na podstawie `voice_users_detailed`.
+* **Top Partnerzy i Sesje:** Integracja ze statystykami `voice_analytics` (TOP 5 synergii i TOP 5 sesji).
+
+## [PORTAL v1.2.0] - 2026-05-21
+### Dodano
+* **Metryki Sieciowe:** Wyświetlanie liczby serwerów, shardów, pingów oraz odznak premium (boostów, verification badges).
+
+## [PORTAL v1.1.0] - 2026-05-21
+### Dodano
+* **Changelog Bota:** Dedykowana podstrona changelog.html oraz przycisk w menu głównym.
+
+## [PORTAL v1.0.0] - 2026-05-20 (User Count & Landing Page)
+### Dodano
+* **Strona Wejściowa:** Czysty, autorski interfejs landing page zintegrowany z biblioteką `particles.js`.
+* **Licznik Sieciowy:** Integracja serverless z MongoDB Atlas do zliczania użytkowników głosowych oraz serwerów w czasie rzeczywistym.
+* **PM2 Deployment:** Dodanie skryptów rozruchu i integracji z menedżerem procesów PM2 dla bezpiecznej pracy w tle.

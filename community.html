@@ -2991,7 +2991,7 @@
     async function fetchUserStats(userId) {
       try {
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const apiUrl = isLocalhost ? `http://localhost:3000/api/userstats?userId=${userId}` : `/api/userstats?userId=${userId}`;
+        const apiUrl = isLocalhost ? `http://localhost:8000/api/userstats?userId=${userId}` : `/api/userstats?userId=${userId}`;
         
         const res = await fetch(apiUrl, {
           headers: {
@@ -3343,7 +3343,7 @@
     async function tickEngine() {
       try {
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const apiUrl = isLocalhost ? 'http://localhost:3000/api/usercount' : '/api/usercount';
+        const apiUrl = isLocalhost ? 'http://localhost:8000/api/usercount' : '/api/usercount';
         
         const res = await fetch(apiUrl, {
           headers: {
