@@ -4,6 +4,13 @@ Wszystkie istotne zmiany i wydania w ramach ekosystemu **Overtime Multiverse** s
 
 ---
 
+## [1.1.5] - 2026-06-06 (Request-URI Too Large & JWT Optimization)
+### Naprawiono
+* **Optymalizacja Payloadu JWT:** Przefiltrowano listę serwerów w tokenie logowania OAuth2 (w `auth_routes.py`), zachowując wyłącznie te, na których użytkownik posiada uprawnienia administratora, zarządcy lub jest właścicielem (`owner`). Zapobiega to generowaniu gigantycznych tokenów JWT (powyżej 10 KB) dla użytkowników należących do wielu gildii.
+* **Rozszerzenie Buforów Nginx (CT 104):** Zwiększono parametry `large_client_header_buffers` (do `4 32k`) oraz `client_header_buffer_size` (do `16k`) w konfiguracji głównego serwera proxy Nginx na CT 104, całkowicie eliminując błąd `414 Request-URI Too Large` przy przekierowaniach z tokenem JWT.
+
+---
+
 ## [1.1.4] - 2026-06-06 (SSO & Portal Economy Integration)
 ### Dodano
 * **Zunifikowane Logowanie SSO:** Zintegrowano Discord OAuth2 (SSO) z backendem FastAPI (CT 111) oraz frontendem portalu (`community.html`), przekazując cel przekierowania przez parametr `state` (`csrf_token|redirect_to`).
